@@ -1,4 +1,5 @@
 use std::cmp::Ordering;
+use std::fmt::{Debug, Formatter};
 
 
 pub const MAX_NUMBER_FIGURE: u8 = 10;
@@ -16,8 +17,9 @@ impl NumberFigureStd {
         }
     }
 
-    /// Returns a mask of a figure in manner:
-    ///
+    /*
+    /// Returns a mask of a figure as in example. It can be used for optimised storing in true/false arrays.
+    /// # Example:
     /// ```
     /// use karty::figures::standard;
     /// assert_eq!(standard::F2.mask(), 0x04);
@@ -31,13 +33,21 @@ impl NumberFigureStd {
     /// assert_eq!(standard::F10.mask(), 0x400);
     ///
     /// ```
-    pub fn mask(&self) -> u64{
+
+     */
+    pub(crate) fn mask(&self) -> u64{
         1u64<<self.power
     }
     /*
     fn power(&self) -> u8{
         self.power
     }*/
+}
+
+impl std::fmt::Display for NumberFigureStd{
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self.power)
+    }
 }
 
 impl Ord for NumberFigureStd {
@@ -58,10 +68,8 @@ impl Figure for NumberFigureStd{
     fn order_number(&self) -> usize {
         usize::from(self.power - 2 )
     }
-
-
-
 }
+
 
 
 
@@ -109,6 +117,7 @@ impl FigureStd {
         }
     }
 
+
 }
 impl Figure for FigureStd{
     const NUMBER_OF_FIGURES: usize = 13;
@@ -123,7 +132,30 @@ impl Figure for FigureStd{
         }
     }
 
+}
 
+impl std::fmt::Display for FigureStd{
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        if f.alternate(){
+            match self{
+                FigureStd::Ace => write!(f, "𝑨"),
+                FigureStd::King => write!(f, "𝑲"),
+                FigureStd::Queen => write!(f, "𝑸"),
+                FigureStd::Jack => write!(f, "𝑱"),
+                FigureStd::Numbered(n) => write!(f, "{}", n)
+            }
+        }
+        else{
+            match self{
+                FigureStd::Ace => write!(f, "Ace"),
+                FigureStd::King => write!(f, "King"),
+                FigureStd::Queen => write!(f, "Queen"),
+                FigureStd::Jack => write!(f, "Jack"),
+                FigureStd::Numbered(n) => write!(f, "{}", n)
+            }
+
+        }
+    }
 }
 
 pub const FIGURES: [FigureStd;13] = [Ace, King, Queen, Jack, Numbered(NumberFigureStd {power: 10}),
@@ -175,6 +207,11 @@ mod tests{
         assert_eq!(FigureStd::Jack.mask(),     0b0000100000000000);
         assert_eq!(F10.mask(),      0b0000010000000000);
         assert_eq!(F2.mask(),       0b0000000000000100);
+    }
+
+    #[test]
+    fn formatting(){
+        assert_eq!(format!("{:#}", FigureStd::Ace), String::from("𝑨"))
     }
 }
 

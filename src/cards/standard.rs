@@ -1,3 +1,4 @@
+use std::fmt::{Display, Formatter};
 use crate::cards::Card;
 use crate::figures::standard::{Ace, F10, F2, F3, F4, F5, F6, F7, F8, F9, FigureStd, Jack, King, Numbered, Queen};
 use crate::suits::standard::SuitStd::*;
@@ -10,8 +11,19 @@ impl Card<FigureStd, SuitStd>{
     }
 }
 
+
+
 pub type CardStd =  Card<FigureStd, SuitStd>;
 
+impl Display for CardStd{
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match f.alternate(){
+            true => write!(f, "{:#}{:#}", self.figure, self.suit),
+            false => write!(f, "{} of {}", self.figure, self.suit)
+        }
+
+    }
+}
 
 //pub const TWO_CLUBS: Card<FigureStd, SuitStd> = Card { suit: SuitStd::Clubs, figure: Numbered(F2)};
 pub const TWO_CLUBS: CardStd = CardStd{ suit: Clubs, figure: Numbered(F2)};
@@ -69,3 +81,14 @@ pub const JACK_SPADES: CardStd = Card { suit: Spades, figure: Jack};
 pub const QUEEN_SPADES: CardStd = Card { suit: Spades, figure: Queen};
 pub const KING_SPADES: CardStd = Card { suit: Spades, figure: King};
 pub const ACE_SPADES: CardStd = Card { suit: Spades, figure: Ace};
+
+#[cfg(test)]
+mod tests{
+    use crate::cards::standard::KING_HEARTS;
+
+    #[test]
+    fn display(){
+        assert_eq!(format!("{:#}", KING_HEARTS), format!("𝑲♥"));
+        assert_eq!(format!("{}", KING_HEARTS), format!("King of Hearts"));
+    }
+}

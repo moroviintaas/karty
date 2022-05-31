@@ -1,4 +1,5 @@
 use std::cmp::Ordering;
+use std::fmt::{Display, Formatter};
 use crate::suits::standard::SuitStd::{Clubs, Diamonds, Hearts, Spades};
 use crate::suits::Suit;
 
@@ -53,6 +54,27 @@ impl Suit for SuitStd{
             Hearts => 2,
             Diamonds => 1,
             Clubs => 0
+        }
+    }
+}
+
+impl Display for SuitStd{
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        if f.alternate(){
+            match self {
+                Spades => write!(f, "♠"),
+                Hearts => write!(f, "♥"),
+                Diamonds => write!(f, "♦"),
+                Clubs => write!(f, "♣")
+            }
+        }
+        else {
+            match self{
+                Spades => write!(f, "Spades"),
+                Hearts => write!(f, "Hearts"),
+                Diamonds => write!(f, "Diamonds"),
+                Clubs => write!(f, "Clubs")
+            }
         }
     }
 }
