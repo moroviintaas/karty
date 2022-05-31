@@ -17,6 +17,10 @@ impl NumberFigureStd {
         }
     }
 
+    pub fn order_number(&self) -> usize {
+        usize::from(self.power - 2 )
+    }
+
     /*
     /// Returns a mask of a figure as in example. It can be used for optimised storing in true/false arrays.
     /// # Example:
@@ -65,9 +69,7 @@ impl PartialOrd<Self> for NumberFigureStd {
 impl Figure for NumberFigureStd{
     const NUMBER_OF_FIGURES: usize = 9;
 
-    fn order_number(&self) -> usize {
-        usize::from(self.power - 2 )
-    }
+
 }
 
 
@@ -116,13 +118,7 @@ impl FigureStd {
             Numbered(fig) => fig.power
         }
     }
-
-
-}
-impl Figure for FigureStd{
-    const NUMBER_OF_FIGURES: usize = 13;
-
-    fn order_number(&self) -> usize {
+    pub fn order_number(&self) -> usize {
         match self{
             Ace => 12,
             King => 11,
@@ -132,6 +128,10 @@ impl Figure for FigureStd{
         }
     }
 
+
+}
+impl Figure for FigureStd{
+    const NUMBER_OF_FIGURES: usize = 13;
 }
 
 impl std::fmt::Display for FigureStd{
