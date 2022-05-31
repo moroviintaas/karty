@@ -8,8 +8,8 @@ use crate::figures::standard::{FigureStd, MAX_NUMBER_FIGURE, MIN_NUMBER_FIGURE, 
 
 /// Parses Ace
 /// ```
-/// use carden::figures::FigureStd;
-/// use carden::figures::parse::parse_ace;
+/// use karty::figures::FigureStd;
+/// use karty::figures::parse::parse_ace;
 /// use nom::error::ErrorKind;
 /// assert_eq!(parse_ace("acedd"), Ok(("dd", FigureStd::Ace)));
 /// assert_eq!(parse_ace("aCe dd"), Ok((" dd", FigureStd::Ace)));
@@ -34,8 +34,8 @@ pub fn parse_jack(s: &str) -> IResult<&str, FigureStd>{
 
 /// Parser numbered figure
 /// ```
-/// use carden::figures::{FigureStd, NumberFigureStd};
-/// use carden::figures::parse::parse_numbered_figure;
+/// use karty::figures::{FigureStd, NumberFigureStd};
+/// use karty::figures::parse::parse_numbered_figure;
 /// use nom::error::ErrorKind;
 /// assert_eq!(parse_numbered_figure("10fg"), Ok(("fg", FigureStd::Numbered(NumberFigureStd::new(10)))));
 /// assert_eq!(parse_numbered_figure("11fg"), Err(nom::Err::Error(nom::error::Error::new("11fg", ErrorKind::Digit))));
@@ -61,8 +61,8 @@ pub fn parse_numbered_figure(s: &str) -> IResult<&str, FigureStd>{
 }
 /// Parses a figure
 /// ```
-/// use carden::figures::{FigureStd, NumberFigureStd};
-/// use carden::figures::parse::parse_figure;
+/// use karty::figures::{FigureStd, NumberFigureStd};
+/// use karty::figures::parse::parse_figure;
 /// use nom::error::ErrorKind;
 /// assert_eq!(parse_figure("kc"), Ok(("c", FigureStd::King)));
 /// assert_eq!(parse_figure("qdiamonds"), Ok(("diamonds", FigureStd::Queen)));

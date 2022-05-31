@@ -22,8 +22,8 @@ pub fn parse_clubs(s: &str) -> IResult<&str, SuitStd>{
 
 /// Parses a suit
 /// ```
-/// use carden::suits::SuitStd;
-/// use carden::suits::parse::parse_suit;
+/// use karty::suits::SuitStd;
+/// use karty::suits::parse::parse_suit;
 /// use nom::error::ErrorKind;
 /// assert_eq!(parse_suit("sgq"), Ok(("gq", SuitStd::Spades)));
 /// assert_eq!(parse_suit("diamondsda"), Ok(("da", SuitStd::Diamonds)));

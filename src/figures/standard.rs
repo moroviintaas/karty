@@ -19,7 +19,7 @@ impl NumberFigureStd {
     /// Returns a mask of a figure in manner:
     ///
     /// ```
-    /// use carden::figures::standard;
+    /// use karty::figures::standard;
     /// assert_eq!(standard::F2.mask(), 0x04);
     /// assert_eq!(standard::F3.mask(), 0x08);
     /// assert_eq!(standard::F4.mask(), 0x10);
@@ -78,8 +78,8 @@ impl FigureStd {
     /*
     /// Returns a mask for figure for efficient storing bool tables
     /// ```
-    /// use carden::figures::standard::{F2, F10};
-    /// use carden::figures::standard::FigureStd;
+    /// use karty::figures::standard::{F2, F10};
+    /// use karty::figures::standard::FigureStd;
     /// assert_eq!(FigureStd::Ace.mask(),      0b0100000000000000);
     /// assert_eq!(FigureStd::King.mask(),     0b0010000000000000);
     /// assert_eq!(FigureStd::Queen.mask(),    0b0001000000000000);

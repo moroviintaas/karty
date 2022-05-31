@@ -12,12 +12,12 @@ use crate::suits::standard::SuitStd;
 
 /// Parses card from &str (strict way)
 /// ```
-/// use carden::cards::Card;
-/// use carden::figures::{FigureStd, NumberFigureStd};
-/// use carden::suits::SuitStd;
+/// use karty::cards::Card;
+/// use karty::figures::{FigureStd, NumberFigureStd};
+/// use karty::suits::SuitStd;
 /// use nom::error::ErrorKind;
-/// use carden::cards::parse::parse_card_fs;
-/// use carden::figures::parse::parse_figure;
+/// use karty::cards::parse::parse_card_fs;
+/// use karty::figures::parse::parse_figure;
 /// assert_eq!(parse_card_fs("10 dxg"), Ok(("xg", Card::new(FigureStd::Numbered(NumberFigureStd::new(10)), SuitStd::Diamonds))));
 /// assert_eq!(parse_card_fs("A  sdiax"), Ok(("diax", Card::new(FigureStd::Ace, SuitStd::Spades))));
 /// assert_eq!(parse_card_fs("A10  sdiax"), Err(nom::Err::Error(nom::error::Error::new("10  sdiax", ErrorKind::Tag))));
@@ -32,10 +32,10 @@ pub fn parse_card_fs(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>>{
 
 /// Parses card from &str
 /// ```
-/// use carden::cards::Card;
-/// use carden::figures::{FigureStd, NumberFigureStd};
-/// use carden::cards::parse::parse_card_fs_delimited;
-/// use carden::suits::SuitStd;
+/// use karty::cards::Card;
+/// use karty::figures::{FigureStd, NumberFigureStd};
+/// use karty::cards::parse::parse_card_fs_delimited;
+/// use karty::suits::SuitStd;
 /// use nom::error::ErrorKind;
 /// assert_eq!(parse_card_fs_delimited("  10 d\txg"), Ok(("xg", Card::new(FigureStd::Numbered(NumberFigureStd::new(10)), SuitStd::Diamonds))));
 /// assert_eq!(parse_card_fs_delimited(" A  s\tdiax  "), Ok(("diax  ", Card::new(FigureStd::Ace, SuitStd::Spades))));
@@ -60,10 +60,10 @@ pub fn parse_card_sf_delimited(s: &str) -> IResult<&str, Card<FigureStd, SuitStd
 
 /// Parses card from &str (non delimeted way)
 /// ```
-/// use carden::cards::Card;
-/// use carden::figures::{FigureStd, NumberFigureStd};
-/// use carden::cards::parse::parse_card;
-/// use carden::suits::SuitStd;
+/// use karty::cards::Card;
+/// use karty::figures::{FigureStd, NumberFigureStd};
+/// use karty::cards::parse::parse_card;
+/// use karty::suits::SuitStd;
 /// use nom::error::ErrorKind;
 /// assert_eq!(parse_card("10 dxg"), Ok(("xg", Card::new(FigureStd::Numbered(NumberFigureStd::new(10)), SuitStd::Diamonds))));
 /// assert_eq!(parse_card("A  sdiax"), Ok(("diax", Card::new(FigureStd::Ace, SuitStd::Spades))));
@@ -76,10 +76,10 @@ pub fn parse_card(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>> {
 
 /// Parses card from &str (delimited way)
 /// ```
-/// use carden::cards::Card;
-/// use carden::figures::standard::{FigureStd, NumberFigureStd};
-/// use carden::cards::parse::parse_card_delimited;
-/// use carden::suits::standard::SuitStd;
+/// use karty::cards::Card;
+/// use karty::figures::standard::{FigureStd, NumberFigureStd};
+/// use karty::cards::parse::parse_card_delimited;
+/// use karty::suits::standard::SuitStd;
 /// use nom::error::ErrorKind;
 /// assert_eq!(parse_card_delimited("10 d  xg"), Ok(("xg", Card::new(FigureStd::Numbered(NumberFigureStd::new(10)), SuitStd::Diamonds))));
 /// assert_eq!(parse_card_delimited("A  s\tdiax"), Ok(("diax", Card::new(FigureStd::Ace, SuitStd::Spades))));
@@ -93,9 +93,9 @@ pub fn parse_card_delimited(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>>{
 
 /// Parses Card from str
 /// ```
-/// use carden::figures::{NumberFigureStd, FigureStd};
-/// use carden::suits::SuitStd;
-/// use carden::cards::Card;
+/// use karty::figures::{NumberFigureStd, FigureStd};
+/// use karty::suits::SuitStd;
+/// use karty::cards::Card;
 /// use std::str::FromStr;
 /// assert_eq!(Card::from_str("A s"), Ok(Card::new(FigureStd::Ace, SuitStd::Spades)));
 /// assert_eq!(Card::from_str("4caa"), Ok(Card::new(FigureStd::Numbered(NumberFigureStd::new(4)), SuitStd::Clubs)));

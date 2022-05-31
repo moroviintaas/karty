@@ -1,2 +1,2 @@
-# carden
+# karty
 Gaming cards crate
