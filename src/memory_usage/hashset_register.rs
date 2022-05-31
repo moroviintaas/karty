@@ -35,7 +35,7 @@ impl<F: Figure, S: Suit> CardRegister<F, S> for HashSetCardRegister<F, S>{
 
 #[cfg(test)]
 mod tests{
-    use crate::cards::ACE_SPADES;
+    use crate::cards::standard::ACE_SPADES;
     use crate::memory_usage::hashset_register::HashSetCardRegister;
     use crate::memory_usage::register::CardRegister;
 

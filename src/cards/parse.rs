@@ -97,9 +97,11 @@ pub fn parse_card_delimited(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>>{
 /// use karty::suits::SuitStd;
 /// use karty::cards::Card;
 /// use std::str::FromStr;
-/// assert_eq!(Card::from_str("A s"), Ok(Card::new(FigureStd::Ace, SuitStd::Spades)));
-/// assert_eq!(Card::from_str("4caa"), Ok(Card::new(FigureStd::Numbered(NumberFigureStd::new(4)), SuitStd::Clubs)));
+/// use karty::cards::standard::{ACE_SPADES, FOUR_CLUBS, NINE_SPADES};
+/// assert_eq!(Card::from_str("A s"), Ok(ACE_SPADES));
+/// assert_eq!(Card::from_str("4caa"), Ok(FOUR_CLUBS));
 /// assert!(Card::from_str("jq").is_err());
+/// assert_eq!(Card::from_str("9♠"), Ok(NINE_SPADES));
 /// ```
 impl FromStr for Card<FigureStd, SuitStd> {
     type Err = String;
@@ -108,3 +110,5 @@ impl FromStr for Card<FigureStd, SuitStd> {
         parse_card(s).map(|(_, card)| card).map_err(|e| format!("{}", e))
     }
 }
+
+
