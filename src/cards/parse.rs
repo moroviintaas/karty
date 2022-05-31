@@ -2,7 +2,7 @@ use std::str::FromStr;
 use nom::branch::alt;
 use nom::character::complete::space0;
 use nom::IResult;
-use nom::sequence::{delimited, separated_pair};
+use nom::sequence::{separated_pair};
 use crate::cards::Card;
 use crate::figures::parse::parse_figure;
 use crate::figures::standard::FigureStd;
@@ -10,41 +10,18 @@ use crate::suits::parse::parse_suit;
 use crate::suits::standard::SuitStd;
 
 
-/// Parses card from &str (strict way)
-/// ```
-/// use karty::cards::Card;
-/// use karty::figures::{FigureStd, NumberFigureStd};
-/// use karty::suits::SuitStd;
-/// use nom::error::ErrorKind;
-/// use karty::cards::parse::parse_card_fs;
-/// use karty::figures::parse::parse_figure;
-/// assert_eq!(parse_card_fs("10 dxg"), Ok(("xg", Card::new(FigureStd::Numbered(NumberFigureStd::new(10)), SuitStd::Diamonds))));
-/// assert_eq!(parse_card_fs("A  sdiax"), Ok(("diax", Card::new(FigureStd::Ace, SuitStd::Spades))));
-/// assert_eq!(parse_card_fs("A10  sdiax"), Err(nom::Err::Error(nom::error::Error::new("10  sdiax", ErrorKind::Tag))));
-/// ```
-pub fn parse_card_fs(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>>{
+fn parse_card_fs(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>>{
     match separated_pair(parse_figure, space0, parse_suit)(s){
         Ok((i, (fig, suit))) => Ok((i, Card::new(fig, suit))),
         Err(e) => Err(e)
     }
 
 }
-
-/// Parses card from &str
-/// ```
-/// use karty::cards::Card;
-/// use karty::figures::{FigureStd, NumberFigureStd};
-/// use karty::cards::parse::parse_card_fs_delimited;
-/// use karty::suits::SuitStd;
-/// use nom::error::ErrorKind;
-/// assert_eq!(parse_card_fs_delimited("  10 d\txg"), Ok(("xg", Card::new(FigureStd::Numbered(NumberFigureStd::new(10)), SuitStd::Diamonds))));
-/// assert_eq!(parse_card_fs_delimited(" A  s\tdiax  "), Ok(("diax  ", Card::new(FigureStd::Ace, SuitStd::Spades))));
-/// assert_eq!(parse_card_fs_delimited("\tA10  sdiax  "), Err(nom::Err::Error(nom::error::Error::new("10  sdiax  ", ErrorKind::Tag))));
-/// ```
-pub fn parse_card_fs_delimited(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>> {
+/* In case evere needed to publish
+fn parse_card_fs_delimited(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>> {
     delimited(space0, parse_card_fs, space0)(s)
 }
-
+*/
 
 
 pub fn parse_card_sf(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>> {
@@ -53,10 +30,12 @@ pub fn parse_card_sf(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>> {
         Err(e) => Err(e)
     }
 }
-
-pub fn parse_card_sf_delimited(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>> {
+/* In case ever needed to publish
+fn parse_card_sf_delimited(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>> {
     delimited(space0, parse_card_sf, space0)(s)
 }
+
+ */
 
 /// Parses card from &str (non delimeted way)
 /// ```
@@ -73,7 +52,7 @@ pub fn parse_card_sf_delimited(s: &str) -> IResult<&str, Card<FigureStd, SuitStd
 pub fn parse_card(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>> {
     alt((parse_card_fs, parse_card_sf))(s)
 }
-
+/* In case ever needed to publish
 /// Parses card from &str (delimited way)
 /// ```
 /// use karty::cards::Card;
@@ -90,6 +69,8 @@ pub fn parse_card_delimited(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>>{
     delimited(space0, parse_card, space0)(s)
 }
 
+
+ */
 
 /// Parses Card from str
 /// ```
@@ -112,3 +93,25 @@ impl FromStr for Card<FigureStd, SuitStd> {
 }
 
 
+#[cfg(test)]
+mod tests{
+    use nom::error::ErrorKind;
+    use crate::cards::{parse};
+    use crate::cards::standard::{ACE_SPADES, TEN_DIAMONDS};
+
+    #[test]
+    fn parse_card_fs(){
+        assert_eq!(parse::parse_card_fs("10 dxg"), Ok(("xg", TEN_DIAMONDS)));
+        assert_eq!(parse::parse_card_fs("A  sdiax"), Ok(("diax", ACE_SPADES)));
+        assert_eq!(parse::parse_card_fs("A10  sdiax"), Err(nom::Err::Error(nom::error::Error::new("10  sdiax", ErrorKind::Tag))));
+
+    }
+    /* In case delimited function should be published
+    #[test]
+    fn parse_card_fs_delimited(){
+        assert_eq!(parse::parse_card_fs_delimited("  10 d\txg"), Ok(("xg", TEN_DIAMONDS)));
+        assert_eq!(parse::parse_card_fs_delimited(" A  s\tdiax  "), Ok(("diax  ", ACE_SPADES)));
+        assert_eq!(parse::parse_card_fs_delimited("\tA10  sdiax  "), Err(nom::Err::Error(nom::error::Error::new("10  sdiax  ", ErrorKind::Tag))));
+
+    }*/
+}

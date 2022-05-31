@@ -37,3 +37,14 @@ pub fn parse_clubs(s: &str) -> IResult<&str, SuitStd>{
 pub fn parse_suit(s: &str) -> IResult<&str, SuitStd>{
     alt((parse_spades, parse_hearts, parse_diamonds, parse_clubs))(s)
 }
+
+#[cfg(test)]
+mod tests{
+    use crate::suits::{parse, SuitStd};
+    #[test]
+    fn parse_spades(){
+        assert_eq!(parse::parse_spades("spadesacedd"), Ok(("acedd", SuitStd::Spades)));
+        assert_eq!(parse::parse_spades("s aCe dd"), Ok((" aCe dd", SuitStd::Spades)));
+        assert_eq!(parse::parse_spades("♠ aCe dd"), Ok((" aCe dd", SuitStd::Spades)));
+    }
+}
