@@ -14,15 +14,14 @@ pub enum SuitStd {
 }
 
 impl SuitStd {
-    /*
-    pub(crate) fn age(&self) -> usize{
+    pub fn order_number(&self) -> usize {
         match self{
             Spades => 3,
             Hearts => 2,
             Diamonds => 1,
             Clubs => 0
         }
-    }*/
+    }
 
 }
 
@@ -48,14 +47,7 @@ impl Ord for SuitStd {
 impl Suit for SuitStd{
     const NUMBER_OF_SUITS: usize = 4;
 
-    fn order_number(&self) -> usize {
-        match self{
-            Spades => 3,
-            Hearts => 2,
-            Diamonds => 1,
-            Clubs => 0
-        }
-    }
+
 }
 
 impl Display for SuitStd{
