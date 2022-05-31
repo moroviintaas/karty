@@ -1,11 +1,12 @@
 use crate::cards::Card;
 use crate::figures::standard::{Ace, F10, F2, F3, F4, F5, F6, F7, F8, F9, FigureStd, Jack, King, Numbered, Queen};
 use crate::suits::standard::SuitStd;
+use crate::suits::Suit;
 
 impl Card<FigureStd, SuitStd>{
     pub fn mask(&self) -> u64{
 
-        self.figure.mask() << (self.suit.age() * 16)
+        self.figure.mask() << (self.suit.order_number() * 16)
     }
 }
 

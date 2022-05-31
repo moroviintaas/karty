@@ -34,6 +34,10 @@ impl NumberFigureStd {
     pub fn mask(&self) -> u64{
         1u64<<self.power
     }
+    /*
+    fn power(&self) -> u8{
+        self.power
+    }*/
 }
 
 impl Ord for NumberFigureStd {
@@ -49,11 +53,14 @@ impl PartialOrd<Self> for NumberFigureStd {
 }
 
 impl Figure for NumberFigureStd{
-    const NUMBER_OF_FIGURES: u8 = 9;
+    const NUMBER_OF_FIGURES: usize = 9;
 
-    fn power(&self) -> u8{
-        self.power
+    fn order_number(&self) -> usize {
+        usize::from(self.power - 2 )
     }
+
+
+
 }
 
 
@@ -68,6 +75,7 @@ pub enum FigureStd {
 }
 impl FigureStd {
 
+    /*
     /// Returns a mask for figure for efficient storing bool tables
     /// ```
     /// use carden::figures::standard::{F2, F10};
@@ -79,7 +87,9 @@ impl FigureStd {
     /// assert_eq!(F10.mask(),      0b0000010000000000);
     /// assert_eq!(F2.mask(),       0b0000000000000100);
     /// ```
-    pub fn mask(&self) -> u64{
+
+     */
+    pub(crate) fn mask(&self) -> u64{
         match self{
             FigureStd::Ace => 0x4000,
             FigureStd::King => 0x2000,
@@ -89,19 +99,31 @@ impl FigureStd {
 
         }
     }
-
-}
-impl Figure for FigureStd{
-    const NUMBER_OF_FIGURES: u8 = 13;
     fn power(&self) -> u8{
         match self{
             Ace => 14,
             King=> 13,
             Queen=> 12,
             Jack=> 11,
-            Numbered(fig) => fig.power()
+            Numbered(fig) => fig.power
         }
     }
+
+}
+impl Figure for FigureStd{
+    const NUMBER_OF_FIGURES: usize = 13;
+
+    fn order_number(&self) -> usize {
+        match self{
+            Ace => 12,
+            King => 11,
+            Queen => 10,
+            Jack => 9,
+            Numbered(fig) => fig.order_number()
+        }
+    }
+
+
 }
 
 pub const FIGURES: [FigureStd;13] = [Ace, King, Queen, Jack, Numbered(NumberFigureStd {power: 10}),
@@ -113,6 +135,7 @@ pub const FIGURES: [FigureStd;13] = [Ace, King, Queen, Jack, Numbered(NumberFigu
 impl PartialOrd for FigureStd {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.power().cmp(&other.power()))
+        //Some()
     }
 }
 
@@ -125,6 +148,7 @@ impl Ord for FigureStd {
 
 #[cfg(test)]
 mod tests{
+    use crate::figures::{F10, F2};
     use crate::figures::standard::{FigureStd, NumberFigureStd};
 
     #[test]
@@ -140,6 +164,17 @@ mod tests{
         assert!(king < ace);
 
         assert_eq!(king, king2);
+    }
+
+    #[test]
+    fn masks(){
+
+        assert_eq!(FigureStd::Ace.mask(),      0b0100000000000000);
+        assert_eq!(FigureStd::King.mask(),     0b0010000000000000);
+        assert_eq!(FigureStd::Queen.mask(),    0b0001000000000000);
+        assert_eq!(FigureStd::Jack.mask(),     0b0000100000000000);
+        assert_eq!(F10.mask(),      0b0000010000000000);
+        assert_eq!(F2.mask(),       0b0000000000000100);
     }
 }
 
