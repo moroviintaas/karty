@@ -1,7 +1,7 @@
 use crate::figures::Figure;
 use crate::suits::Suit;
 
-#[derive(Debug, Eq, PartialEq, Clone)]
+#[derive(Debug, Eq, PartialEq, Clone, Hash)]
 pub struct Card<F: Figure, S: Suit> {
     suit: S,
     figure: F
