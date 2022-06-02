@@ -14,4 +14,4 @@ rand = {version = "0.8.5", optional = true}
 [features]
 parse= ["dep:nom"]
 register = ["dep:array2d"]
-#random = ["dep:rand"]
+random = ["dep:rand"]

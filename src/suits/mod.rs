@@ -6,3 +6,6 @@ pub use suit::*;
 
 #[cfg(feature = "parse")]
 pub mod parse;
+
+#[cfg(feature = "random")]
+pub mod random;
