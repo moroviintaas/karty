@@ -3,8 +3,8 @@ use crate::suits::Suit;
 
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
 pub struct Card<F: Figure, S: Suit> {
-    suit: S,
-    figure: F
+    pub(crate) suit: S,
+    pub(crate) figure: F
 }
 
 impl<F: Figure + Copy, S: Suit + Copy> Copy for Card<F, S>{}
@@ -28,5 +28,4 @@ impl<F:Figure, S: Suit > Card<F, S> {
 
 
 
-#[path = "standard.rs"]
-pub mod standard;
+

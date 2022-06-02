@@ -7,7 +7,7 @@ use crate::suits::{Suit, SuitStd};
 impl Card<FigureStd, SuitStd>{
     pub fn mask(&self) -> u64{
 
-        self.figure.mask() << (self.suit.position() * 16)
+        self.figure().mask() << (self.suit().position() * 16)
     }
 }
 
@@ -18,8 +18,8 @@ pub type CardStd =  Card<FigureStd, SuitStd>;
 impl Display for CardStd{
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match f.alternate(){
-            true => write!(f, "{:#}{:#}", self.figure, self.suit),
-            false => write!(f, "{} of {}", self.figure, self.suit)
+            true => write!(f, "{:#}{:#}", self.figure(), self.suit()),
+            false => write!(f, "{} of {}", self.figure(), self.suit())
         }
 
     }

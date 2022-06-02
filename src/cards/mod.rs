@@ -1,7 +1,10 @@
 pub mod card;
 pub use card::Card;
-pub use card::standard;
+//pub use card::standard;
 
 
 #[cfg(feature = "parse")]
 pub mod parse;
+
+#[path = "standard.rs"]
+pub mod standard;

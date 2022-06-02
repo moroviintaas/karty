@@ -8,9 +8,10 @@ edition = "2021"
 [dependencies]
 nom= {version= "7.1.1", optional = true}
 array2d = {version = "0.2.1", optional = true}
+rand = {version = "0.8.5", optional = true}
 
 
 [features]
 parse= ["dep:nom"]
 register = ["dep:array2d"]
-
+#random = ["dep:rand"]
