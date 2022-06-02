@@ -28,6 +28,5 @@ impl<F:Figure, S: Suit > Card<F, S> {
 
 
 
-#[cfg(feature = "standard")]
 #[path = "standard.rs"]
 pub mod standard;

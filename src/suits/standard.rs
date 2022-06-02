@@ -1,5 +1,7 @@
 use std::cmp::Ordering;
 use std::fmt::{Display, Formatter};
+use crate::error::CardError;
+use crate::error::CardError::WrongSuitPosition;
 use crate::suits::standard::SuitStd::{Clubs, Diamonds, Hearts, Spades};
 use crate::suits::Suit;
 
@@ -14,14 +16,7 @@ pub enum SuitStd {
 }
 
 impl SuitStd {
-    pub fn order_number(&self) -> usize {
-        match self{
-            Spades => 3,
-            Hearts => 2,
-            Diamonds => 1,
-            Clubs => 0
-        }
-    }
+
 
 }
 
@@ -39,15 +34,31 @@ impl PartialOrd<Self> for SuitStd {
 
 impl Ord for SuitStd {
     fn cmp(&self, other: &Self) -> Ordering {
-        self.order_number().cmp(&other.order_number())
+        self.position().cmp(&other.position())
         //self.age().cmp(&other.age())
     }
 }
 
 impl Suit for SuitStd{
     const NUMBER_OF_SUITS: usize = 4;
+    fn position(&self) -> usize {
+        match self{
+            Spades => 3,
+            Hearts => 2,
+            Diamonds => 1,
+            Clubs => 0
+        }
+    }
 
-
+    fn from_position(position: usize) -> Result<Self, CardError> {
+        match position{
+            3 => Ok(Spades),
+            2 => Ok(Hearts),
+            1 => Ok(Diamonds),
+            0 => Ok(Clubs),
+            s => Err(WrongSuitPosition(s))
+        }
+    }
 }
 
 impl Display for SuitStd{

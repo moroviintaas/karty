@@ -68,8 +68,16 @@ impl PartialOrd<Self> for NumberFigureStd {
 
 impl Figure for NumberFigureStd{
     const NUMBER_OF_FIGURES: usize = 9;
+    fn position(&self) -> usize {
+        (self.power - 2) as usize
+    }
 
-
+    fn from_position(position: usize) -> Result<Self, CardError> {
+        match position{
+            p@ 0..=8 => Ok(Self{power: (p + 2) as u8 }),
+            s => Err(CardError::WrongFigurePosition(s))
+        }
+    }
 }
 
 
@@ -118,7 +126,13 @@ impl FigureStd {
             Numbered(fig) => fig.power
         }
     }
-    pub fn order_number(&self) -> usize {
+
+
+
+}
+impl Figure for FigureStd{
+    const NUMBER_OF_FIGURES: usize = 13;
+    fn position(&self) -> usize {
         match self{
             Ace => 12,
             King => 11,
@@ -127,11 +141,16 @@ impl FigureStd {
             Numbered(fig) => fig.order_number()
         }
     }
-
-
-}
-impl Figure for FigureStd{
-    const NUMBER_OF_FIGURES: usize = 13;
+    fn from_position(position: usize) -> Result<Self, CardError> {
+        match position{
+            p@ 0..=8 => Ok(Numbered(NumberFigureStd::from_position(p)?)),
+            9 => Ok(Jack),
+            10 => Ok(Queen),
+            11 => Ok(King),
+            12 => Ok(Ace),
+            s => Err(CardError::WrongFigurePosition(s))
+        }
+    }
 }
 
 impl std::fmt::Display for FigureStd{
@@ -226,4 +245,5 @@ pub const F9: NumberFigureStd = NumberFigureStd {power: 9};
 pub const F10: NumberFigureStd = NumberFigureStd {power: 10};
 
 pub use FigureStd::*;
+use crate::error::CardError;
 use crate::figures::Figure;
