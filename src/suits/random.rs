@@ -1,6 +1,7 @@
 use rand::distributions::{Standard};
 use rand::prelude::Distribution;
 use rand::Rng;
+use crate::card_dimension::CardDimension;
 use crate::suits::{Suit, SuitStd};
 
 /*impl<S:Suit> Distribution<S> for Standard{
@@ -19,6 +20,7 @@ impl Distribution<SuitStd> for Standard{
 mod test{
     use rand::{Rng, thread_rng};
     use rand::distributions::Standard;
+    use crate::card_dimension::CardDimension;
     use crate::suits::{Suit, SuitStd};
 
     #[test]

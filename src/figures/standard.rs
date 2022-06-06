@@ -66,8 +66,9 @@ impl PartialOrd<Self> for NumberFigureStd {
     }
 }
 
-impl Figure for NumberFigureStd{
-    const NUMBER_OF_FIGURES: usize = 9;
+impl CardDimension for NumberFigureStd{
+    const DIMENSION_SIZE: usize = 9;
+
     fn position(&self) -> usize {
         (self.power - 2) as usize
     }
@@ -78,6 +79,11 @@ impl Figure for NumberFigureStd{
             s => Err(CardError::WrongFigurePosition(s))
         }
     }
+}
+
+impl Figure for NumberFigureStd{
+    const NUMBER_OF_FIGURES: usize = Self::DIMENSION_SIZE;
+
 }
 
 
@@ -130,8 +136,10 @@ impl FigureStd {
 
 
 }
-impl Figure for FigureStd{
-    const NUMBER_OF_FIGURES: usize = 13;
+
+impl CardDimension for FigureStd{
+    const DIMENSION_SIZE: usize = 13;
+
     fn position(&self) -> usize {
         match self{
             Ace => 12,
@@ -151,6 +159,11 @@ impl Figure for FigureStd{
             s => Err(CardError::WrongFigurePosition(s))
         }
     }
+}
+
+impl Figure for FigureStd{
+    const NUMBER_OF_FIGURES: usize = Self::DIMENSION_SIZE;
+
 }
 
 impl std::fmt::Display for FigureStd{
@@ -245,5 +258,6 @@ pub const F9: NumberFigureStd = NumberFigureStd {power: 9};
 pub const F10: NumberFigureStd = NumberFigureStd {power: 10};
 
 pub use FigureStd::*;
+use crate::card_dimension::CardDimension;
 use crate::error::CardError;
 use crate::figures::Figure;

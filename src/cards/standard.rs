@@ -1,8 +1,9 @@
 use std::fmt::{Display, Formatter};
+use crate::card_dimension::CardDimension;
 use crate::cards::Card;
 use crate::figures::standard::{Ace, F10, F2, F3, F4, F5, F6, F7, F8, F9, FigureStd, Jack, King, Numbered, Queen};
 use crate::suits::standard::SuitStd::*;
-use crate::suits::{Suit, SuitStd};
+use crate::suits::{SuitStd};
 
 impl Card<FigureStd, SuitStd>{
     pub fn mask(&self) -> u64{

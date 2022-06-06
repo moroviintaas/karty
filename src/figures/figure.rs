@@ -1,13 +1,13 @@
 
 use std::fmt::Debug;
 use std::hash::Hash;
-use crate::error::CardError;
+use crate::card_dimension::CardDimension;
 
 
-pub trait Figure: Debug + Eq + Ord + Clone + Hash{
-    const NUMBER_OF_FIGURES: usize;
-    fn position(&self) -> usize;
-    fn from_position(position: usize) -> Result<Self, CardError>;
+pub trait Figure: Debug + Ord + Clone + Hash + CardDimension{
+    const NUMBER_OF_FIGURES: usize = Self::DIMENSION_SIZE;
+    /*fn position(&self) -> usize;
+    fn from_position(position: usize) -> Result<Self, CardError>;*/
 
 }
 

@@ -5,6 +5,7 @@ pub mod suits;
 #[cfg(feature = "register")]
 pub mod memory_usage;
 pub mod error;
+pub mod card_dimension;
 
 
 

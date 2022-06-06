@@ -1,5 +1,6 @@
 use std::cmp::Ordering;
 use std::fmt::{Display, Formatter};
+use crate::card_dimension::CardDimension;
 use crate::error::CardError;
 use crate::error::CardError::WrongSuitPosition;
 use crate::suits::standard::SuitStd::{Clubs, Diamonds, Hearts, Spades};
@@ -38,9 +39,9 @@ impl Ord for SuitStd {
         //self.age().cmp(&other.age())
     }
 }
+impl CardDimension for SuitStd{
+    const DIMENSION_SIZE: usize = 4;
 
-impl Suit for SuitStd{
-    const NUMBER_OF_SUITS: usize = 4;
     fn position(&self) -> usize {
         match self{
             Spades => 3,
@@ -59,6 +60,11 @@ impl Suit for SuitStd{
             s => Err(WrongSuitPosition(s))
         }
     }
+}
+
+impl Suit for SuitStd{
+    const NUMBER_OF_SUITS: usize = Self::DIMENSION_SIZE;
+
 }
 
 impl Display for SuitStd{
