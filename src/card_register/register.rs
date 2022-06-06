@@ -5,7 +5,8 @@ use crate::suits::Suit;
 
 
 pub trait CardRegister<F:Figure, S: Suit>: Debug + Default{
-    fn mark_used(&mut self, card: &Card<F, S>);
-    fn is_card_used(&self, card: &Card<F, S>) -> bool;
+    fn register(&mut self, card: &Card<F, S>);
+    fn unregister(&mut self, card: &Card<F, S>);
+    fn is_registered(&self, card: &Card<F, S>) -> bool;
 
 }

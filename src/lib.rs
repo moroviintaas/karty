@@ -3,7 +3,7 @@ pub mod figures;
 pub mod suits;
 
 #[cfg(feature = "register")]
-pub mod memory_usage;
+pub mod card_register;
 pub mod error;
 pub mod card_dimension;
 

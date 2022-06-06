@@ -1,7 +1,7 @@
 use std::collections::{HashSet};
 use crate::cards::Card;
 use crate::figures::Figure;
-use crate::memory_usage::register::CardRegister;
+use crate::card_register::register::CardRegister;
 use crate::suits::Suit;
 
 
@@ -24,11 +24,15 @@ impl<F: Figure, S: Suit> HashSetCardRegister<F, S>{
 }
 
 impl<F: Figure, S: Suit> CardRegister<F, S> for HashSetCardRegister<F, S>{
-    fn mark_used(&mut self, card: &Card<F, S>) {
+    fn register(&mut self, card: &Card<F, S>) {
         self.set.insert(card.to_owned());
     }
 
-    fn is_card_used(&self, card: &Card<F, S>) -> bool {
+    fn unregister(&mut self, card: &Card<F, S>) {
+        self.set.remove(card);
+    }
+
+    fn is_registered(&self, card: &Card<F, S>) -> bool {
         self.set.contains(card)
     }
 }
@@ -36,15 +40,15 @@ impl<F: Figure, S: Suit> CardRegister<F, S> for HashSetCardRegister<F, S>{
 #[cfg(test)]
 mod tests{
     use crate::cards::standard::ACE_SPADES;
-    use crate::memory_usage::hashset_register::HashSetCardRegister;
-    use crate::memory_usage::register::CardRegister;
+    use crate::card_register::hashset_register::HashSetCardRegister;
+    use crate::card_register::register::CardRegister;
 
     #[test]
     fn generic_memory_register(){
         let mut generic_record = HashSetCardRegister::new();
-        assert!(!generic_record.is_card_used(&ACE_SPADES));
-        generic_record.mark_used(&ACE_SPADES);
-        assert!(generic_record.is_card_used(&ACE_SPADES));
+        assert!(!generic_record.is_registered(&ACE_SPADES));
+        generic_record.register(&ACE_SPADES);
+        assert!(generic_record.is_registered(&ACE_SPADES));
 
     }
 }
