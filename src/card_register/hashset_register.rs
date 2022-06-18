@@ -1,7 +1,7 @@
 use std::collections::{HashSet};
 use crate::cards::Card;
 use crate::figures::Figure;
-use crate::card_register::register::CardRegister;
+use crate::card_register::register::{ Register};
 use crate::suits::Suit;
 
 
@@ -23,8 +23,8 @@ impl<F: Figure, S: Suit> HashSetCardRegister<F, S>{
     }
 }
 
-impl<F: Figure, S: Suit> CardRegister<F, S> for HashSetCardRegister<F, S>{
-    fn register(&mut self, card: &Card<F, S>) {
+impl<F: Figure, S: Suit> Register<Card<F,S>> for HashSetCardRegister<F, S>{
+    fn register(&mut self, card: Card<F, S>) {
         self.set.insert(card.to_owned());
     }
 
@@ -41,13 +41,13 @@ impl<F: Figure, S: Suit> CardRegister<F, S> for HashSetCardRegister<F, S>{
 mod tests{
     use crate::cards::standard::ACE_SPADES;
     use crate::card_register::hashset_register::HashSetCardRegister;
-    use crate::card_register::register::CardRegister;
+    use crate::card_register::register::{Register};
 
     #[test]
     fn generic_memory_register(){
         let mut generic_record = HashSetCardRegister::new();
         assert!(!generic_record.is_registered(&ACE_SPADES));
-        generic_record.register(&ACE_SPADES);
+        generic_record.register(ACE_SPADES);
         assert!(generic_record.is_registered(&ACE_SPADES));
 
     }

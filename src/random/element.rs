@@ -1,9 +1,12 @@
+#![cfg_attr(docsrs, feature(doc_cfg))]
 use rand::{Rng, thread_rng};
 use rand::distributions::{Distribution, Standard};
 use crate::card_element::CardElement;
 use crate::cards::Card;
 use crate::figures::Figure;
 use crate::suits::Suit;
+
+
 #[cfg_attr(doc_cfg, doc(cfg(all(feature = "random"))))]
 pub trait RandomElement{
     fn random() -> Self;

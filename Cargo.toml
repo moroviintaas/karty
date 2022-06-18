@@ -16,3 +16,10 @@ karty_proc_macro ={ path="../karty_proc_macro"}
 parse= ["dep:nom"]
 register = ["dep:array2d"]
 random = ["dep:rand"]
+
+# docs.rs-specific configuration
+[package.metadata.docs.rs]
+# document all features
+all-features = true
+# defines the configuration attribute `docsrs`
+rustdoc-args = ["--cfg", "docsrs"]

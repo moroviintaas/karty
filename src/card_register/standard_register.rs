@@ -1,25 +1,23 @@
 
-use crate::cards::Card;
-use crate::figures::standard::FigureStd;
-use crate::card_register::register::CardRegister;
-use crate::suits::standard::SuitStd;
+use crate::card_register::register::{Register};
+use crate::cards::standard::CardStd;
 
 #[derive(Debug, Default)]
 pub struct CardUsageRegStd{
     memory: u64
 }
 
-impl CardRegister<FigureStd, SuitStd> for CardUsageRegStd{
+impl Register<CardStd> for CardUsageRegStd{
 
-    fn register(&mut self, card: &Card<FigureStd, SuitStd>) {
+    fn register(&mut self, card: CardStd) {
         self.memory |= card.mask();
     }
 
-    fn unregister(&mut self, card: &Card<FigureStd, SuitStd>) {
+    fn unregister(&mut self, card: &CardStd) {
         self.memory &= !card.mask()
     }
 
-    fn is_registered(&self, card: &Card<FigureStd, SuitStd>) -> bool {
+    fn is_registered(&self, card: &CardStd) -> bool {
         !matches!(self.memory & card.mask(), 0)
     }
 }
