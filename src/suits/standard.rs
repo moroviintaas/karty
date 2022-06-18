@@ -1,14 +1,25 @@
 use std::cmp::Ordering;
 use std::fmt::{Display, Formatter};
-use crate::card_dimension::CardDimension;
+use crate::card_element::CardElement;
 use crate::error::CardError;
 use crate::error::CardError::WrongSuitPosition;
 use crate::suits::standard::SuitStd::{Clubs, Diamonds, Hearts, Spades};
 use crate::suits::Suit;
+//use karty_proc_macro::Rnd;
+#[cfg(feature = "random")]
+use rand::prelude::Distribution;
+#[cfg(feature = "random")]
+use rand::distributions::Standard;
+#[cfg(feature = "random")]
+use rand::Rng;
+#[cfg(feature = "random")]
+use karty_proc_macro::*;
 
 
 ///Enum representing suits of card
 #[derive(Debug, Eq, PartialEq,Copy, Clone, Hash)]
+#[cfg_attr(feature = "random", derive(RandomElement))]
+//#[cfg_attr(feature = "random", derive(Rnd))]
 pub enum SuitStd {
     Spades,
     Hearts,
@@ -39,7 +50,7 @@ impl Ord for SuitStd {
         //self.age().cmp(&other.age())
     }
 }
-impl CardDimension for SuitStd{
+impl CardElement for SuitStd{
     const DIMENSION_SIZE: usize = 4;
 
     fn position(&self) -> usize {

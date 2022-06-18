@@ -9,6 +9,7 @@ edition = "2021"
 nom= {version= "7.1.1", optional = true}
 array2d = {version = "0.2.1", optional = true}
 rand = {version = "0.8.5", optional = true}
+karty_proc_macro ={ path="../karty_proc_macro"}
 
 
 [features]

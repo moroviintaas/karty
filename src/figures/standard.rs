@@ -1,11 +1,20 @@
 use std::cmp::Ordering;
 use std::fmt::{Debug, Formatter};
+#[cfg(feature = "random")]
+use karty_proc_macro::RandomElement;
+#[cfg(feature = "random")]
+use rand::prelude::Distribution;
+#[cfg(feature = "random")]
+use rand::distributions::Standard;
+#[cfg(feature = "random")]
+use rand::Rng;
 
 
 pub const MAX_NUMBER_FIGURE: u8 = 10;
 pub const MIN_NUMBER_FIGURE: u8 = 2;
 
 #[derive(Debug, Eq, PartialEq, Copy, Clone, Hash)]
+#[cfg_attr(feature = "random", derive(RandomElement))]
 pub struct NumberFigureStd {
     power: u8
 }
@@ -66,7 +75,7 @@ impl PartialOrd<Self> for NumberFigureStd {
     }
 }
 
-impl CardDimension for NumberFigureStd{
+impl CardElement for NumberFigureStd{
     const DIMENSION_SIZE: usize = 9;
 
     fn position(&self) -> usize {
@@ -90,6 +99,7 @@ impl Figure for NumberFigureStd{
 
 
 #[derive(Debug, Eq, PartialEq, Copy, Clone, Hash)]
+#[cfg_attr(feature = "random", derive(RandomElement))]
 pub enum FigureStd {
     Ace,
     King,
@@ -137,7 +147,7 @@ impl FigureStd {
 
 }
 
-impl CardDimension for FigureStd{
+impl CardElement for FigureStd{
     const DIMENSION_SIZE: usize = 13;
 
     fn position(&self) -> usize {
@@ -258,6 +268,6 @@ pub const F9: NumberFigureStd = NumberFigureStd {power: 9};
 pub const F10: NumberFigureStd = NumberFigureStd {power: 10};
 
 pub use FigureStd::*;
-use crate::card_dimension::CardDimension;
+use crate::card_element::CardElement;
 use crate::error::CardError;
 use crate::figures::Figure;

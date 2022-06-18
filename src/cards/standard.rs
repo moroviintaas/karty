@@ -1,5 +1,5 @@
 use std::fmt::{Display, Formatter};
-use crate::card_dimension::CardDimension;
+use crate::card_element::CardElement;
 use crate::cards::Card;
 use crate::figures::standard::{Ace, F10, F2, F3, F4, F5, F6, F7, F8, F9, FigureStd, Jack, King, Numbered, Queen};
 use crate::suits::standard::SuitStd::*;
