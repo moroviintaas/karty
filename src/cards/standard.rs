@@ -1,6 +1,8 @@
 use std::fmt::{Display, Formatter};
+use num_integer::div_rem;
 use crate::card_element::CardElement;
 use crate::cards::Card;
+use crate::error::CardError;
 use crate::figures::standard::{Ace, F10, F2, F3, F4, F5, F6, F7, F8, F9, FigureStd, Jack, King, Numbered, Queen};
 use crate::suits::standard::SuitStd::*;
 use crate::suits::{SuitStd};
@@ -15,6 +17,19 @@ impl Card<FigureStd, SuitStd>{
 
 
 pub type CardStd =  Card<FigureStd, SuitStd>;
+
+impl CardElement for CardStd{
+    const DIMENSION_SIZE: usize = FigureStd::DIMENSION_SIZE * SuitStd::DIMENSION_SIZE;
+
+    fn position(&self) -> usize {
+        (self.figure.position() * SuitStd::DIMENSION_SIZE) + self.suit.position()
+    }
+
+    fn from_position(position: usize) -> Result<Self, CardError> {
+        let (figure, suit) = div_rem(position, SuitStd::DIMENSION_SIZE);
+        Ok(Self{figure: FigureStd::from_position(figure)?, suit: SuitStd::from_position(suit)?})
+    }
+}
 
 impl Display for CardStd{
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -85,11 +100,20 @@ pub const ACE_SPADES: CardStd = Card { suit: Spades, figure: Ace};
 
 #[cfg(test)]
 mod tests{
-    use crate::cards::standard::KING_HEARTS;
+    use crate::card_element::CardElement;
+    use crate::cards::standard::{ ACE_SPADES, CardStd, KING_HEARTS,  THREE_CLUBS, TWO_CLUBS, TWO_DIAMONDS};
 
     #[test]
     fn display(){
         assert_eq!(format!("{:#}", KING_HEARTS), format!("𝑲♥"));
         assert_eq!(format!("{}", KING_HEARTS), format!("King of Hearts"));
+    }
+
+    #[test]
+    fn test_card_element_for_card_std(){
+        assert_eq!(CardStd::from_position(0).unwrap(), TWO_CLUBS);
+        assert_eq!(CardStd::from_position(1).unwrap(), TWO_DIAMONDS);
+        assert_eq!(CardStd::from_position(4).unwrap(), THREE_CLUBS);
+        assert_eq!(CardStd::from_position(51).unwrap(), ACE_SPADES);
     }
 }

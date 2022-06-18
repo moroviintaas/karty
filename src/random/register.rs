@@ -1,4 +1,5 @@
-/*pub trait RandomRegistered<C>{
+/*pub trait RegisterWithRandom<E>{
     fn
 }
+
 */

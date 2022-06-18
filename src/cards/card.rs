@@ -22,9 +22,9 @@ impl<F:Figure, S: Suit > Card<F, S> {
         &self.figure
     }
 
-
-
 }
+
+
 
 
 
