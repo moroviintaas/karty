@@ -3,11 +3,11 @@ use crate::register::register::{Register};
 use crate::cards::standard::CardStd;
 
 #[derive(Debug, Default)]
-pub struct CardUsageRegStd{
+pub struct RegisterCardStd {
     memory: u64
 }
 
-impl Register<CardStd> for CardUsageRegStd{
+impl Register<CardStd> for RegisterCardStd {
 
     fn register(&mut self, card: CardStd) {
         self.memory |= card.mask();
