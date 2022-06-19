@@ -257,15 +257,15 @@ mod tests{
     }
 }
 
-pub const F2: NumberFigureStd = NumberFigureStd {power: 2};
-pub const F3: NumberFigureStd = NumberFigureStd {power: 3};
-pub const F4: NumberFigureStd = NumberFigureStd {power: 4};
-pub const F5: NumberFigureStd = NumberFigureStd {power: 5};
-pub const F6: NumberFigureStd = NumberFigureStd {power: 6};
-pub const F7: NumberFigureStd = NumberFigureStd {power: 7};
-pub const F8: NumberFigureStd = NumberFigureStd {power: 8};
-pub const F9: NumberFigureStd = NumberFigureStd {power: 9};
-pub const F10: NumberFigureStd = NumberFigureStd {power: 10};
+pub const F2: FigureStd = Numbered(NumberFigureStd {power: 2});
+pub const F3: FigureStd = Numbered(NumberFigureStd {power: 3});
+pub const F4: FigureStd = Numbered(NumberFigureStd {power: 4});
+pub const F5: FigureStd = Numbered(NumberFigureStd {power: 5});
+pub const F6: FigureStd = Numbered(NumberFigureStd {power: 6});
+pub const F7: FigureStd = Numbered(NumberFigureStd {power: 7});
+pub const F8: FigureStd = Numbered(NumberFigureStd {power: 8});
+pub const F9: FigureStd = Numbered(NumberFigureStd {power: 9});
+pub const F10: FigureStd = Numbered(NumberFigureStd {power: 10});
 
 pub use FigureStd::*;
 use crate::card_element::CardElement;
