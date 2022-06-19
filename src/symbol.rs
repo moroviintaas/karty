@@ -11,32 +11,55 @@ use crate::error::CardError;
 /// For example, implemented in this crate `FigureStd` has `13` possible instances,
 /// representing symbols (2,..., 10, Jack, Queen, King, Ace), but their associated numbers are `0..=12`.
 pub trait CardSymbol: Sized + Eq{
+    /// Space of symbol, holds information how many possible instances of symbol exists.
+    /// For standard figure it is `13`, for ls
+    /// standard suit it is `4`.
     const SYMBOL_SPACE: usize;
+    /// Information about symbol's associated number. Collision in returning numbers will cause
+    /// wrong behaviour of functions utilising trait.
+    /// # Returns:
+    /// Number associated with symbol.
     fn position(&self) -> usize;
+    /// Reverse function to `position(&self)`, creates symbol instance, given it's associated number.
+    /// # Returns:
+    /// Instance of symbol associated with a number.
     fn from_position(position: usize) -> Result<Self, CardError>;
-    fn iterator() -> CardElementIterator<Self>{
-        CardElementIterator::new()
+    /// Method constructs `CardSymbolIterator` iterating symbols from the one numbered `0` to
+    /// the last one (numbered `SYMBOL_SPACE-1`.
+    fn iterator() -> CardSymbolIterator<Self>{
+        CardSymbolIterator::new()
     }
 }
-
-pub struct CardElementIterator<E: CardSymbol>{
+/// Iterator over CardSymbol space, starts with card associated with number `0` and ends on card
+/// with associated number
+/// # Example:
+/// ```
+/// use karty::suits::{SuitStd, SuitStd::*};
+/// use karty::symbol::CardSymbol;
+/// use std::iter::FromIterator;
+///
+/// let iterator = SuitStd::iterator();
+/// let symbols = Vec::from_iter(iterator);
+/// assert_eq!(symbols, [Clubs, Diamonds, Hearts, Spades]);
+/// ```
+pub struct CardSymbolIterator<E: CardSymbol>{
     iterator_position: usize,
     phantom: PhantomData<E>,
 }
 
-impl<E: CardSymbol> CardElementIterator<E>{
+impl<E: CardSymbol> CardSymbolIterator<E>{
     pub fn new() -> Self{
         Self{iterator_position: 0, phantom: PhantomData}
     }
 }
 
-impl<E: CardSymbol> Default for CardElementIterator<E>{
+impl<E: CardSymbol> Default for CardSymbolIterator<E>{
     fn default() -> Self {
         Self{iterator_position: 0, phantom: PhantomData}
     }
 }
 
-impl<E: CardSymbol> Iterator for CardElementIterator<E>{
+impl<E: CardSymbol> Iterator for CardSymbolIterator<E>{
     type Item = E;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -49,14 +72,14 @@ impl<E: CardSymbol> Iterator for CardElementIterator<E>{
 
 #[cfg(test)]
 mod tests{
-    use crate::symbol::CardElementIterator;
+    use crate::symbol::CardSymbolIterator;
     use crate::figures::{*};
     use crate::suits::SuitStd;
     use crate::suits::SuitStd::{Clubs, Diamonds, Hearts, Spades};
 
     #[test]
     fn suit_iterator(){
-        let iterator = CardElementIterator::<SuitStd>::new();
+        let iterator = CardSymbolIterator::<SuitStd>::new();
         let vec = Vec::from_iter(iterator);
         assert_eq!(vec.len(), 4);
         assert_eq!(vec[0], Clubs);
@@ -67,7 +90,7 @@ mod tests{
 
     #[test]
     fn figure_iterator(){
-        let iterator = CardElementIterator::<FigureStd>::new();
+        let iterator = CardSymbolIterator::<FigureStd>::new();
         let vec = Vec::from_iter(iterator);
         assert_eq!(vec.len(), 13);
         assert_eq!(vec[0], F2);

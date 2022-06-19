@@ -2,7 +2,7 @@ use std::collections::{HashMap};
 
 use std::hash::Hash;
 use rand::{Rng};
-use crate::symbol::{CardSymbol, CardElementIterator};
+use crate::symbol::{CardSymbol, CardSymbolIterator};
 use crate::register::{RandomSamplingRegister, RandomSamplingRegisterCompl, Register};
 
 #[derive(Debug)]
@@ -70,7 +70,7 @@ pub struct GenericSamplingRegisterCompl<E: CardSymbol + Hash + Clone + Eq>{
 impl<E: CardSymbol + Hash + Clone + Eq> GenericSamplingRegisterCompl<E>{
     pub fn new() -> Self{
         let mut complementary_register = GenericSamplingRegister::<E>::new();
-        let iter = CardElementIterator::new();
+        let iter = CardSymbolIterator::new();
         iter.for_each(|x| complementary_register.register(x));
         Self{register: GenericSamplingRegister::new(), complementary_register}
     }
