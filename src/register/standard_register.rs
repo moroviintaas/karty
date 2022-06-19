@@ -1,5 +1,5 @@
 
-use crate::card_register::register::{Register};
+use crate::register::register::{Register};
 use crate::cards::standard::CardStd;
 
 #[derive(Debug, Default)]

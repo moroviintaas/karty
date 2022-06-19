@@ -1,5 +1,6 @@
 
 mod element;
-mod register;
+#[cfg(feature = "register")]
+pub(crate) mod random_sampling_register;
 
 pub use element::RandomElement;

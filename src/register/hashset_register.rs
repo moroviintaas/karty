@@ -1,7 +1,7 @@
 use std::collections::{HashSet};
 use crate::cards::Card;
 use crate::figures::Figure;
-use crate::card_register::register::{ Register};
+use crate::register::register::{ Register};
 use crate::suits::Suit;
 
 
@@ -40,8 +40,8 @@ impl<F: Figure, S: Suit> Register<Card<F,S>> for HashSetCardRegister<F, S>{
 #[cfg(test)]
 mod tests{
     use crate::cards::standard::ACE_SPADES;
-    use crate::card_register::hashset_register::HashSetCardRegister;
-    use crate::card_register::register::{Register};
+    use crate::register::hashset_register::HashSetCardRegister;
+    use crate::register::register::{Register};
 
     #[test]
     fn generic_memory_register(){
