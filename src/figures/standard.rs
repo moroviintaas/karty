@@ -75,8 +75,8 @@ impl PartialOrd<Self> for NumberFigureStd {
     }
 }
 
-impl CardElement for NumberFigureStd{
-    const DIMENSION_SIZE: usize = 9;
+impl CardSymbol for NumberFigureStd{
+    const SYMBOL_SPACE: usize = 9;
 
     fn position(&self) -> usize {
         (self.power - 2) as usize
@@ -91,7 +91,7 @@ impl CardElement for NumberFigureStd{
 }
 
 impl Figure for NumberFigureStd{
-    const NUMBER_OF_FIGURES: usize = Self::DIMENSION_SIZE;
+    const NUMBER_OF_FIGURES: usize = Self::SYMBOL_SPACE;
 
 }
 
@@ -147,8 +147,8 @@ impl FigureStd {
 
 }
 
-impl CardElement for FigureStd{
-    const DIMENSION_SIZE: usize = 13;
+impl CardSymbol for FigureStd{
+    const SYMBOL_SPACE: usize = 13;
 
     fn position(&self) -> usize {
         match self{
@@ -172,7 +172,7 @@ impl CardElement for FigureStd{
 }
 
 impl Figure for FigureStd{
-    const NUMBER_OF_FIGURES: usize = Self::DIMENSION_SIZE;
+    const NUMBER_OF_FIGURES: usize = Self::SYMBOL_SPACE;
 
 }
 
@@ -268,6 +268,6 @@ pub const F9: FigureStd = Numbered(NumberFigureStd {power: 9});
 pub const F10: FigureStd = Numbered(NumberFigureStd {power: 10});
 
 pub use FigureStd::*;
-use crate::card_element::CardElement;
+use crate::symbol::CardSymbol;
 use crate::error::CardError;
 use crate::figures::Figure;

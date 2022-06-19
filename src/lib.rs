@@ -5,7 +5,7 @@ pub mod suits;
 #[cfg(feature = "register")]
 pub mod register;
 pub mod error;
-pub mod card_element;
+pub mod symbol;
 
 #[cfg(feature = "random")]
 pub mod random;

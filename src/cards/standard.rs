@@ -1,6 +1,6 @@
 use std::fmt::{Display, Formatter};
 use num_integer::div_rem;
-use crate::card_element::CardElement;
+use crate::symbol::CardSymbol;
 use crate::cards::Card;
 use crate::error::CardError;
 use crate::figures::standard::{Ace, F10, F2, F3, F4, F5, F6, F7, F8, F9, FigureStd, Jack, King, Queen};
@@ -18,15 +18,15 @@ impl Card<FigureStd, SuitStd>{
 
 pub type CardStd =  Card<FigureStd, SuitStd>;
 
-impl CardElement for CardStd{
-    const DIMENSION_SIZE: usize = FigureStd::DIMENSION_SIZE * SuitStd::DIMENSION_SIZE;
+impl CardSymbol for CardStd{
+    const SYMBOL_SPACE: usize = FigureStd::SYMBOL_SPACE * SuitStd::SYMBOL_SPACE;
 
     fn position(&self) -> usize {
-        (self.figure.position() * SuitStd::DIMENSION_SIZE) + self.suit.position()
+        (self.figure.position() * SuitStd::SYMBOL_SPACE) + self.suit.position()
     }
 
     fn from_position(position: usize) -> Result<Self, CardError> {
-        let (figure, suit) = div_rem(position, SuitStd::DIMENSION_SIZE);
+        let (figure, suit) = div_rem(position, SuitStd::SYMBOL_SPACE);
         Ok(Self{figure: FigureStd::from_position(figure)?, suit: SuitStd::from_position(suit)?})
     }
 }
@@ -100,7 +100,7 @@ pub const ACE_SPADES: CardStd = Card { suit: Spades, figure: Ace};
 
 #[cfg(test)]
 mod tests{
-    use crate::card_element::CardElement;
+    use crate::symbol::CardSymbol;
     use crate::cards::standard::{ ACE_SPADES, CardStd, KING_HEARTS,  THREE_CLUBS, TWO_CLUBS, TWO_DIAMONDS};
 
     #[test]

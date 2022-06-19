@@ -1,34 +1,35 @@
 #![cfg_attr(docsrs, feature(doc_cfg))]
-use rand::{Rng, thread_rng};
+use rand::{Rng};
 use rand::distributions::{Distribution, Standard};
-use crate::card_element::CardElement;
+use crate::symbol::CardSymbol;
 use crate::cards::Card;
 use crate::figures::Figure;
 use crate::suits::Suit;
 
 
 #[cfg_attr(doc_cfg, doc(cfg(all(feature = "random"))))]
-pub trait RandomElement{
-    fn random() -> Self;
+pub trait RandomElement<R: Rng>{
+    fn random(rng: &mut R) -> Self;
 
 }
 
-impl<E: CardElement> RandomElement for E
+impl<E: CardSymbol, R: Rng> RandomElement<R> for E
 where Standard: Distribution<E>{
-    fn random() -> Self {
-        thread_rng().sample(Standard)
+    fn random(rng: &mut R) -> Self {
+        rng.sample(Standard)
     }
 }
 
-impl<F: Figure + RandomElement, S: Suit + RandomElement> RandomElement for Card<F, S>{
-    fn random() -> Self {
-        Self{suit: S::random(), figure: F::random()}
+impl<R: Rng, F: Figure + RandomElement<R>, S: Suit + RandomElement<R>> RandomElement<R> for Card<F, S>{
+    fn random(rng: &mut R) -> Self {
+        Self{suit: S::random(rng), figure: F::random(rng)}
     }
 }
 
 #[cfg(test)]
 mod test{
-    use crate::card_element::CardElement;
+    use rand::thread_rng;
+    use crate::symbol::CardSymbol;
     use crate::figures::FigureStd;
     use crate::random::RandomElement;
     use crate::suits::SuitStd;
@@ -36,7 +37,7 @@ mod test{
     #[test]
     fn test_random_std_suit(){
         for _ in 0..=20 {
-            let suit = SuitStd::random();
+            let suit = SuitStd::random(&mut thread_rng());
             assert!(suit.position() < 5);
         }
     }
@@ -44,7 +45,7 @@ mod test{
     #[test]
     fn test_random_std_figure(){
         for _ in 0..=20{
-            let figure = FigureStd::random();
+            let figure = FigureStd::random(&mut thread_rng());
             assert!(figure.position() < 13);
         }
 

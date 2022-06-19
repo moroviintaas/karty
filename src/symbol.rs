@@ -1,30 +1,42 @@
+//! Module containing basic Symbol trait
 use std::marker::PhantomData;
 use crate::error::CardError;
 
-pub trait CardElement: Sized + Eq{
-    const DIMENSION_SIZE: usize;
+/// Trait representing a symbol on a playing card.
+/// Typical playing card (one of 52 card deck) is defined by two symbols - `Figure` and `Suit`
+/// Structure implementing this trait should have finite space of possible instances.
+/// Instances should have associated number from `0` to `SYMBOL_SPACE` (excluded).
+/// Numbering should be dense, which mean that there should not be a number in `[0, SYMBOL_SPACE)`
+/// with no associated `CardSymbol` instance.
+/// For example, implemented in this crate `FigureStd` has `13` possible instances,
+/// representing symbols (2,..., 10, Jack, Queen, King, Ace), but their associated numbers are `0..=12`.
+pub trait CardSymbol: Sized + Eq{
+    const SYMBOL_SPACE: usize;
     fn position(&self) -> usize;
     fn from_position(position: usize) -> Result<Self, CardError>;
+    fn iterator() -> CardElementIterator<Self>{
+        CardElementIterator::new()
+    }
 }
 
-pub struct CardElementIterator<E: CardElement>{
+pub struct CardElementIterator<E: CardSymbol>{
     iterator_position: usize,
     phantom: PhantomData<E>,
 }
 
-impl<E: CardElement> CardElementIterator<E>{
+impl<E: CardSymbol> CardElementIterator<E>{
     pub fn new() -> Self{
         Self{iterator_position: 0, phantom: PhantomData}
     }
 }
 
-impl<E: CardElement> Default for CardElementIterator<E>{
+impl<E: CardSymbol> Default for CardElementIterator<E>{
     fn default() -> Self {
         Self{iterator_position: 0, phantom: PhantomData}
     }
 }
 
-impl<E: CardElement> Iterator for CardElementIterator<E>{
+impl<E: CardSymbol> Iterator for CardElementIterator<E>{
     type Item = E;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -37,7 +49,7 @@ impl<E: CardElement> Iterator for CardElementIterator<E>{
 
 #[cfg(test)]
 mod tests{
-    use crate::card_element::CardElementIterator;
+    use crate::symbol::CardElementIterator;
     use crate::figures::{*};
     use crate::suits::SuitStd;
     use crate::suits::SuitStd::{Clubs, Diamonds, Hearts, Spades};

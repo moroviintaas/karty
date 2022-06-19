@@ -1,11 +1,11 @@
 
 use std::fmt::Debug;
 use std::hash::Hash;
-use crate::card_element::CardElement;
+use crate::symbol::CardSymbol;
 
 
-pub trait Figure: Debug + Ord + Clone + Hash + CardElement {
-    const NUMBER_OF_FIGURES: usize = Self::DIMENSION_SIZE;
+pub trait Figure: Debug + Ord + Clone + Hash + CardSymbol {
+    const NUMBER_OF_FIGURES: usize = Self::SYMBOL_SPACE;
     /*fn position(&self) -> usize;
     fn from_position(position: usize) -> Result<Self, CardError>;*/
 

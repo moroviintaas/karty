@@ -2,7 +2,7 @@ use std::collections::{HashMap};
 
 use std::hash::Hash;
 use rand::{Rng};
-use crate::card_element::{CardElement, CardElementIterator};
+use crate::symbol::{CardSymbol, CardElementIterator};
 use crate::register::{RandomSamplingRegister, RandomSamplingRegisterCompl, Register};
 
 #[derive(Debug)]
@@ -63,11 +63,11 @@ impl<E: Hash + Clone + Eq, R: Rng> RandomSamplingRegister<E, R> for GenericSampl
 }
 
 #[derive(Debug)]
-pub struct GenericSamplingRegisterCompl<E: CardElement + Hash + Clone + Eq>{
+pub struct GenericSamplingRegisterCompl<E: CardSymbol + Hash + Clone + Eq>{
     register: GenericSamplingRegister<E>,
     complementary_register: GenericSamplingRegister<E>
 }
-impl<E: CardElement + Hash + Clone + Eq> GenericSamplingRegisterCompl<E>{
+impl<E: CardSymbol + Hash + Clone + Eq> GenericSamplingRegisterCompl<E>{
     pub fn new() -> Self{
         let mut complementary_register = GenericSamplingRegister::<E>::new();
         let iter = CardElementIterator::new();
@@ -76,13 +76,13 @@ impl<E: CardElement + Hash + Clone + Eq> GenericSamplingRegisterCompl<E>{
     }
 }
 
-impl<E: CardElement + Hash + Clone + Eq> Default for GenericSamplingRegisterCompl<E>{
+impl<E: CardSymbol + Hash + Clone + Eq> Default for GenericSamplingRegisterCompl<E>{
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<E: CardElement + Hash + Clone + Eq> Register<E> for GenericSamplingRegisterCompl<E>{
+impl<E: CardSymbol + Hash + Clone + Eq> Register<E> for GenericSamplingRegisterCompl<E>{
     fn register(&mut self, element: E) {
         self.complementary_register.unregister(&element);
         self.register.register(element);
@@ -99,7 +99,7 @@ impl<E: CardElement + Hash + Clone + Eq> Register<E> for GenericSamplingRegister
     }
 }
 
-impl<E: CardElement + Hash + Clone + Eq, R: Rng> RandomSamplingRegister<E, R> for GenericSamplingRegisterCompl<E>{
+impl<E: CardSymbol + Hash + Clone + Eq, R: Rng> RandomSamplingRegister<E, R> for GenericSamplingRegisterCompl<E>{
     fn peek_sample(&self, rng: &mut R) -> Option<&E> {
         self.register.peek_sample(rng)
     }
@@ -112,7 +112,7 @@ impl<E: CardElement + Hash + Clone + Eq, R: Rng> RandomSamplingRegister<E, R> fo
     }
 }
 
-impl <E: CardElement + Hash + Clone + Eq, R: Rng> RandomSamplingRegisterCompl<E, R> for GenericSamplingRegisterCompl<E>{
+impl <E: CardSymbol + Hash + Clone + Eq, R: Rng> RandomSamplingRegisterCompl<E, R> for GenericSamplingRegisterCompl<E>{
     fn peek_sample_unr(&self, rng: &mut R) -> Option<&E> {
         self.complementary_register.peek_sample(rng)
     }
