@@ -1,5 +1,5 @@
 
-use crate::register::register::{Register};
+use crate::register::register_trait::{Register};
 use crate::cards::standard::CardStd;
 
 #[derive(Debug, Default)]
@@ -9,11 +9,12 @@ pub struct RegisterCardStd {
 
 impl Register<CardStd> for RegisterCardStd {
 
-    fn register(&mut self, card: CardStd) {
+    fn register(&mut self, card: CardStd){
         self.memory |= card.mask();
     }
 
     fn unregister(&mut self, card: &CardStd) {
+
         self.memory &= !card.mask()
     }
 
@@ -21,3 +22,4 @@ impl Register<CardStd> for RegisterCardStd {
         !matches!(self.memory & card.mask(), 0)
     }
 }
+
