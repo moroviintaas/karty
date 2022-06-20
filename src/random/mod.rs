@@ -1,4 +1,4 @@
 
 mod element;
 
-pub use element::RandomElement;
+pub use element::RandomSymbol;

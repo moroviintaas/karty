@@ -16,14 +16,23 @@ use rand::Rng;
 use karty_proc_macro::*;
 
 
-///Enum representing suits of card
+///Enum representing standard (52-card deck) suits of cards. It implements bridge order, it is:
+///  [`Spades`][crate::suits::SuitStd::Spades] >
+/// [`Hearts`][crate::suits::SuitStd::Hearts] > [`Diamonds`][crate::suits::SuitStd::Diamonds] >
+/// [`Clubs`][crate::suits::SuitStd::Clubs]. If you need another order create similar Enum and
+/// provide it with your implementation of order. Example implementation of trait is presented in
+/// [`Suit`][crate::suits::Suit].
 #[derive(Debug, Eq, PartialEq,Copy, Clone, Hash)]
-#[cfg_attr(feature = "random", derive(RandomElement))]
+#[cfg_attr(feature = "random", derive(RandomSymbol))]
 //#[cfg_attr(feature = "random", derive(Rnd))]
 pub enum SuitStd {
+    /// symbol: ♠, position: 3
     Spades,
+    /// symbol: ♥, position: 2
     Hearts,
+    /// symbol: ♦, position: 1
     Diamonds,
+    /// symbol: ♣, position: 0
     Clubs
 }
 
@@ -35,7 +44,9 @@ impl SuitStd {
 pub const SUITS: [SuitStd; 4] = [Spades, Hearts, Diamonds, Clubs];
 
 
-
+/// Implemented order is [`Spades`][crate::suits::SuitStd::Spades] >
+/// [`Hearts`][crate::suits::SuitStd::Hearts] > [`Diamonds`][crate::suits::SuitStd::Diamonds] >
+/// [`Clubs`][crate::suits::SuitStd::Clubs].
 impl PartialOrd<Self> for SuitStd {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
 
@@ -43,13 +54,16 @@ impl PartialOrd<Self> for SuitStd {
         Some(self.cmp(other))
     }
 }
-
+/// Implemented order is [`Spades`][crate::suits::SuitStd::Spades] >
+/// [`Hearts`][crate::suits::SuitStd::Hearts] > [`Diamonds`][crate::suits::SuitStd::Diamonds] >
+/// [`Clubs`][crate::suits::SuitStd::Clubs].
 impl Ord for SuitStd {
     fn cmp(&self, other: &Self) -> Ordering {
         self.position().cmp(&other.position())
         //self.age().cmp(&other.age())
     }
 }
+
 impl CardSymbol for SuitStd{
     const SYMBOL_SPACE: usize = 4;
 
@@ -77,7 +91,14 @@ impl Suit for SuitStd{
     const NUMBER_OF_SUITS: usize = Self::SYMBOL_SPACE;
 
 }
-
+/// Implements [`Display`][std::fmt::Display]
+/// # Examples:
+/// ```
+/// use karty::suits::SuitStd;
+///
+/// assert_eq!("Spades", format!("{}", SuitStd::Spades));
+/// assert_eq!("♠", format!("{:#}", SuitStd::Spades));
+/// ```
 impl Display for SuitStd{
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         if f.alternate(){

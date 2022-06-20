@@ -8,30 +8,31 @@ use crate::suits::Suit;
 
 
 #[cfg_attr(doc_cfg, doc(cfg(all(feature = "random"))))]
-pub trait RandomElement<R: Rng>{
+pub trait RandomSymbol<R: Rng>{
     fn random(rng: &mut R) -> Self;
 
 }
 
-impl<E: CardSymbol, R: Rng> RandomElement<R> for E
+impl<E: CardSymbol, R: Rng> RandomSymbol<R> for E
 where Standard: Distribution<E>{
     fn random(rng: &mut R) -> Self {
         rng.sample(Standard)
     }
 }
 
-impl<R: Rng, F: Figure + RandomElement<R>, S: Suit + RandomElement<R>> RandomElement<R> for Card<F, S>{
+impl<R: Rng, F: Figure + RandomSymbol<R>, S: Suit + RandomSymbol<R>> RandomSymbol<R> for Card<F, S>{
     fn random(rng: &mut R) -> Self {
         Self{suit: S::random(rng), figure: F::random(rng)}
     }
 }
+
 
 #[cfg(test)]
 mod test{
     use rand::thread_rng;
     use crate::symbol::CardSymbol;
     use crate::figures::FigureStd;
-    use crate::random::RandomElement;
+    use crate::random::RandomSymbol;
     use crate::suits::SuitStd;
 
     #[test]

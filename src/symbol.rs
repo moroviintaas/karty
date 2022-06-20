@@ -21,7 +21,8 @@ pub trait CardSymbol: Sized + Eq{
     /// standard suit it is `4`.
     const SYMBOL_SPACE: usize;
     /// Information about symbol's associated number. Collision in returning numbers will cause
-    /// wrong behaviour of functions utilising trait.
+    /// wrong behaviour of functions utilising trait. Position should be unique for every symbol,
+    /// it is used for example to iterate over space of symbols. It should be dense though.
     /// # Returns:
     /// Number associated with symbol.
     fn position(&self) -> usize;
