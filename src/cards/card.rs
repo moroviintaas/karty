@@ -2,10 +2,11 @@ use crate::figures::Figure;
 use crate::suits::Suit;
 
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
-pub struct Card<F: Figure, S: Suit> {
+pub struct Card2S<F: Figure, S: Suit> {
     pub(crate) suit: S,
     pub(crate) figure: F
 }
+pub type Card<F, S> = Card2S<F, S>;
 
 impl<F: Figure + Copy, S: Suit + Copy> Copy for Card<F, S>{}
 

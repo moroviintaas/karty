@@ -1,13 +1,13 @@
 use std::fmt::{Display, Formatter};
 use num_integer::div_rem;
 use crate::symbol::CardSymbol;
-use crate::cards::Card;
+use crate::cards::Card2S;
 use crate::error::CardError;
 use crate::figures::{Ace, F10, F2, F3, F4, F5, F6, F7, F8, F9, FigureStd, Jack, King, Queen};
 use crate::suits::SuitStd::*;
 use crate::suits::SuitStd;
 
-impl Card<FigureStd, SuitStd>{
+impl Card2S<FigureStd, SuitStd>{
     pub fn mask(&self) -> u64{
 
         self.figure().mask() << (self.suit().position() * 16)
@@ -16,7 +16,7 @@ impl Card<FigureStd, SuitStd>{
 
 
 
-pub type CardStd =  Card<FigureStd, SuitStd>;
+pub type CardStd =  Card2S<FigureStd, SuitStd>;
 
 impl CardSymbol for CardStd{
     const SYMBOL_SPACE: usize = FigureStd::SYMBOL_SPACE * SuitStd::SYMBOL_SPACE;
@@ -43,60 +43,60 @@ impl Display for CardStd{
 
 //pub const TWO_CLUBS: Card<FigureStd, SuitStd> = Card { suit: SuitStd::Clubs, figure: Numbered(F2)};
 pub const TWO_CLUBS: CardStd = CardStd{ suit: Clubs, figure: F2};
-pub const THREE_CLUBS: CardStd = Card { suit: Clubs, figure: F3};
-pub const FOUR_CLUBS: CardStd = Card { suit: Clubs, figure: F4};
-pub const FIVE_CLUBS: CardStd = Card { suit: Clubs, figure: F5};
-pub const SIX_CLUBS: CardStd = Card { suit: Clubs, figure: F6};
-pub const SEVEN_CLUBS: CardStd = Card { suit: Clubs, figure: F7};
-pub const EIGHT_CLUBS: CardStd = Card { suit: Clubs, figure: F8};
-pub const NINE_CLUBS: CardStd = Card { suit: Clubs, figure: F9};
-pub const TEN_CLUBS: CardStd = Card { suit: Clubs, figure: F10};
-pub const JACK_CLUBS: CardStd = Card { suit: Clubs, figure: Jack};
-pub const QUEEN_CLUBS: CardStd = Card { suit: Clubs, figure: Queen};
-pub const KING_CLUBS: CardStd = Card { suit: Clubs, figure: King};
-pub const ACE_CLUBS: CardStd = Card { suit: Clubs, figure: Ace};
+pub const THREE_CLUBS: CardStd = CardStd { suit: Clubs, figure: F3};
+pub const FOUR_CLUBS: CardStd = CardStd { suit: Clubs, figure: F4};
+pub const FIVE_CLUBS: CardStd = CardStd { suit: Clubs, figure: F5};
+pub const SIX_CLUBS: CardStd = CardStd { suit: Clubs, figure: F6};
+pub const SEVEN_CLUBS: CardStd = CardStd { suit: Clubs, figure: F7};
+pub const EIGHT_CLUBS: CardStd = CardStd { suit: Clubs, figure: F8};
+pub const NINE_CLUBS: CardStd = CardStd { suit: Clubs, figure: F9};
+pub const TEN_CLUBS: CardStd = CardStd { suit: Clubs, figure: F10};
+pub const JACK_CLUBS: CardStd = CardStd { suit: Clubs, figure: Jack};
+pub const QUEEN_CLUBS: CardStd = CardStd { suit: Clubs, figure: Queen};
+pub const KING_CLUBS: CardStd = CardStd { suit: Clubs, figure: King};
+pub const ACE_CLUBS: CardStd = CardStd { suit: Clubs, figure: Ace};
 
-pub const TWO_DIAMONDS: CardStd = Card { suit: Diamonds, figure: F2};
-pub const THREE_DIAMONDS: CardStd = Card { suit: Diamonds, figure: F3};
-pub const FOUR_DIAMONDS: CardStd = Card { suit: Diamonds, figure: F4};
-pub const FIVE_DIAMONDS: CardStd = Card { suit: Diamonds, figure: F5};
-pub const SIX_DIAMONDS: CardStd = Card { suit: Diamonds, figure: F6};
-pub const SEVEN_DIAMONDS: CardStd = Card { suit: Diamonds, figure: F7};
-pub const EIGHT_DIAMONDS: CardStd = Card { suit: Diamonds, figure: F8};
-pub const NINE_DIAMONDS: CardStd = Card { suit: Diamonds, figure: F9};
-pub const TEN_DIAMONDS: CardStd = Card { suit: Diamonds, figure: F10};
-pub const JACK_DIAMONDS: CardStd = Card { suit: Diamonds, figure: Jack};
-pub const QUEEN_DIAMONDS: CardStd = Card { suit: Diamonds, figure: Queen};
-pub const KING_DIAMONDS: CardStd = Card { suit: Diamonds, figure: King};
-pub const ACE_DIAMONDS: CardStd = Card { suit: Diamonds, figure: Ace};
+pub const TWO_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: F2};
+pub const THREE_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: F3};
+pub const FOUR_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: F4};
+pub const FIVE_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: F5};
+pub const SIX_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: F6};
+pub const SEVEN_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: F7};
+pub const EIGHT_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: F8};
+pub const NINE_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: F9};
+pub const TEN_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: F10};
+pub const JACK_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: Jack};
+pub const QUEEN_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: Queen};
+pub const KING_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: King};
+pub const ACE_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: Ace};
 
-pub const TWO_HEARTS: CardStd = Card { suit: Hearts, figure: F2};
-pub const THREE_HEARTS: CardStd = Card { suit: Hearts, figure: F3};
-pub const FOUR_HEARTS: CardStd = Card { suit: Hearts, figure: F4};
-pub const FIVE_HEARTS: CardStd = Card { suit: Hearts, figure: F5};
-pub const SIX_HEARTS: CardStd = Card { suit: Hearts, figure: F6};
-pub const SEVEN_HEARTS: CardStd = Card { suit: Hearts, figure: F7};
-pub const EIGHT_HEARTS: CardStd = Card { suit: Hearts, figure: F8};
-pub const NINE_HEARTS: CardStd = Card { suit: Hearts, figure: F9};
-pub const TEN_HEARTS: CardStd = Card { suit: Hearts, figure: F10};
-pub const JACK_HEARTS: CardStd = Card { suit: Hearts, figure: Jack};
-pub const QUEEN_HEARTS: CardStd = Card { suit: Hearts, figure: Queen};
-pub const KING_HEARTS: CardStd = Card { suit: Hearts, figure: King};
-pub const ACE_HEARTS: CardStd = Card { suit: Hearts, figure: Ace};
+pub const TWO_HEARTS: CardStd = CardStd { suit: Hearts, figure: F2};
+pub const THREE_HEARTS: CardStd = CardStd { suit: Hearts, figure: F3};
+pub const FOUR_HEARTS: CardStd = CardStd { suit: Hearts, figure: F4};
+pub const FIVE_HEARTS: CardStd = CardStd { suit: Hearts, figure: F5};
+pub const SIX_HEARTS: CardStd = CardStd { suit: Hearts, figure: F6};
+pub const SEVEN_HEARTS: CardStd = CardStd { suit: Hearts, figure: F7};
+pub const EIGHT_HEARTS: CardStd = CardStd { suit: Hearts, figure: F8};
+pub const NINE_HEARTS: CardStd = CardStd { suit: Hearts, figure: F9};
+pub const TEN_HEARTS: CardStd = CardStd { suit: Hearts, figure: F10};
+pub const JACK_HEARTS: CardStd = CardStd { suit: Hearts, figure: Jack};
+pub const QUEEN_HEARTS: CardStd = CardStd { suit: Hearts, figure: Queen};
+pub const KING_HEARTS: CardStd = CardStd { suit: Hearts, figure: King};
+pub const ACE_HEARTS: CardStd = CardStd { suit: Hearts, figure: Ace};
 
-pub const TWO_SPADES: CardStd = Card { suit: Spades, figure: F2};
-pub const THREE_SPADES: CardStd = Card { suit: Spades, figure: F3};
-pub const FOUR_SPADES: CardStd = Card { suit: Spades, figure: F4};
-pub const FIVE_SPADES: CardStd = Card { suit: Spades, figure: F5};
-pub const SIX_SPADES: CardStd = Card { suit: Spades, figure: F6};
-pub const SEVEN_SPADES: CardStd = Card { suit: Spades, figure: F7};
-pub const EIGHT_SPADES: CardStd = Card { suit: Spades, figure: F8};
-pub const NINE_SPADES: CardStd = Card { suit: Spades, figure: F9};
-pub const TEN_SPADES: CardStd = Card { suit: Spades, figure: F10};
-pub const JACK_SPADES: CardStd = Card { suit: Spades, figure: Jack};
-pub const QUEEN_SPADES: CardStd = Card { suit: Spades, figure: Queen};
-pub const KING_SPADES: CardStd = Card { suit: Spades, figure: King};
-pub const ACE_SPADES: CardStd = Card { suit: Spades, figure: Ace};
+pub const TWO_SPADES: CardStd = CardStd { suit: Spades, figure: F2};
+pub const THREE_SPADES: CardStd = CardStd { suit: Spades, figure: F3};
+pub const FOUR_SPADES: CardStd = CardStd { suit: Spades, figure: F4};
+pub const FIVE_SPADES: CardStd = CardStd { suit: Spades, figure: F5};
+pub const SIX_SPADES: CardStd = CardStd { suit: Spades, figure: F6};
+pub const SEVEN_SPADES: CardStd = CardStd { suit: Spades, figure: F7};
+pub const EIGHT_SPADES: CardStd = CardStd { suit: Spades, figure: F8};
+pub const NINE_SPADES: CardStd = CardStd { suit: Spades, figure: F9};
+pub const TEN_SPADES: CardStd = CardStd { suit: Spades, figure: F10};
+pub const JACK_SPADES: CardStd = CardStd { suit: Spades, figure: Jack};
+pub const QUEEN_SPADES: CardStd = CardStd { suit: Spades, figure: Queen};
+pub const KING_SPADES: CardStd = CardStd { suit: Spades, figure: King};
+pub const ACE_SPADES: CardStd = CardStd { suit: Spades, figure: Ace};
 
 #[cfg(test)]
 mod tests{

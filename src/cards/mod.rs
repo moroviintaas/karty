@@ -1,5 +1,5 @@
-pub mod card;
-pub use card::Card;
+mod card;
+pub use card::*;
 
 
 #[cfg(feature = "parse")]
