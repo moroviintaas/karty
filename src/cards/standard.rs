@@ -3,9 +3,9 @@ use num_integer::div_rem;
 use crate::symbol::CardSymbol;
 use crate::cards::Card;
 use crate::error::CardError;
-use crate::figures::standard::{Ace, F10, F2, F3, F4, F5, F6, F7, F8, F9, FigureStd, Jack, King, Queen};
-use crate::suits::standard::SuitStd::*;
-use crate::suits::{SuitStd};
+use crate::figures::{Ace, F10, F2, F3, F4, F5, F6, F7, F8, F9, FigureStd, Jack, King, Queen};
+use crate::suits::SuitStd::*;
+use crate::suits::SuitStd;
 
 impl Card<FigureStd, SuitStd>{
     pub fn mask(&self) -> u64{

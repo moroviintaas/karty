@@ -39,7 +39,7 @@ impl<E: Hash + Debug + Eq> Register<E> for GenericRegister<E>{
 
 #[cfg(test)]
 mod tests{
-    use crate::cards::standard::ACE_SPADES;
+    use crate::cards::ACE_SPADES;
     use crate::register::generic_register::GenericRegister;
     use crate::register::register_trait::{Register};
 

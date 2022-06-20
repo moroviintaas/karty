@@ -1,13 +1,18 @@
 //! Module containing basic Symbol trait
+//! # Licence:
+//! MIT: [https://mit-license.org/](https://mit-license.org/)
+//! # Authors:
+//! [morovintaas](mailto:moroviintaas@gmail.com)
+//!
 use std::marker::PhantomData;
 use crate::error::CardError;
 
 /// Trait representing a symbol on a playing card.
-/// Typical playing card (one of 52 card deck) is defined by two symbols - `Figure` and `Suit`
+/// Typical playing card (one of 52 card deck) is defined by two symbols - [`Figure`][crate::figures::Figure]  and [`Suit`][crate::suits::Suit]
 /// Structure implementing this trait should have finite space of possible instances.
-/// Instances should have associated number from `0` to `SYMBOL_SPACE` (excluded).
-/// Numbering should be dense, which mean that there should not be a number in `[0, SYMBOL_SPACE)`
-/// with no associated `CardSymbol` instance.
+/// Instances should have associated number from `0` to [`SYMBOL_SPACE`][crate::symbol::CardSymbol::SYMBOL_SPACE] (excluded).
+/// Numbering should be dense, which mean that there should not be a number in [0, [`SYMBOL_SPACE`][crate::symbol::CardSymbol::SYMBOL_SPACE])
+/// with no associated [`CardSymbol`][crate::symbol::CardSymbol] instance.
 /// For example, implemented in this crate `FigureStd` has `13` possible instances,
 /// representing symbols (2,..., 10, Jack, Queen, King, Ace), but their associated numbers are `0..=12`.
 pub trait CardSymbol: Sized + Eq{
@@ -20,12 +25,12 @@ pub trait CardSymbol: Sized + Eq{
     /// # Returns:
     /// Number associated with symbol.
     fn position(&self) -> usize;
-    /// Reverse function to `position(&self)`, creates symbol instance, given it's associated number.
+    /// Reverse function to [`position(&self)`][crate::symbol::CardSymbol::position], creates symbol instance, given it's associated number.
     /// # Returns:
     /// Instance of symbol associated with a number.
     fn from_position(position: usize) -> Result<Self, CardError>;
-    /// Method constructs `CardSymbolIterator` iterating symbols from the one numbered `0` to
-    /// the last one (numbered `SYMBOL_SPACE-1`.
+    /// Method constructs [`CardSymbolIterator`][crate::symbol::CardSymbolIterator] iterating symbols from the one numbered `0` to
+    /// the last one (numbered [`SYMBOL_SPACE-1`][crate::symbol::CardSymbol::SYMBOL_SPACE].
     fn iterator() -> CardSymbolIterator<Self>{
         CardSymbolIterator::new()
     }

@@ -1,6 +1,6 @@
 
 use crate::register::register_trait::{Register};
-use crate::cards::standard::CardStd;
+use crate::cards::CardStd;
 
 #[derive(Debug, Default)]
 pub struct RegisterCardStd {

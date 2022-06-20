@@ -1,7 +1,6 @@
-pub mod suit;
-pub mod standard;
-pub use standard::*;
-
+mod suit;
+mod standard;
+pub use crate::suits::standard::*;
 pub use suit::*;
 
 #[cfg(feature = "parse")]

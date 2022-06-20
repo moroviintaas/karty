@@ -40,7 +40,7 @@ pub fn parse_suit(s: &str) -> IResult<&str, SuitStd>{
 
 #[cfg(test)]
 mod tests{
-    use crate::suits::{parse, SuitStd};
+    use crate::suits::{parse, standard::SuitStd};
     #[test]
     fn parse_spades(){
         assert_eq!(parse::parse_spades("spadesacedd"), Ok(("acedd", SuitStd::Spades)));

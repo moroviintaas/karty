@@ -1,6 +1,7 @@
 pub mod figure;
 
-pub mod standard;
+mod standard;
+pub use standard::*;
 pub use standard::*;
 
 pub use figure::*;

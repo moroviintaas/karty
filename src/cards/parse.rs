@@ -5,9 +5,9 @@ use nom::IResult;
 use nom::sequence::{separated_pair};
 use crate::cards::Card;
 use crate::figures::parse::parse_figure;
-use crate::figures::standard::FigureStd;
+use crate::figures::FigureStd;
 use crate::suits::parse::parse_suit;
-use crate::suits::standard::SuitStd;
+use crate::suits::SuitStd;
 
 
 fn parse_card_fs(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>>{
@@ -78,7 +78,7 @@ pub fn parse_card_delimited(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>>{
 /// use karty::suits::SuitStd;
 /// use karty::cards::Card;
 /// use std::str::FromStr;
-/// use karty::cards::standard::{ACE_SPADES, FOUR_CLUBS, NINE_SPADES};
+/// use karty::cards::{ACE_SPADES, FOUR_CLUBS, NINE_SPADES};
 /// assert_eq!(Card::from_str("A s"), Ok(ACE_SPADES));
 /// assert_eq!(Card::from_str("4caa"), Ok(FOUR_CLUBS));
 /// assert!(Card::from_str("jq").is_err());

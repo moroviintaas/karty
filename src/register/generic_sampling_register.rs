@@ -129,7 +129,7 @@ impl <E: CardSymbol + Hash + Clone + Eq, R: Rng> RandomSamplingRegisterCompl<E, 
 mod tests{
     use std::collections::HashSet;
     use rand::thread_rng;
-    use crate::cards::standard::{ACE_SPADES, KING_SPADES, QUEEN_HEARTS};
+    use crate::cards::{ACE_SPADES, KING_SPADES, QUEEN_HEARTS};
     use crate::register::{GenericSamplingRegister, GenericSamplingRegisterCompl, RandomSamplingRegister, RandomSamplingRegisterCompl, Register};
 
     #[test]

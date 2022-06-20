@@ -6,4 +6,5 @@ pub use card::Card;
 pub mod parse;
 
 #[path = "standard.rs"]
-pub mod standard;
+mod standard;
+pub use standard::*;
