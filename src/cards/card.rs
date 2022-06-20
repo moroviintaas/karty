@@ -1,8 +1,13 @@
+use std::fmt::Debug;
+use std::hash::Hash;
 use crate::figures::Figure;
 use crate::suits::Suit;
+use crate::symbol::CardSymbol;
+
 
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
-pub struct Card2S<F: Figure, S: Suit> {
+pub struct Card2S<F: CardSymbol + Debug + Eq + PartialEq + Clone + Hash,
+    S: CardSymbol + Debug + Eq + PartialEq + Clone + Hash> {
     pub(crate) suit: S,
     pub(crate) figure: F
 }
