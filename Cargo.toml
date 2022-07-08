@@ -11,12 +11,18 @@ array2d = {version = "0.2.1", optional = true}
 rand = {version = "0.8.5", optional = true}
 karty_proc_macro ={ path="../karty_proc_macro"}
 num-integer = "0.1.45"
+serde = {version = "1.0.138", optional = true}
+speedy = {version = "0.8.2", optional = true}
+#bincode = {version = "1.3.3", optional = true}
+serde_json = {version = "1.0.82", optional = true}
 
 
 [features]
 parse= ["dep:nom"]
 register = ["dep:array2d"]
 random = ["dep:rand"]
+serde_json = ["dep:serde", "dep:serde_json"]
+speedy = ["dep:speedy"]
 
 # docs.rs-specific configuration
 [package.metadata.docs.rs]

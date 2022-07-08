@@ -6,11 +6,13 @@ use crate::symbol::CardSymbol;
 
 
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
+#[cfg_attr(feature = "speedy", derive(speedy::Readable, speedy::Writable))]
 pub struct Card2S<F: CardSymbol + Debug + Eq + PartialEq + Clone + Hash,
     S: CardSymbol + Debug + Eq + PartialEq + Clone + Hash> {
     pub(crate) suit: S,
     pub(crate) figure: F
 }
+
 pub type Card<F, S> = Card2S<F, S>;
 
 impl<F: Figure + Copy, S: Suit + Copy> Copy for Card<F, S>{}

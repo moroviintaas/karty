@@ -7,6 +7,7 @@ use crate::figures::{Ace, F10, F2, F3, F4, F5, F6, F7, F8, F9, FigureStd, Jack, 
 use crate::suits::SuitStd::*;
 use crate::suits::SuitStd;
 
+
 impl Card2S<FigureStd, SuitStd>{
     pub fn mask(&self) -> u64{
 
@@ -101,7 +102,7 @@ pub const ACE_SPADES: CardStd = CardStd { suit: Spades, figure: Ace};
 #[cfg(test)]
 mod tests{
     use crate::symbol::CardSymbol;
-    use crate::cards::standard::{ ACE_SPADES, CardStd, KING_HEARTS,  THREE_CLUBS, TWO_CLUBS, TWO_DIAMONDS};
+    use crate::cards::standard::{ ACE_SPADES, CardStd, KING_HEARTS,  JACK_HEARTS, NINE_CLUBS, THREE_CLUBS, TWO_CLUBS, TWO_DIAMONDS};
 
     #[test]
     fn display(){
@@ -115,5 +116,17 @@ mod tests{
         assert_eq!(CardStd::from_position(1).unwrap(), TWO_DIAMONDS);
         assert_eq!(CardStd::from_position(4).unwrap(), THREE_CLUBS);
         assert_eq!(CardStd::from_position(51).unwrap(), ACE_SPADES);
+    }
+
+    #[test]
+    #[cfg(feature = "speedy")]
+    fn test_speedy_card(){
+        use speedy::{Readable, Writable};
+        let serialized_jack_hearts = JACK_HEARTS.write_to_vec().unwrap();
+        let deserialized_jack_hearts = CardStd::read_from_buffer(&serialized_jack_hearts).unwrap();
+        let serialized_nine_clubs = NINE_CLUBS.write_to_vec().unwrap();
+        let deserialized_nine_clubs = CardStd::read_from_buffer(&serialized_nine_clubs).unwrap();
+        assert_eq!(deserialized_jack_hearts, JACK_HEARTS);
+        assert_eq!(deserialized_nine_clubs, NINE_CLUBS);
     }
 }

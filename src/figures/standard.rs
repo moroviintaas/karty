@@ -15,6 +15,7 @@ pub const MIN_NUMBER_FIGURE: u8 = 2;
 
 #[derive(Debug, Eq, PartialEq, Copy, Clone, Hash)]
 #[cfg_attr(feature = "random", derive(RandomSymbol))]
+#[cfg_attr(feature = "speedy", derive(speedy::Readable, speedy::Writable))]
 pub struct NumberFigureStd {
     power: u8
 }
@@ -100,6 +101,7 @@ impl Figure for NumberFigureStd{
 
 #[derive(Debug, Eq, PartialEq, Copy, Clone, Hash)]
 #[cfg_attr(feature = "random", derive(RandomSymbol))]
+#[cfg_attr(feature = "speedy", derive(speedy::Readable, speedy::Writable))]
 pub enum FigureStd {
     Ace,
     King,
@@ -254,6 +256,19 @@ mod tests{
     #[test]
     fn formatting(){
         assert_eq!(format!("{:#}", FigureStd::Ace), String::from("𝑨"))
+    }
+
+    #[test]
+    #[cfg(feature = "speedy")]
+    fn test_speedy(){
+        use speedy::{Readable, Writable};
+        let serialized_king = FigureStd::King.write_to_vec().unwrap();
+        let serialized_10 = F10.write_to_vec().unwrap();
+        let deserialized_king = FigureStd::read_from_buffer(&serialized_king).unwrap();
+        let deserialized_10 = FigureStd::read_from_buffer(&serialized_10).unwrap();
+
+        assert_eq!(deserialized_king, FigureStd::King);
+        assert_eq!(deserialized_10, F10);
     }
 }
 

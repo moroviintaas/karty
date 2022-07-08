@@ -5,6 +5,7 @@ use crate::error::CardError;
 use crate::error::CardError::WrongSuitPosition;
 use crate::suits::standard::SuitStd::{Clubs, Diamonds, Hearts, Spades};
 use crate::suits::Suit;
+
 //use karty_proc_macro::Rnd;
 #[cfg(feature = "random")]
 use rand::prelude::Distribution;
@@ -24,6 +25,7 @@ use karty_proc_macro::*;
 /// [`Suit`][crate::suits::Suit].
 #[derive(Debug, Eq, PartialEq,Copy, Clone, Hash)]
 #[cfg_attr(feature = "random", derive(RandomSymbol))]
+#[cfg_attr(feature = "speedy", derive(speedy::Readable, speedy::Writable))]
 //#[cfg_attr(feature = "random", derive(Rnd))]
 pub enum SuitStd {
     /// symbol: ♠, position: 3
@@ -124,6 +126,7 @@ impl Display for SuitStd{
 mod tests{
     use crate::suits::standard::SuitStd;
 
+
     #[test]
     fn test_order(){
         let spades = SuitStd::Spades;
@@ -136,5 +139,14 @@ mod tests{
         assert!(spades > clubs);
         assert!(hearts > clubs && diamonds > clubs);
         assert!(clubs < spades);
+    }
+    #[test]
+    #[cfg(feature = "speedy")]
+    fn test_speedy_suit(){
+        use speedy::{Readable, Writable};
+        let serialized_spades = SuitStd::Spades.write_to_vec().unwrap();
+        let deserialized_spades = SuitStd::read_from_buffer(&serialized_spades).unwrap();
+        assert_eq!(deserialized_spades, SuitStd::Spades);
+        assert_ne!(deserialized_spades, SuitStd::Hearts);
     }
 }
