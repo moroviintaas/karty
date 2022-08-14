@@ -1,14 +1,14 @@
 use std::fmt::{Display, Formatter};
 use num_integer::div_rem;
 use crate::symbol::CardSymbol;
-use crate::cards::Card2S;
+use crate::cards::Card;
 use crate::error::CardError;
 use crate::figures::{Ace, F10, F2, F3, F4, F5, F6, F7, F8, F9, FigureStd, Jack, King, Queen};
 use crate::suits::SuitStd::*;
 use crate::suits::SuitStd;
 
 
-impl Card2S<FigureStd, SuitStd>{
+impl Card<FigureStd, SuitStd>{
     pub fn mask(&self) -> u64{
 
         self.figure().mask() << (self.suit().position() * 16)
@@ -17,7 +17,7 @@ impl Card2S<FigureStd, SuitStd>{
 
 
 
-pub type CardStd =  Card2S<FigureStd, SuitStd>;
+pub type CardStd =  Card<FigureStd, SuitStd>;
 
 impl CardSymbol for CardStd{
     const SYMBOL_SPACE: usize = FigureStd::SYMBOL_SPACE * SuitStd::SYMBOL_SPACE;
@@ -102,7 +102,7 @@ pub const ACE_SPADES: CardStd = CardStd { suit: Spades, figure: Ace};
 #[cfg(test)]
 mod tests{
     use crate::symbol::CardSymbol;
-    use crate::cards::standard::{ ACE_SPADES, CardStd, KING_HEARTS,  JACK_HEARTS, NINE_CLUBS, THREE_CLUBS, TWO_CLUBS, TWO_DIAMONDS};
+    use crate::cards::standard::{ *};
 
     #[test]
     fn display(){
