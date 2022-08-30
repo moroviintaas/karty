@@ -1,11 +1,12 @@
 use std::fmt::{Display, Formatter};
+use std::marker::PhantomData;
 use num_integer::div_rem;
 use crate::symbol::CardSymbol;
-use crate::cards::Card;
+use crate::cards::{Card, ComparatorCard};
 use crate::error::CardError;
-use crate::figures::{Ace, F10, F2, F3, F4, F5, F6, F7, F8, F9, FigureStd, Jack, King, Queen};
+use crate::figures::{Ace, ComparatorF, F10, F2, F3, F4, F5, F6, F7, F8, F9, FigureStd, Jack, King, Queen};
 use crate::suits::SuitStd::*;
-use crate::suits::SuitStd;
+use crate::suits::{ComparatorAHCD, ComparatorAHDC, SuitStd};
 
 
 impl Card<FigureStd, SuitStd>{
@@ -41,6 +42,22 @@ impl Display for CardStd{
 
     }
 }
+
+pub type ComparatorCardStd<CS> = ComparatorCard<FigureStd, SuitStd, ComparatorF, CS>;
+
+pub const CARD_COMPARATOR_BRIDGE: ComparatorCardStd<ComparatorAHDC> =
+    ComparatorCard{
+        suit_comparator: ComparatorAHDC{},
+        figure_comparator: ComparatorF{},
+        _phantom: PhantomData{}
+    };
+pub const CARD_COMPARATOR_VISUAL: ComparatorCardStd<ComparatorAHCD> =
+    ComparatorCard{
+        suit_comparator: ComparatorAHCD{},
+        figure_comparator: ComparatorF{},
+        _phantom: PhantomData{}
+    };
+
 
 //pub const TWO_CLUBS: Card<FigureStd, SuitStd> = Card { suit: SuitStd::Clubs, figure: Numbered(F2)};
 pub const TWO_CLUBS: CardStd = CardStd{ suit: Clubs, figure: F2};
@@ -99,6 +116,22 @@ pub const QUEEN_SPADES: CardStd = CardStd { suit: Spades, figure: Queen};
 pub const KING_SPADES: CardStd = CardStd { suit: Spades, figure: King};
 pub const ACE_SPADES: CardStd = CardStd { suit: Spades, figure: Ace};
 
+pub const STANDARD_DECK: [CardStd; CardStd::SYMBOL_SPACE] = [
+    TWO_CLUBS,	    TWO_DIAMONDS,	TWO_HEARTS,	    TWO_SPADES,
+    THREE_CLUBS,	THREE_DIAMONDS,	THREE_HEARTS,	THREE_SPADES,
+    FOUR_CLUBS,	    FOUR_DIAMONDS,	FOUR_HEARTS,	FOUR_SPADES,
+    FIVE_CLUBS,	    FIVE_DIAMONDS,	FIVE_HEARTS,	FIVE_SPADES,
+    SIX_CLUBS,	    SIX_DIAMONDS,	SIX_HEARTS,	    SIX_SPADES,
+    SEVEN_CLUBS,	SEVEN_DIAMONDS,	SEVEN_HEARTS,	SEVEN_SPADES,
+    EIGHT_CLUBS,	EIGHT_DIAMONDS,	EIGHT_HEARTS,	EIGHT_SPADES,
+    NINE_CLUBS,	    NINE_DIAMONDS,	NINE_HEARTS,	NINE_SPADES,
+    TEN_CLUBS,	    TEN_DIAMONDS,	TEN_HEARTS,	    TEN_SPADES,
+    JACK_CLUBS,	    JACK_DIAMONDS,	JACK_HEARTS,	JACK_SPADES,
+    QUEEN_CLUBS,	QUEEN_DIAMONDS,	QUEEN_HEARTS,	QUEEN_SPADES,
+    KING_CLUBS,	    KING_DIAMONDS,	KING_HEARTS,	KING_SPADES,
+    ACE_CLUBS,	    ACE_DIAMONDS,	ACE_HEARTS,	    ACE_SPADES
+];
+
 #[cfg(test)]
 mod tests{
     use crate::symbol::CardSymbol;
@@ -130,3 +163,26 @@ mod tests{
         assert_eq!(deserialized_nine_clubs, NINE_CLUBS);
     }
 }
+
+/*
+///
+/// ```
+/// use karty::cards::{order_sf, STANDARD_DECK};
+/// use karty::figures::FigureStd;
+/// use karty::suits::ahcd;
+/// use karty::cards::*;
+/// let mut deck = Vec::from(STANDARD_DECK);
+/// deck.sort_by(order_sf::<ahcd, FigureStd::cmp>);
+/// assert_eq!(deck[51], ACE_SPADES);
+/// assert_eq!(deck[50], ACE_HEARTS);
+/// ```
+pub fn order_sf<SuitOrder, FigureOrder>(l: &CardStd, r: &CardStd) -> Ordering
+where SuitOrder: Fn(&SuitStd, &SuitStd) -> Ordering, FigureOrder: Fn(&FigureStd, &FigureStd){
+
+    match SuitOrder(l.suit, r.suit){
+        Ordering::Equal => FigureOrder(l.figure, r.figure),
+        ordering => ordering
+    }
+}*/
+
+

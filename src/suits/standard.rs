@@ -1,5 +1,6 @@
 use std::cmp::Ordering;
 use std::fmt::{Display, Formatter};
+use comparator::Comparator;
 use crate::symbol::CardSymbol;
 use crate::error::CardError;
 use crate::error::CardError::WrongSuitPosition;
@@ -121,6 +122,65 @@ impl Display for SuitStd{
         }
     }
 }
+
+#[derive(Default, Copy, Clone)]
+pub struct ComparatorAHCD{}
+
+impl Comparator<SuitStd> for ComparatorAHCD{
+    fn compare(&self, l: &SuitStd, r: &SuitStd) -> Ordering {
+        match l{
+            Spades => match r{
+                Spades => Ordering::Equal,
+                _ => Ordering::Greater
+            },
+            Hearts => match r {
+                Spades => Ordering::Less,
+                Hearts => Ordering::Equal,
+                _ => Ordering::Greater,
+            },
+            Clubs => match r {
+                Diamonds => Ordering::Greater,
+                Clubs => Ordering::Equal,
+                _ => Ordering::Less
+            },
+            Diamonds => match r {
+                Diamonds => Ordering::Equal,
+                _ => Ordering::Less
+            }
+        }
+    }
+}
+
+#[derive(Default, Copy, Clone)]
+pub struct ComparatorAHDC{}
+
+
+impl Comparator<SuitStd> for ComparatorAHDC{
+    fn compare(&self, l: &SuitStd, r: &SuitStd) -> Ordering {
+        match l{
+            Spades => match r{
+                Spades => Ordering::Equal,
+                _ => Ordering::Greater
+            },
+            Hearts => match r {
+                Spades => Ordering::Less,
+                Hearts => Ordering::Equal,
+                _ => Ordering::Greater,
+            },
+            Diamonds => match r {
+                Clubs => Ordering::Greater,
+                Diamonds => Ordering::Equal,
+                _ => Ordering::Less
+            },
+            Clubs => match r {
+                Clubs => Ordering::Equal,
+                _ => Ordering::Less
+            }
+        }
+    }
+}
+
+
 
 #[cfg(test)]
 mod tests{

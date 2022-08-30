@@ -1,5 +1,6 @@
 use std::cmp::Ordering;
 use std::fmt::{Debug, Formatter};
+use comparator::Comparator;
 #[cfg(feature = "random")]
 use karty_proc_macro::RandomSymbol;
 #[cfg(feature = "random")]
@@ -221,6 +222,14 @@ impl Ord for FigureStd {
     }
 }
 
+#[derive(Default, Clone, Copy, Debug)]
+pub struct ComparatorF{
+}
+impl Comparator<FigureStd> for ComparatorF{
+    fn compare(&self, l: &FigureStd, r: &FigureStd) -> Ordering {
+        l.power().cmp(&r.power())
+    }
+}
 
 #[cfg(test)]
 mod tests{
