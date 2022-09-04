@@ -5,7 +5,7 @@ use rand::{Rng};
 use crate::symbol::{CardSymbol, CardSymbolIterator};
 use crate::register::{RandomSamplingRegister, RandomSamplingRegisterCompl, Register};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct GenericSamplingRegister<E: Hash + Clone + Eq>{
     register_map: HashMap< E, usize>,
     vector: Vec<E>

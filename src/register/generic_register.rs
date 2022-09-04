@@ -4,7 +4,7 @@ use std::hash::Hash;
 use crate::register::register_trait::{ Register};
 
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct GenericRegister<E: Hash + Debug + Eq>{
     set: HashSet<E>
 }

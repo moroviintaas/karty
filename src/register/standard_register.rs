@@ -2,7 +2,7 @@
 use crate::register::register_trait::{Register};
 use crate::cards::CardStd;
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct RegisterCardStd {
     memory: u64
 }
