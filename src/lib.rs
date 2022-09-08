@@ -10,6 +10,9 @@ pub mod symbol;
 #[cfg(feature = "random")]
 pub mod random;
 
+#[cfg(feature = "speedy")]
+pub use speedy;
+
 
 
 
