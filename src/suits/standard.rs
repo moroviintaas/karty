@@ -27,6 +27,7 @@ use karty_proc_macro::*;
 #[derive(Debug, Eq, PartialEq,Copy, Clone, Hash)]
 #[cfg_attr(feature = "random", derive(RandomSymbol))]
 #[cfg_attr(feature = "speedy", derive(speedy::Readable, speedy::Writable))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 //#[cfg_attr(feature = "random", derive(Rnd))]
 pub enum SuitStd {
     /// symbol: ♠, position: 3

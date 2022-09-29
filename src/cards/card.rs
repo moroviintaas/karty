@@ -15,6 +15,7 @@ pub trait Card2S<F: CardSymbol, S:CardSymbol>{
 
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
 #[cfg_attr(feature = "speedy", derive(Writable, Readable))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Card<F: CardSymbol + Debug + Eq + PartialEq + Clone + Hash,
     S: CardSymbol + Debug + Eq + PartialEq + Clone + Hash> {
     pub(crate) suit: S,

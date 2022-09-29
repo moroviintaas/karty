@@ -3,6 +3,7 @@ use crate::register::register_trait::{Register};
 use crate::cards::CardStd;
 
 #[derive(Debug, Default, Clone, Copy)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct RegisterCardStd {
     memory: u64
 }

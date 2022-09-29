@@ -17,6 +17,7 @@ pub const MIN_NUMBER_FIGURE: u8 = 2;
 #[derive(Debug, Eq, PartialEq, Copy, Clone, Hash)]
 #[cfg_attr(feature = "random", derive(RandomSymbol))]
 #[cfg_attr(feature = "speedy", derive(speedy::Readable, speedy::Writable))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct NumberFigureStd {
     power: u8
 }
@@ -103,6 +104,7 @@ impl Figure for NumberFigureStd{
 #[derive(Debug, Eq, PartialEq, Copy, Clone, Hash)]
 #[cfg_attr(feature = "random", derive(RandomSymbol))]
 #[cfg_attr(feature = "speedy", derive(speedy::Readable, speedy::Writable))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub enum FigureStd {
     Ace,
     King,
@@ -233,6 +235,7 @@ impl Comparator<FigureStd> for ComparatorF{
 
 #[cfg(test)]
 mod tests{
+    use crate::cards::KING_HEARTS;
     use crate::figures::{F10, F2};
     use crate::figures::standard::{FigureStd, NumberFigureStd};
 
@@ -278,6 +281,19 @@ mod tests{
 
         assert_eq!(deserialized_king, FigureStd::King);
         assert_eq!(deserialized_10, F10);
+    }
+
+    #[test]
+    #[cfg(feature = "serde_ron")]
+    fn test_serde_ron(){
+        use ron::ser::to_string_pretty;
+        let f: NumberFigureStd = ron::from_str("NumberFigureStd(power: 7)").unwrap();
+        assert_eq!(f, NumberFigureStd::new(7));
+
+        let mut pc = ron::ser::PrettyConfig::new();
+        pc.struct_names = true;
+        let king = to_string_pretty(&FigureStd::King, pc).unwrap();
+        assert_eq!(king, "King");
     }
 }
 
