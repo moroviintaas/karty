@@ -235,7 +235,6 @@ impl Comparator<FigureStd> for ComparatorF{
 
 #[cfg(test)]
 mod tests{
-    use crate::cards::KING_HEARTS;
     use crate::figures::{F10, F2};
     use crate::figures::standard::{FigureStd, NumberFigureStd};
 

@@ -35,12 +35,16 @@ impl<E: Hash + Clone + Eq> Register<E> for GenericSamplingRegister<E> {
     }
 
     fn unregister(&mut self, element: &E) {
-        match self.register_map.remove(element){
+        /*match self.register_map.remove(element){
             Some(index) =>{
                 self.vector.swap_remove(index);
             }
             None => {}
+        }*/
+        if let Some(index) = self.register_map.remove(element) {
+            self.vector.swap_remove(index);
         }
+
     }
 
     fn is_registered(&self, element: &E) -> bool {
