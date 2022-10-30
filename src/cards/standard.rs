@@ -8,7 +8,19 @@ use crate::figures::{Ace, ComparatorF, F10, F2, F3, F4, F5, F6, F7, F8, F9, Figu
 use crate::suits::SuitStd::*;
 use crate::suits::{ComparatorAHCD, ComparatorAHDC, SuitStd};
 
-
+/// ```
+/// use karty::cards::KING_HEARTS;
+/// assert_eq!(KING_HEARTS.mask(), 0x200000000000);
+/// ```
+/// ```
+/// use karty::cards::STANDARD_DECK;
+/// let mut bin_sum = 0u64;
+/// for c in &STANDARD_DECK{
+///     assert_eq!(bin_sum & c.mask(), 0);
+///     bin_sum |= c.mask();
+/// }
+/// assert_eq!(bin_sum, 0x7ffc7ffc7ffc7ffc)
+/// ```
 impl Card<FigureStd, SuitStd>{
     pub fn mask(&self) -> u64{
 
