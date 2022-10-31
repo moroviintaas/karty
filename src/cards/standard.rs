@@ -8,6 +8,8 @@ use crate::figures::{Ace, ComparatorF, F10, F2, F3, F4, F5, F6, F7, F8, F9, Figu
 use crate::suits::SuitStd::*;
 use crate::suits::{ComparatorAHCD, ComparatorAHDC, SuitStd};
 
+use super::Card2Sym;
+
 /// ```
 /// use karty::cards::KING_HEARTS;
 /// assert_eq!(KING_HEARTS.mask(), 0x200000000000);

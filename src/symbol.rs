@@ -6,6 +6,7 @@
 //!
 use std::marker::PhantomData;
 use crate::error::CardError;
+use std::fmt::Debug;
 
 /// Trait representing a symbol on a playing card.
 /// Typical playing card (one of 52 card deck) is defined by two symbols - [`Figure`][crate::figures::Figure]  and [`Suit`][crate::suits::Suit]
@@ -15,7 +16,7 @@ use crate::error::CardError;
 /// with no associated [`CardSymbol`][crate::symbol::CardSymbol] instance.
 /// For example, implemented in this crate `FigureStd` has `13` possible instances,
 /// representing symbols (2,..., 10, Jack, Queen, King, Ace), but their associated numbers are `0..=12`.
-pub trait CardSymbol: Sized + Eq +  std::hash::Hash  + Clone{
+pub trait CardSymbol: Sized + Eq +  std::hash::Hash  + Clone + Debug{
     /// Space of symbol, holds information how many possible instances of symbol exists.
     /// For standard figure it is `13`, for ls
     /// standard suit it is `4`.

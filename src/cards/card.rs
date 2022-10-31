@@ -9,22 +9,49 @@ use crate::symbol::CardSymbol;
 #[cfg(feature = "speedy")]
 use speedy::{Readable, Writable};
 
-pub trait Card2S<F: CardSymbol, S:CardSymbol>{
+pub trait Card2S<F: Figure, S:Suit>{
     const CARD_SPACE: usize = F::SYMBOL_SPACE * S::SYMBOL_SPACE;
+}
+
+pub trait Card2Sym: Debug + Clone + Eq{
+    type Figure: Figure;
+    type Suit: Suit ;
+    const CARD_SPACE: usize = Self::Figure::SYMBOL_SPACE * Self::Suit::SYMBOL_SPACE;
+    fn suit(&self) -> &Self::Suit;
+    fn figure(&self) -> &Self::Figure;
 }
 
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
 #[cfg_attr(feature = "speedy", derive(Writable, Readable))]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub struct Card<F: CardSymbol + Debug + Eq + PartialEq + Clone + Hash,
-    S: CardSymbol + Debug + Eq + PartialEq + Clone + Hash> {
+pub struct Card<F: Figure,
+    S: Suit> {
     pub(crate) suit: S,
     pub(crate) figure: F
+}
+impl<F: Figure, S:Suit> Card2Sym for Card<F, S>{
+    type Figure = F;
+
+    type Suit = S;
+
+    const CARD_SPACE: usize = Self::Figure::SYMBOL_SPACE * Self::Suit::SYMBOL_SPACE;
+
+    fn suit(&self) -> &Self::Suit {
+        &self.suit
+    }
+
+    fn figure(&self) -> &Self::Figure {
+        &self.figure
+    }
+
+    
+
+    
 }
 
 //pub type CardL<F, S> = Card<F, S>;
 
-impl<F:Figure, S:Suit> Card2S<F,S> for Card<F,S>{}
+//impl<F:Figure, S:Suit> Card2S<F,S> for Card<F,S>{}
 
 impl<F: Figure + Copy, S: Suit + Copy> Copy for Card<F, S>{}
 
@@ -33,13 +60,14 @@ impl<F:Figure, S: Suit > Card<F, S> {
     pub fn new(figure: F, suit: S) -> Self{
         Self{suit, figure}
     }
-
+    /* 
     pub fn suit(&self) -> &S {
         &self.suit
     }
     pub fn figure(&self) -> &F {
         &self.figure
     }
+    */
 
 }
 
