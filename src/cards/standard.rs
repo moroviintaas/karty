@@ -10,23 +10,48 @@ use crate::suits::{ComparatorAHCD, ComparatorAHDC, SuitStd};
 
 use super::Card2Sym;
 
-/// ```
-/// use karty::cards::KING_HEARTS;
-/// assert_eq!(KING_HEARTS.mask(), 0x200000000000);
-/// ```
-/// ```
-/// use karty::cards::STANDARD_DECK;
-/// let mut bin_sum = 0u64;
-/// for c in &STANDARD_DECK{
-///     assert_eq!(bin_sum & c.mask(), 0);
-///     bin_sum |= c.mask();
-/// }
-/// assert_eq!(bin_sum, 0x7ffc7ffc7ffc7ffc)
-/// ```
+
 impl Card<FigureStd, SuitStd>{
+    /// ```
+    /// use karty::cards::KING_HEARTS;
+    /// assert_eq!(KING_HEARTS.mask(), 0x200000000000);
+    /// ```
+    /// ```
+    /// use karty::cards::STANDARD_DECK;
+    /// let mut bin_sum = 0u64;
+    /// for c in &STANDARD_DECK{
+    ///     assert_eq!(bin_sum & c.mask(), 0);
+    ///     bin_sum |= c.mask();
+    /// }
+    /// assert_eq!(bin_sum, 0x7ffc7ffc7ffc7ffc)
+    /// ```
     pub fn mask(&self) -> u64{
 
         self.figure().mask() << (self.suit().position() * 16)
+    }
+    /// ```
+    /// use karty::cards::{CardStd, TWO_CLUBS, KING_SPADES};
+    /// assert_eq!(CardStd::from_mask(0x04).unwrap(), TWO_CLUBS);
+    /// assert_eq!(CardStd::from_mask(0x2000000000000000).unwrap(), KING_SPADES);
+    /// ```
+    pub fn from_mask(mask: u64) -> Option<Self>{
+        if mask.count_ones() != 1{
+            return None
+        }
+        let t0 = mask.trailing_zeros();
+        let suit_mask = t0/16;
+        let figure_mask = mask >> (suit_mask * 16);
+        match SuitStd::from_position(suit_mask as usize){
+            Ok(suit) => match FigureStd::from_mask(figure_mask){
+                Some(figure) => Some(Self{suit, figure}),
+                None => None,
+            },
+            Err(_) => None
+        }
+        
+
+    
+
     }
 }
 

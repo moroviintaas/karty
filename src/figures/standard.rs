@@ -51,9 +51,11 @@ impl NumberFigureStd {
     /// ```
 
      */
-    pub(crate) fn mask(&self) -> u64{
+    pub fn mask(&self) -> u64{
         1u64<<self.power
     }
+
+    
     /*
     fn power(&self) -> u8{
         self.power
@@ -146,6 +148,34 @@ impl FigureStd {
             Jack=> 11,
             Numbered(fig) => fig.power
         }
+    }
+    fn from_power(power: u8) -> Option<Self>{
+        match power{
+            14 => Some(Self::Ace),
+            13 => Some(Self::King),
+            12 => Some(Self::Queen),
+            11 => Some(Self::Jack),
+            n @ 2..=10 => Some(Self::Numbered(NumberFigureStd{power: n})),
+            _ => None
+        }
+    }
+    ///
+    /// ```
+    /// use karty::figures::FigureStd;
+    /// use karty::figures::{F2, King};
+    /// assert_eq!(FigureStd::from_mask(0b0100).unwrap(), F2);
+    /// assert_eq!(FigureStd::from_mask(0x2000).unwrap(), King);
+    /// 
+    /// ```
+    pub fn from_mask(mask: u64) -> Option<Self>{
+        if mask.count_ones() != 1{
+            None
+        }
+        else{
+            let power = mask.trailing_zeros() as u8;
+            Self::from_power(power)
+        }
+        
     }
 
 
