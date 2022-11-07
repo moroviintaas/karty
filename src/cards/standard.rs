@@ -42,10 +42,12 @@ impl Card2SGen<Figure, Suit>{
         let suit_mask = t0/16;
         let figure_mask = mask >> (suit_mask * 16);
         match Suit::from_position(suit_mask as usize){
-            Ok(suit) => match Figure::from_mask(figure_mask){
+            Ok(suit) => Figure::from_mask(figure_mask).map(|figure| Self{suit, figure}),
+            /*match Figure::from_mask(figure_mask){
                 Some(figure) => Some(Self{suit, figure}),
                 None => None,
-            },
+
+            },*/
             Err(_) => None
         }
         
