@@ -3,19 +3,19 @@ use std::fmt::Debug;
 use std::hash::Hash;
 use std::marker::PhantomData;
 use comparator::Comparator;
-use crate::figures::Figure;
-use crate::suits::Suit;
+use crate::figures::FigureTrait;
+use crate::suits::SuitTrait;
 use crate::symbol::CardSymbol;
 #[cfg(feature = "speedy")]
 use speedy::{Readable, Writable};
 
-pub trait Card2S<F: Figure, S:Suit>{
+pub trait Card2S<F: FigureTrait, S: SuitTrait>{
     const CARD_SPACE: usize = F::SYMBOL_SPACE * S::SYMBOL_SPACE;
 }
 
-pub trait Card2Sym: Debug + Clone + Eq{
-    type Figure: Figure;
-    type Suit: Suit ;
+pub trait Card2SymTrait: Debug + Clone + Eq{
+    type Figure: FigureTrait;
+    type Suit: SuitTrait;
     const CARD_SPACE: usize = Self::Figure::SYMBOL_SPACE * Self::Suit::SYMBOL_SPACE;
     fn suit(&self) -> &Self::Suit;
     fn figure(&self) -> &Self::Figure;
@@ -24,12 +24,12 @@ pub trait Card2Sym: Debug + Clone + Eq{
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
 #[cfg_attr(feature = "speedy", derive(Writable, Readable))]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub struct Card<F: Figure,
-    S: Suit> {
+pub struct Card2SGen<F: FigureTrait,
+    S: SuitTrait> {
     pub(crate) suit: S,
     pub(crate) figure: F
 }
-impl<F: Figure, S:Suit> Card2Sym for Card<F, S>{
+impl<F: FigureTrait, S: SuitTrait> Card2SymTrait for Card2SGen<F, S>{
     type Figure = F;
 
     type Suit = S;
@@ -53,10 +53,10 @@ impl<F: Figure, S:Suit> Card2Sym for Card<F, S>{
 
 //impl<F:Figure, S:Suit> Card2S<F,S> for Card<F,S>{}
 
-impl<F: Figure + Copy, S: Suit + Copy> Copy for Card<F, S>{}
+impl<F: FigureTrait + Copy, S: SuitTrait + Copy> Copy for Card2SGen<F, S>{}
 
 
-impl<F:Figure, S: Suit > Card<F, S> {
+impl<F: FigureTrait, S: SuitTrait> Card2SGen<F, S> {
     pub fn new(figure: F, suit: S) -> Self{
         Self{suit, figure}
     }
@@ -71,22 +71,22 @@ impl<F:Figure, S: Suit > Card<F, S> {
 
 }
 
-pub struct ComparatorCard<F: Figure, S: Suit, CF: Comparator<F> + Default,  CS: Comparator<S> + Default> {
+pub struct CardComparatorGen<F: FigureTrait, S: SuitTrait, CF: Comparator<F> + Default,  CS: Comparator<S> + Default> {
     pub suit_comparator: CS,
     pub figure_comparator: CF,
     pub _phantom: PhantomData<(F, S)>,
 
 }
 
-impl<F: Figure, S: Suit, CS: Comparator<S> + Default, CF: Comparator<F> + Default> Default
-for ComparatorCard<F, S, CF, CS>{
+impl<F: FigureTrait, S: SuitTrait, CS: Comparator<S> + Default, CF: Comparator<F> + Default> Default
+for CardComparatorGen<F, S, CF, CS>{
     fn default() -> Self {
         Self{suit_comparator: CS::default(), figure_comparator: CF::default(), _phantom: PhantomData::default()}
     }
 }
 
-impl<F: Figure, S: Suit, CS: Comparator<S> + Default, CF: Comparator<F> + Default>
-ComparatorCard<F, S, CF, CS>{
+impl<F: FigureTrait, S: SuitTrait, CS: Comparator<S> + Default, CF: Comparator<F> + Default>
+CardComparatorGen<F, S, CF, CS>{
 
 /// ```
 /// use karty::cards::{STANDARD_DECK};
@@ -102,7 +102,7 @@ ComparatorCard<F, S, CF, CS>{
 /// assert_eq!(deck[51], ACE_SPADES);
 /// assert_eq!(deck[50], KING_SPADES);
 /// ```
-    pub fn cmp_suit_figure(&self, l: &Card<F, S>, r: &Card<F, S>) -> Ordering {
+    pub fn cmp_suit_figure(&self, l: &Card2SGen<F, S>, r: &Card2SGen<F, S>) -> Ordering {
         match self.suit_comparator.compare(l.suit(), r.suit()){
             Ordering::Equal => self.figure_comparator.compare(l.figure(), r.figure() ),
             ordering => ordering
@@ -127,7 +127,7 @@ ComparatorCard<F, S, CF, CS>{
 /// assert_eq!(deck[49], ACE_CLUBS);
 /// assert_eq!(deck[48], ACE_DIAMONDS);
 /// ```
-    pub fn cmp_figure_suit(&self, l: &Card<F, S>, r: &Card<F, S>) -> Ordering {
+    pub fn cmp_figure_suit(&self, l: &Card2SGen<F, S>, r: &Card2SGen<F, S>) -> Ordering {
         match self.figure_comparator.compare(l.figure(), r.figure()){
             Ordering::Equal => self.suit_comparator.compare(l.suit(), r.suit() ),
             ordering => ordering

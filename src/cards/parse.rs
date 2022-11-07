@@ -3,16 +3,16 @@ use nom::branch::alt;
 use nom::character::complete::space0;
 use nom::IResult;
 use nom::sequence::{separated_pair};
-use crate::cards::Card;
+use crate::cards::Card2SGen;
 use crate::figures::parse::parse_figure;
-use crate::figures::FigureStd;
+use crate::figures::Figure;
 use crate::suits::parse::parse_suit;
-use crate::suits::SuitStd;
+use crate::suits::Suit;
 
 
-fn parse_card_fs(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>>{
+fn parse_card_fs(s: &str) -> IResult<&str, Card2SGen<Figure, Suit>>{
     match separated_pair(parse_figure, space0, parse_suit)(s){
-        Ok((i, (fig, suit))) => Ok((i, Card::new(fig, suit))),
+        Ok((i, (fig, suit))) => Ok((i, Card2SGen::new(fig, suit))),
         Err(e) => Err(e)
     }
 
@@ -24,9 +24,9 @@ fn parse_card_fs_delimited(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>> {
 */
 
 
-pub fn parse_card_sf(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>> {
+pub fn parse_card_sf(s: &str) -> IResult<&str, Card2SGen<Figure, Suit>> {
     match separated_pair(parse_suit, space0, parse_figure)(s) {
-        Ok((i, (suit, figure))) => Ok((i, Card::new(figure, suit))),
+        Ok((i, (suit, figure))) => Ok((i, Card2SGen::new(figure, suit))),
         Err(e) => Err(e)
     }
 }
@@ -39,17 +39,17 @@ fn parse_card_sf_delimited(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>> {
 
 /// Parses card from &str (non delimeted way)
 /// ```
-/// use karty::cards::Card;
-/// use karty::figures::{FigureStd, NumberFigureStd};
+/// use karty::cards::Card2SGen;
+/// use karty::figures::{Figure, NumberFigure};
 /// use karty::cards::parse::parse_card;
-/// use karty::suits::SuitStd;
+/// use karty::suits::Suit;
 /// use nom::error::ErrorKind;
-/// assert_eq!(parse_card("10 dxg"), Ok(("xg", Card::new(FigureStd::Numbered(NumberFigureStd::new(10)), SuitStd::Diamonds))));
-/// assert_eq!(parse_card("A  sdiax"), Ok(("diax", Card::new(FigureStd::Ace, SuitStd::Spades))));
-/// assert_eq!(parse_card("h  jv"), Ok(("v", Card::new(FigureStd::Jack, SuitStd::Hearts))));
+/// assert_eq!(parse_card("10 dxg"), Ok(("xg", Card2SGen::new(Figure::Numbered(NumberFigure::new(10)), Suit::Diamonds))));
+/// assert_eq!(parse_card("A  sdiax"), Ok(("diax", Card2SGen::new(Figure::Ace, Suit::Spades))));
+/// assert_eq!(parse_card("h  jv"), Ok(("v", Card2SGen::new(Figure::Jack, Suit::Hearts))));
 /// assert_eq!(parse_card("A10  sdiax"), Err(nom::Err::Error(nom::error::Error::new("A10  sdiax", ErrorKind::Tag))));
 /// ```
-pub fn parse_card(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>> {
+pub fn parse_card(s: &str) -> IResult<&str, Card2SGen<Figure, Suit>> {
     alt((parse_card_fs, parse_card_sf))(s)
 }
 /* In case ever needed to publish
@@ -74,17 +74,17 @@ pub fn parse_card_delimited(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>>{
 
 /// Parses Card from str
 /// ```
-/// use karty::figures::{NumberFigureStd, FigureStd};
-/// use karty::suits::SuitStd;
-/// use karty::cards::Card;
+/// use karty::figures::{NumberFigure, Figure};
+/// use karty::suits::Suit;
+/// use karty::cards::Card2SGen;
 /// use std::str::FromStr;
 /// use karty::cards::{ACE_SPADES, FOUR_CLUBS, NINE_SPADES};
-/// assert_eq!(Card::from_str("A s"), Ok(ACE_SPADES));
-/// assert_eq!(Card::from_str("4caa"), Ok(FOUR_CLUBS));
-/// assert!(Card::from_str("jq").is_err());
-/// assert_eq!(Card::from_str("9♠"), Ok(NINE_SPADES));
+/// assert_eq!(Card2SGen::from_str("A s"), Ok(ACE_SPADES));
+/// assert_eq!(Card2SGen::from_str("4caa"), Ok(FOUR_CLUBS));
+/// assert!(Card2SGen::from_str("jq").is_err());
+/// assert_eq!(Card2SGen::from_str("9♠"), Ok(NINE_SPADES));
 /// ```
-impl FromStr for Card<FigureStd, SuitStd> {
+impl FromStr for Card2SGen<Figure, Suit> {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {

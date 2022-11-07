@@ -5,7 +5,7 @@ mod generic_register;
 pub use generic_register::GenericRegister;
 
 mod standard_register;
-pub use standard_register::RegisterCardStd;
+pub use standard_register::CardRegister;
 
 #[cfg(feature = "random")]
 mod sampling;

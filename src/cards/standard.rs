@@ -2,16 +2,16 @@ use std::fmt::{Display, Formatter};
 use std::marker::PhantomData;
 use num_integer::div_rem;
 use crate::symbol::CardSymbol;
-use crate::cards::{Card, ComparatorCard};
+use crate::cards::{Card2SGen, CardComparatorGen};
 use crate::error::CardError;
-use crate::figures::{Ace, ComparatorF, F10, F2, F3, F4, F5, F6, F7, F8, F9, FigureStd, Jack, King, Queen};
-use crate::suits::SuitStd::*;
-use crate::suits::{ComparatorAHCD, ComparatorAHDC, SuitStd};
+use crate::figures::{Ace, ComparatorF, F10, F2, F3, F4, F5, F6, F7, F8, F9, Figure, Jack, King, Queen};
+use crate::suits::Suit::*;
+use crate::suits::{ComparatorAHCD, ComparatorAHDC, Suit};
 
-use super::Card2Sym;
+use super::Card2SymTrait;
 
 
-impl Card<FigureStd, SuitStd>{
+impl Card2SGen<Figure, Suit>{
     /// ```
     /// use karty::cards::KING_HEARTS;
     /// assert_eq!(KING_HEARTS.mask(), 0x200000000000);
@@ -30,9 +30,9 @@ impl Card<FigureStd, SuitStd>{
         self.figure().mask() << (self.suit().position() * 16)
     }
     /// ```
-    /// use karty::cards::{CardStd, TWO_CLUBS, KING_SPADES};
-    /// assert_eq!(CardStd::from_mask(0x04).unwrap(), TWO_CLUBS);
-    /// assert_eq!(CardStd::from_mask(0x2000000000000000).unwrap(), KING_SPADES);
+    /// use karty::cards::{Card, TWO_CLUBS, KING_SPADES};
+    /// assert_eq!(Card::from_mask(0x04).unwrap(), TWO_CLUBS);
+    /// assert_eq!(Card::from_mask(0x2000000000000000).unwrap(), KING_SPADES);
     /// ```
     pub fn from_mask(mask: u64) -> Option<Self>{
         if mask.count_ones() != 1{
@@ -41,8 +41,8 @@ impl Card<FigureStd, SuitStd>{
         let t0 = mask.trailing_zeros();
         let suit_mask = t0/16;
         let figure_mask = mask >> (suit_mask * 16);
-        match SuitStd::from_position(suit_mask as usize){
-            Ok(suit) => match FigureStd::from_mask(figure_mask){
+        match Suit::from_position(suit_mask as usize){
+            Ok(suit) => match Figure::from_mask(figure_mask){
                 Some(figure) => Some(Self{suit, figure}),
                 None => None,
             },
@@ -57,22 +57,22 @@ impl Card<FigureStd, SuitStd>{
 
 
 
-pub type CardStd =  Card<FigureStd, SuitStd>;
+pub type Card =  Card2SGen<Figure, Suit>;
 
-impl CardSymbol for CardStd{
-    const SYMBOL_SPACE: usize = FigureStd::SYMBOL_SPACE * SuitStd::SYMBOL_SPACE;
+impl CardSymbol for Card {
+    const SYMBOL_SPACE: usize = Figure::SYMBOL_SPACE * Suit::SYMBOL_SPACE;
 
     fn position(&self) -> usize {
-        (self.figure.position() * SuitStd::SYMBOL_SPACE) + self.suit.position()
+        (self.figure.position() * Suit::SYMBOL_SPACE) + self.suit.position()
     }
 
     fn from_position(position: usize) -> Result<Self, CardError> {
-        let (figure, suit) = div_rem(position, SuitStd::SYMBOL_SPACE);
-        Ok(Self{figure: FigureStd::from_position(figure)?, suit: SuitStd::from_position(suit)?})
+        let (figure, suit) = div_rem(position, Suit::SYMBOL_SPACE);
+        Ok(Self{figure: Figure::from_position(figure)?, suit: Suit::from_position(suit)?})
     }
 }
 
-impl Display for CardStd{
+impl Display for Card {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match f.alternate(){
             true => write!(f, "{:#}{:#}", self.figure(), self.suit()),
@@ -82,16 +82,16 @@ impl Display for CardStd{
     }
 }
 
-pub type ComparatorCardStd<CS> = ComparatorCard<FigureStd, SuitStd, ComparatorF, CS>;
+pub type ComparatorCardStd<CS> = CardComparatorGen<Figure, Suit, ComparatorF, CS>;
 
 pub const CARD_COMPARATOR_BRIDGE: ComparatorCardStd<ComparatorAHDC> =
-    ComparatorCard{
+    CardComparatorGen {
         suit_comparator: ComparatorAHDC{},
         figure_comparator: ComparatorF{},
         _phantom: PhantomData{}
     };
 pub const CARD_COMPARATOR_VISUAL: ComparatorCardStd<ComparatorAHCD> =
-    ComparatorCard{
+    CardComparatorGen {
         suit_comparator: ComparatorAHCD{},
         figure_comparator: ComparatorF{},
         _phantom: PhantomData{}
@@ -99,63 +99,63 @@ pub const CARD_COMPARATOR_VISUAL: ComparatorCardStd<ComparatorAHCD> =
 
 
 //pub const TWO_CLUBS: Card<FigureStd, SuitStd> = Card { suit: SuitStd::Clubs, figure: Numbered(F2)};
-pub const TWO_CLUBS: CardStd = CardStd{ suit: Clubs, figure: F2};
-pub const THREE_CLUBS: CardStd = CardStd { suit: Clubs, figure: F3};
-pub const FOUR_CLUBS: CardStd = CardStd { suit: Clubs, figure: F4};
-pub const FIVE_CLUBS: CardStd = CardStd { suit: Clubs, figure: F5};
-pub const SIX_CLUBS: CardStd = CardStd { suit: Clubs, figure: F6};
-pub const SEVEN_CLUBS: CardStd = CardStd { suit: Clubs, figure: F7};
-pub const EIGHT_CLUBS: CardStd = CardStd { suit: Clubs, figure: F8};
-pub const NINE_CLUBS: CardStd = CardStd { suit: Clubs, figure: F9};
-pub const TEN_CLUBS: CardStd = CardStd { suit: Clubs, figure: F10};
-pub const JACK_CLUBS: CardStd = CardStd { suit: Clubs, figure: Jack};
-pub const QUEEN_CLUBS: CardStd = CardStd { suit: Clubs, figure: Queen};
-pub const KING_CLUBS: CardStd = CardStd { suit: Clubs, figure: King};
-pub const ACE_CLUBS: CardStd = CardStd { suit: Clubs, figure: Ace};
+pub const TWO_CLUBS: Card = Card { suit: Clubs, figure: F2};
+pub const THREE_CLUBS: Card = Card { suit: Clubs, figure: F3};
+pub const FOUR_CLUBS: Card = Card { suit: Clubs, figure: F4};
+pub const FIVE_CLUBS: Card = Card { suit: Clubs, figure: F5};
+pub const SIX_CLUBS: Card = Card { suit: Clubs, figure: F6};
+pub const SEVEN_CLUBS: Card = Card { suit: Clubs, figure: F7};
+pub const EIGHT_CLUBS: Card = Card { suit: Clubs, figure: F8};
+pub const NINE_CLUBS: Card = Card { suit: Clubs, figure: F9};
+pub const TEN_CLUBS: Card = Card { suit: Clubs, figure: F10};
+pub const JACK_CLUBS: Card = Card { suit: Clubs, figure: Jack};
+pub const QUEEN_CLUBS: Card = Card { suit: Clubs, figure: Queen};
+pub const KING_CLUBS: Card = Card { suit: Clubs, figure: King};
+pub const ACE_CLUBS: Card = Card { suit: Clubs, figure: Ace};
 
-pub const TWO_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: F2};
-pub const THREE_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: F3};
-pub const FOUR_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: F4};
-pub const FIVE_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: F5};
-pub const SIX_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: F6};
-pub const SEVEN_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: F7};
-pub const EIGHT_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: F8};
-pub const NINE_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: F9};
-pub const TEN_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: F10};
-pub const JACK_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: Jack};
-pub const QUEEN_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: Queen};
-pub const KING_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: King};
-pub const ACE_DIAMONDS: CardStd = CardStd { suit: Diamonds, figure: Ace};
+pub const TWO_DIAMONDS: Card = Card { suit: Diamonds, figure: F2};
+pub const THREE_DIAMONDS: Card = Card { suit: Diamonds, figure: F3};
+pub const FOUR_DIAMONDS: Card = Card { suit: Diamonds, figure: F4};
+pub const FIVE_DIAMONDS: Card = Card { suit: Diamonds, figure: F5};
+pub const SIX_DIAMONDS: Card = Card { suit: Diamonds, figure: F6};
+pub const SEVEN_DIAMONDS: Card = Card { suit: Diamonds, figure: F7};
+pub const EIGHT_DIAMONDS: Card = Card { suit: Diamonds, figure: F8};
+pub const NINE_DIAMONDS: Card = Card { suit: Diamonds, figure: F9};
+pub const TEN_DIAMONDS: Card = Card { suit: Diamonds, figure: F10};
+pub const JACK_DIAMONDS: Card = Card { suit: Diamonds, figure: Jack};
+pub const QUEEN_DIAMONDS: Card = Card { suit: Diamonds, figure: Queen};
+pub const KING_DIAMONDS: Card = Card { suit: Diamonds, figure: King};
+pub const ACE_DIAMONDS: Card = Card { suit: Diamonds, figure: Ace};
 
-pub const TWO_HEARTS: CardStd = CardStd { suit: Hearts, figure: F2};
-pub const THREE_HEARTS: CardStd = CardStd { suit: Hearts, figure: F3};
-pub const FOUR_HEARTS: CardStd = CardStd { suit: Hearts, figure: F4};
-pub const FIVE_HEARTS: CardStd = CardStd { suit: Hearts, figure: F5};
-pub const SIX_HEARTS: CardStd = CardStd { suit: Hearts, figure: F6};
-pub const SEVEN_HEARTS: CardStd = CardStd { suit: Hearts, figure: F7};
-pub const EIGHT_HEARTS: CardStd = CardStd { suit: Hearts, figure: F8};
-pub const NINE_HEARTS: CardStd = CardStd { suit: Hearts, figure: F9};
-pub const TEN_HEARTS: CardStd = CardStd { suit: Hearts, figure: F10};
-pub const JACK_HEARTS: CardStd = CardStd { suit: Hearts, figure: Jack};
-pub const QUEEN_HEARTS: CardStd = CardStd { suit: Hearts, figure: Queen};
-pub const KING_HEARTS: CardStd = CardStd { suit: Hearts, figure: King};
-pub const ACE_HEARTS: CardStd = CardStd { suit: Hearts, figure: Ace};
+pub const TWO_HEARTS: Card = Card { suit: Hearts, figure: F2};
+pub const THREE_HEARTS: Card = Card { suit: Hearts, figure: F3};
+pub const FOUR_HEARTS: Card = Card { suit: Hearts, figure: F4};
+pub const FIVE_HEARTS: Card = Card { suit: Hearts, figure: F5};
+pub const SIX_HEARTS: Card = Card { suit: Hearts, figure: F6};
+pub const SEVEN_HEARTS: Card = Card { suit: Hearts, figure: F7};
+pub const EIGHT_HEARTS: Card = Card { suit: Hearts, figure: F8};
+pub const NINE_HEARTS: Card = Card { suit: Hearts, figure: F9};
+pub const TEN_HEARTS: Card = Card { suit: Hearts, figure: F10};
+pub const JACK_HEARTS: Card = Card { suit: Hearts, figure: Jack};
+pub const QUEEN_HEARTS: Card = Card { suit: Hearts, figure: Queen};
+pub const KING_HEARTS: Card = Card { suit: Hearts, figure: King};
+pub const ACE_HEARTS: Card = Card { suit: Hearts, figure: Ace};
 
-pub const TWO_SPADES: CardStd = CardStd { suit: Spades, figure: F2};
-pub const THREE_SPADES: CardStd = CardStd { suit: Spades, figure: F3};
-pub const FOUR_SPADES: CardStd = CardStd { suit: Spades, figure: F4};
-pub const FIVE_SPADES: CardStd = CardStd { suit: Spades, figure: F5};
-pub const SIX_SPADES: CardStd = CardStd { suit: Spades, figure: F6};
-pub const SEVEN_SPADES: CardStd = CardStd { suit: Spades, figure: F7};
-pub const EIGHT_SPADES: CardStd = CardStd { suit: Spades, figure: F8};
-pub const NINE_SPADES: CardStd = CardStd { suit: Spades, figure: F9};
-pub const TEN_SPADES: CardStd = CardStd { suit: Spades, figure: F10};
-pub const JACK_SPADES: CardStd = CardStd { suit: Spades, figure: Jack};
-pub const QUEEN_SPADES: CardStd = CardStd { suit: Spades, figure: Queen};
-pub const KING_SPADES: CardStd = CardStd { suit: Spades, figure: King};
-pub const ACE_SPADES: CardStd = CardStd { suit: Spades, figure: Ace};
+pub const TWO_SPADES: Card = Card { suit: Spades, figure: F2};
+pub const THREE_SPADES: Card = Card { suit: Spades, figure: F3};
+pub const FOUR_SPADES: Card = Card { suit: Spades, figure: F4};
+pub const FIVE_SPADES: Card = Card { suit: Spades, figure: F5};
+pub const SIX_SPADES: Card = Card { suit: Spades, figure: F6};
+pub const SEVEN_SPADES: Card = Card { suit: Spades, figure: F7};
+pub const EIGHT_SPADES: Card = Card { suit: Spades, figure: F8};
+pub const NINE_SPADES: Card = Card { suit: Spades, figure: F9};
+pub const TEN_SPADES: Card = Card { suit: Spades, figure: F10};
+pub const JACK_SPADES: Card = Card { suit: Spades, figure: Jack};
+pub const QUEEN_SPADES: Card = Card { suit: Spades, figure: Queen};
+pub const KING_SPADES: Card = Card { suit: Spades, figure: King};
+pub const ACE_SPADES: Card = Card { suit: Spades, figure: Ace};
 
-pub const STANDARD_DECK: [CardStd; CardStd::SYMBOL_SPACE] = [
+pub const STANDARD_DECK: [Card; Card::SYMBOL_SPACE] = [
     TWO_CLUBS,	    TWO_DIAMONDS,	TWO_HEARTS,	    TWO_SPADES,
     THREE_CLUBS,	THREE_DIAMONDS,	THREE_HEARTS,	THREE_SPADES,
     FOUR_CLUBS,	    FOUR_DIAMONDS,	FOUR_HEARTS,	FOUR_SPADES,
@@ -184,10 +184,10 @@ mod tests{
 
     #[test]
     fn test_card_element_for_card_std(){
-        assert_eq!(CardStd::from_position(0).unwrap(), TWO_CLUBS);
-        assert_eq!(CardStd::from_position(1).unwrap(), TWO_DIAMONDS);
-        assert_eq!(CardStd::from_position(4).unwrap(), THREE_CLUBS);
-        assert_eq!(CardStd::from_position(51).unwrap(), ACE_SPADES);
+        assert_eq!(Card::from_position(0).unwrap(), TWO_CLUBS);
+        assert_eq!(Card::from_position(1).unwrap(), TWO_DIAMONDS);
+        assert_eq!(Card::from_position(4).unwrap(), THREE_CLUBS);
+        assert_eq!(Card::from_position(51).unwrap(), ACE_SPADES);
     }
 
     #[test]
@@ -195,9 +195,9 @@ mod tests{
     fn test_speedy_card(){
         use speedy::{Readable, Writable};
         let serialized_jack_hearts = JACK_HEARTS.write_to_vec().unwrap();
-        let deserialized_jack_hearts = CardStd::read_from_buffer(&serialized_jack_hearts).unwrap();
+        let deserialized_jack_hearts = Card::read_from_buffer(&serialized_jack_hearts).unwrap();
         let serialized_nine_clubs = NINE_CLUBS.write_to_vec().unwrap();
-        let deserialized_nine_clubs = CardStd::read_from_buffer(&serialized_nine_clubs).unwrap();
+        let deserialized_nine_clubs = Card::read_from_buffer(&serialized_nine_clubs).unwrap();
         assert_eq!(deserialized_jack_hearts, JACK_HEARTS);
         assert_eq!(deserialized_nine_clubs, NINE_CLUBS);
     }

@@ -41,11 +41,11 @@ pub trait CardSymbol: Sized + Eq +  std::hash::Hash  + Clone + Debug{
 /// with associated number
 /// # Example:
 /// ```
-/// use karty::suits::{SuitStd, SuitStd::*};
+/// use karty::suits::{Suit, Suit::*};
 /// use karty::symbol::CardSymbol;
 /// use std::iter::FromIterator;
 ///
-/// let iterator = SuitStd::iterator();
+/// let iterator = Suit::iterator();
 /// let symbols = Vec::from_iter(iterator);
 /// assert_eq!(symbols, [Clubs, Diamonds, Hearts, Spades]);
 /// ```
@@ -81,12 +81,12 @@ impl<E: CardSymbol> Iterator for CardSymbolIterator<E>{
 mod tests{
     use crate::symbol::CardSymbolIterator;
     use crate::figures::{*};
-    use crate::suits::SuitStd;
-    use crate::suits::SuitStd::{Clubs, Diamonds, Hearts, Spades};
+    use crate::suits::Suit;
+    use crate::suits::Suit::{Clubs, Diamonds, Hearts, Spades};
 
     #[test]
     fn suit_iterator(){
-        let iterator = CardSymbolIterator::<SuitStd>::new();
+        let iterator = CardSymbolIterator::<Suit>::new();
         let vec = Vec::from_iter(iterator);
         assert_eq!(vec.len(), 4);
         assert_eq!(vec[0], Clubs);
@@ -97,7 +97,7 @@ mod tests{
 
     #[test]
     fn figure_iterator(){
-        let iterator = CardSymbolIterator::<FigureStd>::new();
+        let iterator = CardSymbolIterator::<Figure>::new();
         let vec = Vec::from_iter(iterator);
         assert_eq!(vec.len(), 13);
         assert_eq!(vec[0], F2);

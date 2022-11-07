@@ -12,27 +12,27 @@ use std::str::FromStr;
 use nom::branch::alt;
 use nom::bytes::complete::tag_no_case;
 use nom::IResult;
-use crate::suits::standard::SuitStd;
+use crate::suits::standard::Suit;
 
-fn parse_spades(s: &str) -> IResult<&str, SuitStd>{
+fn parse_spades(s: &str) -> IResult<&str, Suit>{
     alt((tag_no_case("spades"), tag_no_case("s"),
          tag_no_case("♠"), tag_no_case("♤")))(s)
-        .map(|(i,_) | (i, SuitStd::Spades))
+        .map(|(i,_) | (i, Suit::Spades))
 }
-fn parse_hearts(s: &str) -> IResult<&str, SuitStd>{
+fn parse_hearts(s: &str) -> IResult<&str, Suit>{
     alt((tag_no_case("hearts"), tag_no_case("h"),
          tag_no_case("♥"), tag_no_case("♡")))(s)
-        .map(|(i,_) | (i, SuitStd::Hearts))
+        .map(|(i,_) | (i, Suit::Hearts))
 }
-fn parse_diamonds(s: &str) -> IResult<&str, SuitStd>{
+fn parse_diamonds(s: &str) -> IResult<&str, Suit>{
     alt((tag_no_case("diamonds"), tag_no_case("diax"), tag_no_case("d"),
          tag_no_case("♦"), tag_no_case("♢")))(s)
-        .map(|(i,_) | (i, SuitStd::Diamonds))
+        .map(|(i,_) | (i, Suit::Diamonds))
 }
-fn parse_clubs(s: &str) -> IResult<&str, SuitStd>{
+fn parse_clubs(s: &str) -> IResult<&str, Suit>{
     alt((tag_no_case("clubs"), tag_no_case("c"),
          tag_no_case("♣"), tag_no_case("♧")))(s)
-        .map(|(i,_) | (i, SuitStd::Clubs))
+        .map(|(i,_) | (i, Suit::Clubs))
 }
 
 /// Parses [`SuitStd`][crate::suits::SuitStd] from `&str`. Consumes initial sequences of:
@@ -52,17 +52,17 @@ fn parse_clubs(s: &str) -> IResult<&str, SuitStd>{
 /// # Example:
 /// ```
 /// use karty::suits::parse::parse_suit;
-/// use karty::suits::SuitStd;
+/// use karty::suits::Suit;
 /// use nom::error::{Error, ErrorKind};
 ///
-/// assert_eq!(parse_suit("sgq"), Ok(("gq", SuitStd::Spades)));
-/// assert_eq!(parse_suit("diamondsda"), Ok(("da", SuitStd::Diamonds)));
+/// assert_eq!(parse_suit("sgq"), Ok(("gq", Suit::Spades)));
+/// assert_eq!(parse_suit("diamondsda"), Ok(("da", Suit::Diamonds)));
 /// assert_eq!(parse_suit("eadfish"), Err(nom::Err::Error(Error::new("eadfish", ErrorKind::Tag))));
-/// assert_eq!(parse_suit("♦K"), Ok(("K", SuitStd::Diamonds)));
+/// assert_eq!(parse_suit("♦K"), Ok(("K", Suit::Diamonds)));
 /// ```
 
 
-pub fn parse_suit(s: &str) -> IResult<&str, SuitStd>{
+pub fn parse_suit(s: &str) -> IResult<&str, Suit>{
     alt((parse_spades, parse_hearts, parse_diamonds, parse_clubs))(s)
 }
 /// Parses [`SuitStd`][crate::suits::SuitStd] from `&str`. Consumes initial sequences of:
@@ -82,17 +82,17 @@ pub fn parse_suit(s: &str) -> IResult<&str, SuitStd>{
 /// # Example:
 /// ```
 /// use karty::suits::parse::parse_suit;
-/// use karty::suits::SuitStd;
+/// use karty::suits::Suit;
 /// use nom::error::ErrorKind;
 /// use nom::Err::Error;
 /// use std::str::FromStr;
 ///
-/// assert_eq!(SuitStd::from_str("sgq"), Ok(SuitStd::Spades));
-/// assert_eq!(SuitStd::from_str("diamondsda"), Ok(SuitStd::Diamonds));
-/// assert!(SuitStd::from_str("eadfish").is_err());
-/// assert_eq!(SuitStd::from_str("♦K"), Ok(SuitStd::Diamonds));
+/// assert_eq!(Suit::from_str("sgq"), Ok(Suit::Spades));
+/// assert_eq!(Suit::from_str("diamondsda"), Ok(Suit::Diamonds));
+/// assert!(Suit::from_str("eadfish").is_err());
+/// assert_eq!(Suit::from_str("♦K"), Ok(Suit::Diamonds));
 /// ```
-impl FromStr for SuitStd{
+impl FromStr for Suit {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -102,11 +102,11 @@ impl FromStr for SuitStd{
 
 #[cfg(test)]
 mod tests{
-    use crate::suits::{parse, standard::SuitStd};
+    use crate::suits::{parse, standard::Suit};
     #[test]
     fn parse_spades(){
-        assert_eq!(parse::parse_spades("spadesacedd"), Ok(("acedd", SuitStd::Spades)));
-        assert_eq!(parse::parse_spades("s aCe dd"), Ok((" aCe dd", SuitStd::Spades)));
-        assert_eq!(parse::parse_spades("♠ aCe dd"), Ok((" aCe dd", SuitStd::Spades)));
+        assert_eq!(parse::parse_spades("spadesacedd"), Ok(("acedd", Suit::Spades)));
+        assert_eq!(parse::parse_spades("s aCe dd"), Ok((" aCe dd", Suit::Spades)));
+        assert_eq!(parse::parse_spades("♠ aCe dd"), Ok((" aCe dd", Suit::Spades)));
     }
 }

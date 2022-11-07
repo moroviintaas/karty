@@ -4,8 +4,8 @@ use comparator::Comparator;
 use crate::symbol::CardSymbol;
 use crate::error::CardError;
 use crate::error::CardError::WrongSuitPosition;
-use crate::suits::standard::SuitStd::{Clubs, Diamonds, Hearts, Spades};
-use crate::suits::Suit;
+use crate::suits::standard::Suit::{Clubs, Diamonds, Hearts, Spades};
+use crate::suits::SuitTrait;
 
 //use karty_proc_macro::Rnd;
 #[cfg(feature = "random")]
@@ -29,7 +29,7 @@ use karty_proc_macro::*;
 #[cfg_attr(feature = "speedy", derive(speedy::Readable, speedy::Writable))]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 //#[cfg_attr(feature = "random", derive(Rnd))]
-pub enum SuitStd {
+pub enum Suit {
     /// symbol: ♠, position: 3
     Spades,
     /// symbol: ♥, position: 2
@@ -40,18 +40,18 @@ pub enum SuitStd {
     Clubs
 }
 
-impl SuitStd {
+impl Suit {
 
 
 }
 
-pub const SUITS: [SuitStd; 4] = [Spades, Hearts, Diamonds, Clubs];
+pub const SUITS: [Suit; 4] = [Spades, Hearts, Diamonds, Clubs];
 
 
 /// Implemented order is [`Spades`][crate::suits::SuitStd::Spades] >
 /// [`Hearts`][crate::suits::SuitStd::Hearts] > [`Diamonds`][crate::suits::SuitStd::Diamonds] >
 /// [`Clubs`][crate::suits::SuitStd::Clubs].
-impl PartialOrd<Self> for SuitStd {
+impl PartialOrd<Self> for Suit {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
 
         //Some(self.age().cmp(&other.age()))
@@ -61,14 +61,14 @@ impl PartialOrd<Self> for SuitStd {
 /// Implemented order is [`Spades`][crate::suits::SuitStd::Spades] >
 /// [`Hearts`][crate::suits::SuitStd::Hearts] > [`Diamonds`][crate::suits::SuitStd::Diamonds] >
 /// [`Clubs`][crate::suits::SuitStd::Clubs].
-impl Ord for SuitStd {
+impl Ord for Suit {
     fn cmp(&self, other: &Self) -> Ordering {
         self.position().cmp(&other.position())
         //self.age().cmp(&other.age())
     }
 }
 
-impl CardSymbol for SuitStd{
+impl CardSymbol for Suit {
     const SYMBOL_SPACE: usize = 4;
 
     fn position(&self) -> usize {
@@ -91,19 +91,19 @@ impl CardSymbol for SuitStd{
     }
 }
 
-impl Suit for SuitStd{
+impl SuitTrait for Suit {
     const NUMBER_OF_SUITS: usize = Self::SYMBOL_SPACE;
 
 }
 /// Implements [`Display`][std::fmt::Display]
 /// # Examples:
 /// ```
-/// use karty::suits::SuitStd;
+/// use karty::suits::Suit;
 ///
-/// assert_eq!("Spades", format!("{}", SuitStd::Spades));
-/// assert_eq!("♠", format!("{:#}", SuitStd::Spades));
+/// assert_eq!("Spades", format!("{}", Suit::Spades));
+/// assert_eq!("♠", format!("{:#}", Suit::Spades));
 /// ```
-impl Display for SuitStd{
+impl Display for Suit {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         if f.alternate(){
             match self {
@@ -127,8 +127,8 @@ impl Display for SuitStd{
 #[derive(Default, Copy, Clone)]
 pub struct ComparatorAHCD{}
 
-impl Comparator<SuitStd> for ComparatorAHCD{
-    fn compare(&self, l: &SuitStd, r: &SuitStd) -> Ordering {
+impl Comparator<Suit> for ComparatorAHCD{
+    fn compare(&self, l: &Suit, r: &Suit) -> Ordering {
         match l{
             Spades => match r{
                 Spades => Ordering::Equal,
@@ -156,8 +156,8 @@ impl Comparator<SuitStd> for ComparatorAHCD{
 pub struct ComparatorAHDC{}
 
 
-impl Comparator<SuitStd> for ComparatorAHDC{
-    fn compare(&self, l: &SuitStd, r: &SuitStd) -> Ordering {
+impl Comparator<Suit> for ComparatorAHDC{
+    fn compare(&self, l: &Suit, r: &Suit) -> Ordering {
         match l{
             Spades => match r{
                 Spades => Ordering::Equal,
@@ -185,15 +185,15 @@ impl Comparator<SuitStd> for ComparatorAHDC{
 
 #[cfg(test)]
 mod tests{
-    use crate::suits::standard::SuitStd;
+    use crate::suits::standard::Suit;
 
 
     #[test]
     fn test_order(){
-        let spades = SuitStd::Spades;
-        let hearts = SuitStd::Hearts;
-        let diamonds = SuitStd::Diamonds;
-        let clubs = SuitStd::Clubs;
+        let spades = Suit::Spades;
+        let hearts = Suit::Hearts;
+        let diamonds = Suit::Diamonds;
+        let clubs = Suit::Clubs;
 
         assert_eq!( spades, spades);
         assert!(spades > hearts);
@@ -205,9 +205,9 @@ mod tests{
     #[cfg(feature = "speedy")]
     fn test_speedy_suit(){
         use speedy::{Readable, Writable};
-        let serialized_spades = SuitStd::Spades.write_to_vec().unwrap();
-        let deserialized_spades = SuitStd::read_from_buffer(&serialized_spades).unwrap();
-        assert_eq!(deserialized_spades, SuitStd::Spades);
-        assert_ne!(deserialized_spades, SuitStd::Hearts);
+        let serialized_spades = Suit::Spades.write_to_vec().unwrap();
+        let deserialized_spades = Suit::read_from_buffer(&serialized_spades).unwrap();
+        assert_eq!(deserialized_spades, Suit::Spades);
+        assert_ne!(deserialized_spades, Suit::Hearts);
     }
 }

@@ -2,9 +2,9 @@
 use rand::{Rng};
 use rand::distributions::{Distribution, Standard};
 use crate::symbol::CardSymbol;
-use crate::cards::Card;
-use crate::figures::Figure;
-use crate::suits::Suit;
+use crate::cards::Card2SGen;
+use crate::figures::FigureTrait;
+use crate::suits::SuitTrait;
 
 
 #[cfg_attr(doc_cfg, doc(cfg(all(feature = "random"))))]
@@ -20,7 +20,7 @@ where Standard: Distribution<E>{
     }
 }
 
-impl<R: Rng, F: Figure + RandomSymbol<R>, S: Suit + RandomSymbol<R>> RandomSymbol<R> for Card<F, S>{
+impl<R: Rng, F: FigureTrait + RandomSymbol<R>, S: SuitTrait + RandomSymbol<R>> RandomSymbol<R> for Card2SGen<F, S>{
     fn random(rng: &mut R) -> Self {
         Self{suit: S::random(rng), figure: F::random(rng)}
     }
@@ -31,14 +31,14 @@ impl<R: Rng, F: Figure + RandomSymbol<R>, S: Suit + RandomSymbol<R>> RandomSymbo
 mod test{
     use rand::thread_rng;
     use crate::symbol::CardSymbol;
-    use crate::figures::FigureStd;
+    use crate::figures::Figure;
     use crate::random::RandomSymbol;
-    use crate::suits::SuitStd;
+    use crate::suits::Suit;
 
     #[test]
     fn test_random_std_suit(){
         for _ in 0..=20 {
-            let suit = SuitStd::random(&mut thread_rng());
+            let suit = Suit::random(&mut thread_rng());
             assert!(suit.position() < 5);
         }
     }
@@ -46,7 +46,7 @@ mod test{
     #[test]
     fn test_random_std_figure(){
         for _ in 0..=20{
-            let figure = FigureStd::random(&mut thread_rng());
+            let figure = Figure::random(&mut thread_rng());
             assert!(figure.position() < 13);
         }
 

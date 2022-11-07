@@ -18,10 +18,10 @@ pub const MIN_NUMBER_FIGURE: u8 = 2;
 #[cfg_attr(feature = "random", derive(RandomSymbol))]
 #[cfg_attr(feature = "speedy", derive(speedy::Readable, speedy::Writable))]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub struct NumberFigureStd {
+pub struct NumberFigure {
     power: u8
 }
-impl NumberFigureStd {
+impl NumberFigure {
     pub fn new(power: u8) -> Self{
         match power{
             legit @MIN_NUMBER_FIGURE..=MAX_NUMBER_FIGURE => Self{power: legit},
@@ -62,25 +62,25 @@ impl NumberFigureStd {
     }*/
 }
 
-impl std::fmt::Display for NumberFigureStd{
+impl std::fmt::Display for NumberFigure {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{:?}", self.power)
     }
 }
 
-impl Ord for NumberFigureStd {
+impl Ord for NumberFigure {
     fn cmp(&self, other: &Self) -> Ordering {
         self.power.cmp(&other.power)
     }
 }
 
-impl PartialOrd<Self> for NumberFigureStd {
+impl PartialOrd<Self> for NumberFigure {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         self.power.partial_cmp(&other.power)
     }
 }
 
-impl CardSymbol for NumberFigureStd{
+impl CardSymbol for NumberFigure {
     const SYMBOL_SPACE: usize = 9;
 
     fn position(&self) -> usize {
@@ -95,7 +95,7 @@ impl CardSymbol for NumberFigureStd{
     }
 }
 
-impl Figure for NumberFigureStd{
+impl FigureTrait for NumberFigure {
     const NUMBER_OF_FIGURES: usize = Self::SYMBOL_SPACE;
 
 }
@@ -107,14 +107,14 @@ impl Figure for NumberFigureStd{
 #[cfg_attr(feature = "random", derive(RandomSymbol))]
 #[cfg_attr(feature = "speedy", derive(speedy::Readable, speedy::Writable))]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub enum FigureStd {
+pub enum Figure {
     Ace,
     King,
     Queen,
     Jack,
-    Numbered(NumberFigureStd)
+    Numbered(NumberFigure)
 }
-impl FigureStd {
+impl Figure {
 
     /*
     /// Returns a mask for figure for efficient storing bool tables
@@ -132,10 +132,10 @@ impl FigureStd {
      */
     pub(crate) fn mask(&self) -> u64{
         match self{
-            FigureStd::Ace => 0x4000,
-            FigureStd::King => 0x2000,
-            FigureStd::Queen => 0x1000,
-            FigureStd::Jack => 0x800,
+            Figure::Ace => 0x4000,
+            Figure::King => 0x2000,
+            Figure::Queen => 0x1000,
+            Figure::Jack => 0x800,
             Numbered(n) => n.mask()
 
         }
@@ -155,17 +155,17 @@ impl FigureStd {
             13 => Some(Self::King),
             12 => Some(Self::Queen),
             11 => Some(Self::Jack),
-            n @ 2..=10 => Some(Self::Numbered(NumberFigureStd{power: n})),
+            n @ 2..=10 => Some(Self::Numbered(NumberFigure {power: n})),
             _ => None
         }
     }
     ///
     /// ```
-    /// use karty::figures::FigureStd;
+    /// use karty::figures::Figure;
     /// use karty::figures::{F2, King};
-    /// assert_eq!(FigureStd::from_mask(0b0100).unwrap(), F2);
-    /// assert_eq!(FigureStd::from_mask(0x2000).unwrap(), King);
-    /// 
+    /// assert_eq!(Figure::from_mask(0b0100).unwrap(), F2);
+    /// assert_eq!(Figure::from_mask(0x2000).unwrap(), King);
+    ///
     /// ```
     pub fn from_mask(mask: u64) -> Option<Self>{
         if mask.count_ones() != 1{
@@ -182,7 +182,7 @@ impl FigureStd {
 
 }
 
-impl CardSymbol for FigureStd{
+impl CardSymbol for Figure {
     const SYMBOL_SPACE: usize = 13;
 
     fn position(&self) -> usize {
@@ -196,7 +196,7 @@ impl CardSymbol for FigureStd{
     }
     fn from_position(position: usize) -> Result<Self, CardError> {
         match position{
-            p@ 0..=8 => Ok(Numbered(NumberFigureStd::from_position(p)?)),
+            p@ 0..=8 => Ok(Numbered(NumberFigure::from_position(p)?)),
             9 => Ok(Jack),
             10 => Ok(Queen),
             11 => Ok(King),
@@ -206,49 +206,49 @@ impl CardSymbol for FigureStd{
     }
 }
 
-impl Figure for FigureStd{
+impl FigureTrait for Figure {
     const NUMBER_OF_FIGURES: usize = Self::SYMBOL_SPACE;
 
 }
 
-impl std::fmt::Display for FigureStd{
+impl std::fmt::Display for Figure {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         if f.alternate(){
             match self{
-                FigureStd::Ace => write!(f, "𝑨"),
-                FigureStd::King => write!(f, "𝑲"),
-                FigureStd::Queen => write!(f, "𝑸"),
-                FigureStd::Jack => write!(f, "𝑱"),
-                FigureStd::Numbered(n) => write!(f, "{}", n)
+                Figure::Ace => write!(f, "𝑨"),
+                Figure::King => write!(f, "𝑲"),
+                Figure::Queen => write!(f, "𝑸"),
+                Figure::Jack => write!(f, "𝑱"),
+                Figure::Numbered(n) => write!(f, "{}", n)
             }
         }
         else{
             match self{
-                FigureStd::Ace => write!(f, "Ace"),
-                FigureStd::King => write!(f, "King"),
-                FigureStd::Queen => write!(f, "Queen"),
-                FigureStd::Jack => write!(f, "Jack"),
-                FigureStd::Numbered(n) => write!(f, "{}", n)
+                Figure::Ace => write!(f, "Ace"),
+                Figure::King => write!(f, "King"),
+                Figure::Queen => write!(f, "Queen"),
+                Figure::Jack => write!(f, "Jack"),
+                Figure::Numbered(n) => write!(f, "{}", n)
             }
 
         }
     }
 }
 
-pub const FIGURES: [FigureStd;13] = [Ace, King, Queen, Jack, Numbered(NumberFigureStd {power: 10}),
-        Numbered(NumberFigureStd {power: 9}), Numbered(NumberFigureStd {power: 8}),
-        Numbered(NumberFigureStd {power: 7}), Numbered(NumberFigureStd {power: 6}),
-        Numbered(NumberFigureStd {power: 5}), Numbered(NumberFigureStd {power: 4}),
-        Numbered(NumberFigureStd {power: 3}), Numbered(NumberFigureStd {power: 2})];
+pub const FIGURES: [Figure;13] = [Ace, King, Queen, Jack, Numbered(NumberFigure {power: 10}),
+        Numbered(NumberFigure {power: 9}), Numbered(NumberFigure {power: 8}),
+        Numbered(NumberFigure {power: 7}), Numbered(NumberFigure {power: 6}),
+        Numbered(NumberFigure {power: 5}), Numbered(NumberFigure {power: 4}),
+        Numbered(NumberFigure {power: 3}), Numbered(NumberFigure {power: 2})];
 
-impl PartialOrd for FigureStd {
+impl PartialOrd for Figure {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.power().cmp(&other.power()))
         //Some()
     }
 }
 
-impl Ord for FigureStd {
+impl Ord for Figure {
     fn cmp(&self, other: &Self) -> Ordering {
         self.power().cmp(&other.power())
     }
@@ -257,8 +257,8 @@ impl Ord for FigureStd {
 #[derive(Default, Clone, Copy, Debug)]
 pub struct ComparatorF{
 }
-impl Comparator<FigureStd> for ComparatorF{
-    fn compare(&self, l: &FigureStd, r: &FigureStd) -> Ordering {
+impl Comparator<Figure> for ComparatorF{
+    fn compare(&self, l: &Figure, r: &Figure) -> Ordering {
         l.power().cmp(&r.power())
     }
 }
@@ -266,15 +266,15 @@ impl Comparator<FigureStd> for ComparatorF{
 #[cfg(test)]
 mod tests{
     use crate::figures::{F10, F2};
-    use crate::figures::standard::{FigureStd, NumberFigureStd};
+    use crate::figures::standard::{Figure, NumberFigure};
 
     #[test]
     fn test_ordering(){
-        let king = FigureStd::King;
-        let ten = FigureStd::Numbered(NumberFigureStd::new(10));
-        let four = FigureStd::Numbered(NumberFigureStd::new(4));
-        let ace = FigureStd::Ace;
-        let king2 = FigureStd::King;
+        let king = Figure::King;
+        let ten = Figure::Numbered(NumberFigure::new(10));
+        let four = Figure::Numbered(NumberFigure::new(4));
+        let ace = Figure::Ace;
+        let king2 = Figure::King;
 
         assert!(king > ten);
         assert!(four < ten);
@@ -286,29 +286,29 @@ mod tests{
     #[test]
     fn masks(){
 
-        assert_eq!(FigureStd::Ace.mask(),      0b0100000000000000);
-        assert_eq!(FigureStd::King.mask(),     0b0010000000000000);
-        assert_eq!(FigureStd::Queen.mask(),    0b0001000000000000);
-        assert_eq!(FigureStd::Jack.mask(),     0b0000100000000000);
+        assert_eq!(Figure::Ace.mask(), 0b0100000000000000);
+        assert_eq!(Figure::King.mask(), 0b0010000000000000);
+        assert_eq!(Figure::Queen.mask(), 0b0001000000000000);
+        assert_eq!(Figure::Jack.mask(), 0b0000100000000000);
         assert_eq!(F10.mask(),      0b0000010000000000);
         assert_eq!(F2.mask(),       0b0000000000000100);
     }
 
     #[test]
     fn formatting(){
-        assert_eq!(format!("{:#}", FigureStd::Ace), String::from("𝑨"))
+        assert_eq!(format!("{:#}", Figure::Ace), String::from("𝑨"))
     }
 
     #[test]
     #[cfg(feature = "speedy")]
     fn test_speedy(){
         use speedy::{Readable, Writable};
-        let serialized_king = FigureStd::King.write_to_vec().unwrap();
+        let serialized_king = Figure::King.write_to_vec().unwrap();
         let serialized_10 = F10.write_to_vec().unwrap();
-        let deserialized_king = FigureStd::read_from_buffer(&serialized_king).unwrap();
-        let deserialized_10 = FigureStd::read_from_buffer(&serialized_10).unwrap();
+        let deserialized_king = Figure::read_from_buffer(&serialized_king).unwrap();
+        let deserialized_10 = Figure::read_from_buffer(&serialized_10).unwrap();
 
-        assert_eq!(deserialized_king, FigureStd::King);
+        assert_eq!(deserialized_king, Figure::King);
         assert_eq!(deserialized_10, F10);
     }
 
@@ -316,27 +316,27 @@ mod tests{
     #[cfg(feature = "serde_ron")]
     fn test_serde_ron(){
         use ron::ser::to_string_pretty;
-        let f: NumberFigureStd = ron::from_str("NumberFigureStd(power: 7)").unwrap();
-        assert_eq!(f, NumberFigureStd::new(7));
+        let f: NumberFigure = ron::from_str("NumberFigure(power: 7)").unwrap();
+        assert_eq!(f, NumberFigure::new(7));
 
         let mut pc = ron::ser::PrettyConfig::new();
         pc.struct_names = true;
-        let king = to_string_pretty(&FigureStd::King, pc).unwrap();
+        let king = to_string_pretty(&Figure::King, pc).unwrap();
         assert_eq!(king, "King");
     }
 }
 
-pub const F2: FigureStd = Numbered(NumberFigureStd {power: 2});
-pub const F3: FigureStd = Numbered(NumberFigureStd {power: 3});
-pub const F4: FigureStd = Numbered(NumberFigureStd {power: 4});
-pub const F5: FigureStd = Numbered(NumberFigureStd {power: 5});
-pub const F6: FigureStd = Numbered(NumberFigureStd {power: 6});
-pub const F7: FigureStd = Numbered(NumberFigureStd {power: 7});
-pub const F8: FigureStd = Numbered(NumberFigureStd {power: 8});
-pub const F9: FigureStd = Numbered(NumberFigureStd {power: 9});
-pub const F10: FigureStd = Numbered(NumberFigureStd {power: 10});
+pub const F2: Figure = Numbered(NumberFigure {power: 2});
+pub const F3: Figure = Numbered(NumberFigure {power: 3});
+pub const F4: Figure = Numbered(NumberFigure {power: 4});
+pub const F5: Figure = Numbered(NumberFigure {power: 5});
+pub const F6: Figure = Numbered(NumberFigure {power: 6});
+pub const F7: Figure = Numbered(NumberFigure {power: 7});
+pub const F8: Figure = Numbered(NumberFigure {power: 8});
+pub const F9: Figure = Numbered(NumberFigure {power: 9});
+pub const F10: Figure = Numbered(NumberFigure {power: 10});
 
-pub use FigureStd::*;
+pub use Figure::*;
 use crate::symbol::CardSymbol;
 use crate::error::CardError;
-use crate::figures::Figure;
+use crate::figures::FigureTrait;

@@ -1,25 +1,25 @@
 
 use crate::register::register_trait::{Register};
-use crate::cards::CardStd;
+use crate::cards::Card;
 
 #[derive(Debug, Default, Clone, Copy)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub struct RegisterCardStd {
+pub struct CardRegister {
     memory: u64
 }
 
-impl Register<CardStd> for RegisterCardStd {
+impl Register<Card> for CardRegister {
 
-    fn register(&mut self, card: CardStd){
+    fn register(&mut self, card: Card){
         self.memory |= card.mask();
     }
 
-    fn unregister(&mut self, card: &CardStd) {
+    fn unregister(&mut self, card: &Card) {
 
         self.memory &= !card.mask()
     }
 
-    fn is_registered(&self, card: &CardStd) -> bool {
+    fn is_registered(&self, card: &Card) -> bool {
         !matches!(self.memory & card.mask(), 0)
     }
 }

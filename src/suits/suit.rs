@@ -18,7 +18,7 @@ use crate::symbol::CardSymbol;
 /// use karty::symbol::CardSymbol;
 /// use karty::error::CardError;
 /// use std::cmp::Ordering;
-/// use karty::suits::Suit;
+/// use karty::suits::SuitTrait;
 /// // if enabled feature "random" you can derive RandomSymbol for structs implementing CardSymbol
 /// #[derive(Eq, PartialEq, Clone, Hash, Debug)]
 /// pub enum MySuit {
@@ -61,12 +61,12 @@ use crate::symbol::CardSymbol;
 ///         self.position().cmp(&other.position())
 ///     }
 /// }
-/// impl Suit for MySuit{
+/// impl SuitTrait for MySuit{
 ///     const NUMBER_OF_SUITS: usize = Self::SYMBOL_SPACE;
 ///
 /// }
 /// ```
-pub trait Suit: Debug + Ord + Clone + Hash + CardSymbol {
+pub trait SuitTrait: Debug + Ord + Clone + Hash + CardSymbol {
     /// The value is name association to [`SYMBOL_SPACE`][crate::symbol::CardSymbol::SYMBOL_SPACE]
     const NUMBER_OF_SUITS: usize = Self::SYMBOL_SPACE;
 
