@@ -1,3 +1,9 @@
+//! Module containing implementation of standard suit.
+//! # Licence:
+//! MIT: [https://mit-license.org/](https://mit-license.org/)
+//! # Authors:
+//! [morovintaas](mailto:moroviintaas@gmail.com)
+//!
 use std::cmp::Ordering;
 use std::fmt::{Display, Formatter};
 use comparator::Comparator;
@@ -19,9 +25,9 @@ use karty_proc_macro::*;
 
 
 ///Enum representing standard (52-card deck) suits of cards. It implements bridge order, it is:
-///  [`Spades`][crate::suits::SuitStd::Spades] >
-/// [`Hearts`][crate::suits::SuitStd::Hearts] > [`Diamonds`][crate::suits::SuitStd::Diamonds] >
-/// [`Clubs`][crate::suits::SuitStd::Clubs]. If you need another order create similar Enum and
+///  [`Spades`][crate::suits::Suit::Spades] >
+/// [`Hearts`][crate::suits::Suit::Hearts] > [`Diamonds`][crate::suits::Suit::Diamonds] >
+/// [`Clubs`][crate::suits::Suit::Clubs]. If you need another order create similar Enum and
 /// provide it with your implementation of order. Example implementation of trait is presented in
 /// [`Suit`][crate::suits::Suit].
 #[derive(Debug, Eq, PartialEq,Copy, Clone, Hash)]
@@ -45,12 +51,12 @@ impl Suit {
 
 }
 
-pub const SUITS: [Suit; 4] = [Spades, Hearts, Diamonds, Clubs];
+pub const SUITS: [Suit; 4] = [Clubs, Diamonds, Hearts, Spades];
 
 
-/// Implemented order is [`Spades`][crate::suits::SuitStd::Spades] >
-/// [`Hearts`][crate::suits::SuitStd::Hearts] > [`Diamonds`][crate::suits::SuitStd::Diamonds] >
-/// [`Clubs`][crate::suits::SuitStd::Clubs].
+/// Implemented order is [`Spades`][crate::suits::Suit::Spades] >
+/// [`Hearts`][crate::suits::Suit::Hearts] > [`Diamonds`][crate::suits::Suit::Diamonds] >
+/// [`Clubs`][crate::suits::Suit::Clubs].
 impl PartialOrd<Self> for Suit {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
 
@@ -58,9 +64,9 @@ impl PartialOrd<Self> for Suit {
         Some(self.cmp(other))
     }
 }
-/// Implemented order is [`Spades`][crate::suits::SuitStd::Spades] >
-/// [`Hearts`][crate::suits::SuitStd::Hearts] > [`Diamonds`][crate::suits::SuitStd::Diamonds] >
-/// [`Clubs`][crate::suits::SuitStd::Clubs].
+/// Implemented order is [`Spades`][crate::suits::Suit::Spades] >
+/// [`Hearts`][crate::suits::Suit::Hearts] > [`Diamonds`][crate::suits::Suit::Diamonds] >
+/// [`Clubs`][crate::suits::Suit::Clubs].
 impl Ord for Suit {
     fn cmp(&self, other: &Self) -> Ordering {
         self.position().cmp(&other.position())

@@ -1,3 +1,9 @@
+//! Crate providing playing cards, which can be use in standard games like contract bridge or poker.
+//! # Licence:
+//! MIT: [https://mit-license.org/](https://mit-license.org/)
+//! # Authors:
+//! [morovintaas](mailto:moroviintaas@gmail.com)
+//!
 pub mod cards;
 pub mod figures;
 pub mod suits;

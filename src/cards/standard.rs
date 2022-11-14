@@ -4,9 +4,9 @@ use num_integer::div_rem;
 use crate::symbol::CardSymbol;
 use crate::cards::{Card2SGen, CardComparatorGen};
 use crate::error::CardError;
-use crate::figures::{Ace, ComparatorF, F10, F2, F3, F4, F5, F6, F7, F8, F9, Figure, Jack, King, Queen};
+use crate::figures::{Ace, FigureComparator, F10, F2, F3, F4, F5, F6, F7, F8, F9, Figure, Jack, King, Queen, FigureTrait};
 use crate::suits::Suit::*;
-use crate::suits::{ComparatorAHCD, ComparatorAHDC, Suit};
+use crate::suits::{ComparatorAHCD, ComparatorAHDC, Suit, SuitTrait};
 
 use super::Card2SymTrait;
 
@@ -61,16 +61,16 @@ impl Card2SGen<Figure, Suit>{
 
 pub type Card =  Card2SGen<Figure, Suit>;
 
-impl CardSymbol for Card {
-    const SYMBOL_SPACE: usize = Figure::SYMBOL_SPACE * Suit::SYMBOL_SPACE;
+impl<F: FigureTrait, S: SuitTrait> CardSymbol for Card2SGen<F, S> {
+    const SYMBOL_SPACE: usize = F::SYMBOL_SPACE * S::SYMBOL_SPACE;
 
     fn position(&self) -> usize {
-        (self.figure.position() * Suit::SYMBOL_SPACE) + self.suit.position()
+        (self.figure.position() * S::SYMBOL_SPACE) + self.suit.position()
     }
 
     fn from_position(position: usize) -> Result<Self, CardError> {
-        let (figure, suit) = div_rem(position, Suit::SYMBOL_SPACE);
-        Ok(Self{figure: Figure::from_position(figure)?, suit: Suit::from_position(suit)?})
+        let (figure, suit) = div_rem(position, S::SYMBOL_SPACE);
+        Ok(Self{figure: F::from_position(figure)?, suit: S::from_position(suit)?})
     }
 }
 
@@ -84,18 +84,18 @@ impl Display for Card {
     }
 }
 
-pub type ComparatorCardStd<CS> = CardComparatorGen<Figure, Suit, ComparatorF, CS>;
+pub type ComparatorCardStd<CS> = CardComparatorGen<Figure, Suit, FigureComparator, CS>;
 
 pub const CARD_COMPARATOR_BRIDGE: ComparatorCardStd<ComparatorAHDC> =
     CardComparatorGen {
         suit_comparator: ComparatorAHDC{},
-        figure_comparator: ComparatorF{},
+        figure_comparator: FigureComparator {},
         _phantom: PhantomData{}
     };
 pub const CARD_COMPARATOR_VISUAL: ComparatorCardStd<ComparatorAHCD> =
     CardComparatorGen {
         suit_comparator: ComparatorAHCD{},
-        figure_comparator: ComparatorF{},
+        figure_comparator: FigureComparator {},
         _phantom: PhantomData{}
     };
 

@@ -4,10 +4,10 @@
 //! # Authors:
 //! [morovintaas](mailto:moroviintaas@gmail.com)
 //!
-mod suit;
+mod r#trait;
 mod standard;
 pub use crate::suits::standard::*;
-pub use suit::*;
+pub use r#trait::*;
 
 #[cfg(feature = "parse")]
 pub mod parse;

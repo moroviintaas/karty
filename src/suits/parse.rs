@@ -1,4 +1,4 @@
-//! Module containing parsing functions for [`SuitStd`][crate::suits::SuitStd].
+//! Module containing parsing functions for [`Suit`][crate::suits::Suit].
 //! To parse suits crate [`nom`][nom] is used.
 //! # Licence:
 //! MIT: [https://mit-license.org/](https://mit-license.org/)
@@ -35,7 +35,7 @@ fn parse_clubs(s: &str) -> IResult<&str, Suit>{
         .map(|(i,_) | (i, Suit::Clubs))
 }
 
-/// Parses [`SuitStd`][crate::suits::SuitStd] from `&str`. Consumes initial sequences of:
+/// Parses [`SuitStd`][crate::suits::Suit] from `&str`. Consumes initial sequences of:
 /// ## names (case insensitive):
 /// spades; hearts; diamonds; clubs;
 /// ## first letters (case_insensitive):
@@ -43,7 +43,7 @@ fn parse_clubs(s: &str) -> IResult<&str, Suit>{
 /// ## unicode symbols:
 /// ♠; ♥; ♦; ♣;
 ///
-/// consuming it and returning `Result::Ok()` with corresponding [`SuitStd`][crate::suits::SuitStd]
+/// consuming it and returning `Result::Ok()` with corresponding [`SuitStd`][crate::suits::Suit]
 ///
 /// # Returns
 /// If successful returns `Ok((remaining: &str, result: SuitStd)), else returns `Err(...)`
@@ -65,7 +65,7 @@ fn parse_clubs(s: &str) -> IResult<&str, Suit>{
 pub fn parse_suit(s: &str) -> IResult<&str, Suit>{
     alt((parse_spades, parse_hearts, parse_diamonds, parse_clubs))(s)
 }
-/// Parses [`SuitStd`][crate::suits::SuitStd] from `&str`. Consumes initial sequences of:
+/// Parses [`SuitStd`][crate::suits::Suit] from `&str`. Consumes initial sequences of:
 /// ## names (case insensitive):
 /// spades, hearts, diamonds, clubs;
 /// ## first letters (case_insensitive):
@@ -73,7 +73,7 @@ pub fn parse_suit(s: &str) -> IResult<&str, Suit>{
 /// ## unicode symbols:
 /// ♠, ♥, ♦, ♣,
 ///
-/// consuming it and returning `Result::Ok()` with corresponding [`SuitStd`][crate::suits::SuitStd]
+/// consuming it and returning `Result::Ok()` with corresponding [`Suit`][crate::suits::Suit]
 ///
 /// # Returns
 /// If successful returns `Ok((remaining: &str, result: SuitStd)), else returns `Err(...)`

@@ -1,4 +1,4 @@
-//! Module containing basic Symbol trait
+//! Module containing basic SuitTrait
 //! # Licence:
 //! MIT: [https://mit-license.org/](https://mit-license.org/)
 //! # Authors:
@@ -52,7 +52,7 @@ use crate::symbol::CardSymbol;
 /// impl PartialOrd<Self> for MySuit {
 ///     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
 ///         // order does not have to follow `position`
-///         Some(self.cmp(other).reverse())
+///         Some(self.cmp(&other))
 ///     }
 /// }
 ///

@@ -4,7 +4,7 @@ use nom::character::complete::space0;
 use nom::IResult;
 use nom::sequence::{separated_pair};
 use crate::cards::Card2SGen;
-use crate::figures::parse::parse_figure;
+use crate::figures::parse_figure;
 use crate::figures::Figure;
 use crate::suits::parse::parse_suit;
 use crate::suits::Suit;
@@ -17,12 +17,6 @@ fn parse_card_fs(s: &str) -> IResult<&str, Card2SGen<Figure, Suit>>{
     }
 
 }
-/* In case evere needed to publish
-fn parse_card_fs_delimited(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>> {
-    delimited(space0, parse_card_fs, space0)(s)
-}
-*/
-
 
 pub fn parse_card_sf(s: &str) -> IResult<&str, Card2SGen<Figure, Suit>> {
     match separated_pair(parse_suit, space0, parse_figure)(s) {
@@ -30,12 +24,6 @@ pub fn parse_card_sf(s: &str) -> IResult<&str, Card2SGen<Figure, Suit>> {
         Err(e) => Err(e)
     }
 }
-/* In case ever needed to publish
-fn parse_card_sf_delimited(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>> {
-    delimited(space0, parse_card_sf, space0)(s)
-}
-
- */
 
 /// Parses card from &str (non delimeted way)
 /// ```

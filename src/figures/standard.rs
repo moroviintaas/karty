@@ -1,3 +1,9 @@
+//! Module containing implementation of standard figures.
+//! # Licence:
+//! MIT: [https://mit-license.org/](https://mit-license.org/)
+//! # Authors:
+//! [morovintaas](mailto:moroviintaas@gmail.com)
+//!
 use std::cmp::Ordering;
 use std::fmt::{Debug, Formatter};
 use comparator::Comparator;
@@ -10,8 +16,9 @@ use rand::distributions::Standard;
 #[cfg(feature = "random")]
 use rand::Rng;
 
-
+///Maximal symbol on standard deck figure `=10`
 pub const MAX_NUMBER_FIGURE: u8 = 10;
+///Minimal symbol on standard deck figure `=2`
 pub const MIN_NUMBER_FIGURE: u8 = 2;
 
 #[derive(Debug, Eq, PartialEq, Copy, Clone, Hash)]
@@ -22,6 +29,10 @@ pub struct NumberFigure {
     power: u8
 }
 impl NumberFigure {
+    /// Constructor of [`NumberedFigure`](crate::figures::NumberFigure).
+    /// # Panics:
+    /// When power is lesser than [`MIN_NUMBER_FIGURE`](crate::figures::MIN_NUMBER_FIGURE) or greater than [`MAX_NUMBER_FIGURE`](crate::figures::MAX_NUMBER_FIGURE).
+    ///
     pub fn new(power: u8) -> Self{
         match power{
             legit @MIN_NUMBER_FIGURE..=MAX_NUMBER_FIGURE => Self{power: legit},
@@ -29,37 +40,33 @@ impl NumberFigure {
         }
     }
 
+    /// Returns order number (could be interpreted as [`CardSymbol`](crate::symbol::CardSymbol) if figure is stand alone symbol).
+    /// # Warn!
+    /// Might be deleted in the future.
     pub fn order_number(&self) -> usize {
         usize::from(self.power - 2 )
     }
 
-    /*
+
     /// Returns a mask of a figure as in example. It can be used for optimised storing in true/false arrays.
     /// # Example:
     /// ```
-    /// use karty::figures::standard;
-    /// assert_eq!(standard::F2.mask(), 0x04);
-    /// assert_eq!(standard::F3.mask(), 0x08);
-    /// assert_eq!(standard::F4.mask(), 0x10);
-    /// assert_eq!(standard::F5.mask(), 0x20);
-    /// assert_eq!(standard::F6.mask(), 0x40);
-    /// assert_eq!(standard::F7.mask(), 0x80);
-    /// assert_eq!(standard::F8.mask(), 0x100);
-    /// assert_eq!(standard::F9.mask(), 0x200);
-    /// assert_eq!(standard::F10.mask(), 0x400);
+    /// use karty::figures::{*};
+    /// assert_eq!(F2.mask(), 0x04);
+    /// assert_eq!(F3.mask(), 0x08);
+    /// assert_eq!(F4.mask(), 0x10);
+    /// assert_eq!(F5.mask(), 0x20);
+    /// assert_eq!(F6.mask(), 0x40);
+    /// assert_eq!(F7.mask(), 0x80);
+    /// assert_eq!(F8.mask(), 0x100);
+    /// assert_eq!(F9.mask(), 0x200);
+    /// assert_eq!(F10.mask(), 0x400);
     ///
     /// ```
-
-     */
     pub fn mask(&self) -> u64{
         1u64<<self.power
     }
 
-    
-    /*
-    fn power(&self) -> u8{
-        self.power
-    }*/
 }
 
 impl std::fmt::Display for NumberFigure {
@@ -83,10 +90,23 @@ impl PartialOrd<Self> for NumberFigure {
 impl CardSymbol for NumberFigure {
     const SYMBOL_SPACE: usize = 9;
 
+    /// ```
+    /// use karty::figures::{NumberFigure};
+    /// use karty::symbol::CardSymbol;
+    /// assert_eq!(NumberFigure::new(2).position(), 0);
+    /// assert_eq!(NumberFigure::new(10).position(), 8);
+    /// ```
     fn position(&self) -> usize {
         (self.power - 2) as usize
     }
 
+    ///
+    /// ```
+    /// use karty::figures::{NumberFigure};
+    /// use karty::symbol::CardSymbol;
+    /// assert_eq!(NumberFigure::from_position(6).unwrap(), NumberFigure::new(8));
+    /// assert_eq!(NumberFigure::from_position(3).unwrap(), NumberFigure::new(5));
+    /// ```
     fn from_position(position: usize) -> Result<Self, CardError> {
         match position{
             p@ 0..=8 => Ok(Self{power: (p + 2) as u8 }),
@@ -112,25 +132,24 @@ pub enum Figure {
     King,
     Queen,
     Jack,
+    ///Figure with number symbol (2-10)
     Numbered(NumberFigure)
 }
 impl Figure {
 
-    /*
+
     /// Returns a mask for figure for efficient storing bool tables
     /// ```
-    /// use karty::figures::standard::{F2, F10};
-    /// use karty::figures::standard::FigureStd;
-    /// assert_eq!(FigureStd::Ace.mask(),      0b0100000000000000);
-    /// assert_eq!(FigureStd::King.mask(),     0b0010000000000000);
-    /// assert_eq!(FigureStd::Queen.mask(),    0b0001000000000000);
-    /// assert_eq!(FigureStd::Jack.mask(),     0b0000100000000000);
-    /// assert_eq!(F10.mask(),      0b0000010000000000);
-    /// assert_eq!(F2.mask(),       0b0000000000000100);
+    /// use karty::figures::{F2, F10};
+    /// use karty::figures::Figure;
+    /// assert_eq!(Figure::Ace.mask(),      0b0100000000000000);
+    /// assert_eq!(Figure::King.mask(),     0b0010000000000000);
+    /// assert_eq!(Figure::Queen.mask(),    0b0001000000000000);
+    /// assert_eq!(Figure::Jack.mask(),     0b0000100000000000);
+    /// assert_eq!(F10.mask(),              0b0000010000000000);
+    /// assert_eq!(F2.mask(),               0b0000000000000100);
     /// ```
-
-     */
-    pub(crate) fn mask(&self) -> u64{
+    pub fn mask(&self) -> u64{
         match self{
             Figure::Ace => 0x4000,
             Figure::King => 0x2000,
@@ -140,6 +159,7 @@ impl Figure {
 
         }
     }
+
     fn power(&self) -> u8{
         match self{
             Ace => 14,
@@ -185,6 +205,13 @@ impl Figure {
 impl CardSymbol for Figure {
     const SYMBOL_SPACE: usize = 13;
 
+    /// ```
+    /// use karty::figures::{F10, F2, Queen};
+    /// use karty::symbol::CardSymbol;
+    /// assert_eq!(F2.position(), 0);
+    /// assert_eq!(F10.position(), 8);
+    /// assert_eq!(Queen.position(), 10);
+    /// ```
     fn position(&self) -> usize {
         match self{
             Ace => 12,
@@ -194,6 +221,13 @@ impl CardSymbol for Figure {
             Numbered(fig) => fig.order_number()
         }
     }
+    /// ```
+    /// use karty::figures::{F5, F8, Figure, King};
+    /// use karty::symbol::CardSymbol;
+    /// assert_eq!(Figure::from_position(6).unwrap(), F8);
+    /// assert_eq!(Figure::from_position(3).unwrap(), F5);
+    /// assert_eq!(Figure::from_position(11).unwrap(), King);
+    /// ```
     fn from_position(position: usize) -> Result<Self, CardError> {
         match position{
             p@ 0..=8 => Ok(Numbered(NumberFigure::from_position(p)?)),
@@ -215,31 +249,31 @@ impl std::fmt::Display for Figure {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         if f.alternate(){
             match self{
-                Figure::Ace => write!(f, "𝑨"),
-                Figure::King => write!(f, "𝑲"),
-                Figure::Queen => write!(f, "𝑸"),
-                Figure::Jack => write!(f, "𝑱"),
-                Figure::Numbered(n) => write!(f, "{}", n)
+                Ace => write!(f, "𝑨"),
+                King => write!(f, "𝑲"),
+                Queen => write!(f, "𝑸"),
+                Jack => write!(f, "𝑱"),
+                Numbered(n) => write!(f, "{}", n)
             }
         }
         else{
             match self{
-                Figure::Ace => write!(f, "Ace"),
-                Figure::King => write!(f, "King"),
-                Figure::Queen => write!(f, "Queen"),
-                Figure::Jack => write!(f, "Jack"),
-                Figure::Numbered(n) => write!(f, "{}", n)
+                Ace => write!(f, "Ace"),
+                King => write!(f, "King"),
+                Queen => write!(f, "Queen"),
+                Jack => write!(f, "Jack"),
+                Numbered(n) => write!(f, "{}", n)
             }
 
         }
     }
 }
-
-pub const FIGURES: [Figure;13] = [Ace, King, Queen, Jack, Numbered(NumberFigure {power: 10}),
-        Numbered(NumberFigure {power: 9}), Numbered(NumberFigure {power: 8}),
-        Numbered(NumberFigure {power: 7}), Numbered(NumberFigure {power: 6}),
-        Numbered(NumberFigure {power: 5}), Numbered(NumberFigure {power: 4}),
-        Numbered(NumberFigure {power: 3}), Numbered(NumberFigure {power: 2})];
+/// Array of standard figures in ascending order
+pub const FIGURES: [Figure;13] = [Numbered(NumberFigure {power: 2}), Numbered(NumberFigure {power: 3}),
+    Numbered(NumberFigure {power: 4}),Numbered(NumberFigure {power: 5}),
+    Numbered(NumberFigure {power: 6}), Numbered(NumberFigure {power: 7}),
+    Numbered(NumberFigure {power: 8}), Numbered(NumberFigure {power: 9}),
+    Numbered(NumberFigure {power: 10}), Jack,  Queen, King, Ace        ];
 
 impl PartialOrd for Figure {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
@@ -255,9 +289,9 @@ impl Ord for Figure {
 }
 
 #[derive(Default, Clone, Copy, Debug)]
-pub struct ComparatorF{
+pub struct FigureComparator {
 }
-impl Comparator<Figure> for ComparatorF{
+impl Comparator<Figure> for FigureComparator {
     fn compare(&self, l: &Figure, r: &Figure) -> Ordering {
         l.power().cmp(&r.power())
     }
@@ -326,17 +360,27 @@ mod tests{
     }
 }
 
+/// Alias for Figure with symbol 2
 pub const F2: Figure = Numbered(NumberFigure {power: 2});
+/// Alias for Figure with symbol 3
 pub const F3: Figure = Numbered(NumberFigure {power: 3});
+/// Alias for Figure with symbol 4
 pub const F4: Figure = Numbered(NumberFigure {power: 4});
+/// Alias for Figure with symbol 5
 pub const F5: Figure = Numbered(NumberFigure {power: 5});
+/// Alias for Figure with symbol 6
 pub const F6: Figure = Numbered(NumberFigure {power: 6});
+/// Alias for Figure with symbol 7
 pub const F7: Figure = Numbered(NumberFigure {power: 7});
+/// Alias for Figure with symbol 8
 pub const F8: Figure = Numbered(NumberFigure {power: 8});
+/// Alias for Figure with symbol 9
 pub const F9: Figure = Numbered(NumberFigure {power: 9});
+/// Alias for Figure with symbol 10
 pub const F10: Figure = Numbered(NumberFigure {power: 10});
 
-pub use Figure::*;
+pub use Figure::{Ace, King, Queen, Jack};
 use crate::symbol::CardSymbol;
 use crate::error::CardError;
+use crate::figures::Figure::Numbered;
 use crate::figures::FigureTrait;

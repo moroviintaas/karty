@@ -49,7 +49,7 @@ fn parse_numbered_figure(s: &str) -> IResult<&str, Figure>{
 /// Parses a figure
 /// ```
 /// use karty::figures::{Figure, NumberFigure};
-/// use karty::figures::parse::parse_figure;
+/// use karty::figures::parse_figure;
 /// use nom::error::ErrorKind;
 /// assert_eq!(parse_figure("kc"), Ok(("c", Figure::King)));
 /// assert_eq!(parse_figure("qdiamonds"), Ok(("diamonds", Figure::Queen)));
