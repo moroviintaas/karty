@@ -3,11 +3,13 @@ use std::fmt::Debug;
 use std::hash::Hash;
 use std::marker::PhantomData;
 use comparator::Comparator;
-use crate::figures::FigureTrait;
-use crate::suits::SuitTrait;
+use num_integer::div_rem;
+use crate::figures::{FigureTrait};
+use crate::suits::{ SuitTrait};
 use crate::symbol::{CardSymbol};
 #[cfg(feature = "speedy")]
 use speedy::{Readable, Writable};
+use crate::error::CardError;
 
 pub trait Card2S<F: FigureTrait, S: SuitTrait>{
     const CARD_SPACE: usize = F::SYMBOL_SPACE * S::SYMBOL_SPACE;
@@ -144,8 +146,8 @@ pub trait Card2SymTrait: Debug + Clone + Eq{
 ///
 /// type MyCard = Card2SGen<Machine, Color>;
 /// // Now we have access to few automatically implemented methods:
-/// let card1 = MyCard::from_position(7).unwrap();
-/// let card2 = MyCard::from_position(9).unwrap();
+/// let card1 = MyCard::from_position(10).unwrap();
+/// let card2 = MyCard::from_position(5).unwrap();
 /// assert_eq!(card1.figure(), &Machine::Bike);
 /// assert_eq!(card1.suit(), &Color::Red);
 /// assert_eq!(card2.figure(), &Machine::Train);
@@ -277,6 +279,31 @@ CardComparatorGen<F, S, CF, CS>{
     }
 }
 
+
+
+impl<F: FigureTrait, S: SuitTrait> CardSymbol for Card2SGen<F, S> {
+    const SYMBOL_SPACE: usize = F::SYMBOL_SPACE * S::SYMBOL_SPACE;
+
+    fn position(&self) -> usize {
+        (self.suit().position() * F::SYMBOL_SPACE) + self.figure.position()
+    }
+
+    fn from_position(position: usize) -> Result<Self, CardError> {
+        let (suit, figure) = div_rem(position, F::SYMBOL_SPACE);
+        Ok(Self{figure: F::from_position(figure)?, suit: S::from_position(suit)?})
+    }
+    /*
+    fn position(&self) -> usize {
+        (self.figure.position() * S::SYMBOL_SPACE) + self.suit.position()
+    }
+
+    fn from_position(position: usize) -> Result<Self, CardError> {
+        let (figure, suit) = div_rem(position, S::SYMBOL_SPACE);
+        Ok(Self{figure: F::from_position(figure)?, suit: S::from_position(suit)?})
+    }
+
+     */
+}
 
 
 

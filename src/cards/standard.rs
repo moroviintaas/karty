@@ -1,12 +1,10 @@
 use std::fmt::{Display, Formatter};
 use std::marker::PhantomData;
-use num_integer::div_rem;
 use crate::symbol::CardSymbol;
 use crate::cards::{Card2SGen, CardComparatorGen};
-use crate::error::CardError;
-use crate::figures::{Ace, FigureComparator, F10, F2, F3, F4, F5, F6, F7, F8, F9, Figure, Jack, King, Queen, FigureTrait};
+use crate::figures::{Ace, FigureComparator, F10, F2, F3, F4, F5, F6, F7, F8, F9, Figure, Jack, King, Queen};
 use crate::suits::Suit::*;
-use crate::suits::{ComparatorAHCD, ComparatorAHDC, Suit, SuitTrait};
+use crate::suits::{ComparatorAHCD, ComparatorAHDC, Suit};
 
 use super::Card2SymTrait;
 
@@ -50,23 +48,10 @@ impl Card2SGen<Figure, Suit>{
             },*/
             Err(_) => None
         }
-        
 
-    
 
-    }
-}
 
-impl<F: FigureTrait, S: SuitTrait> CardSymbol for Card2SGen<F, S> {
-    const SYMBOL_SPACE: usize = F::SYMBOL_SPACE * S::SYMBOL_SPACE;
 
-    fn position(&self) -> usize {
-        (self.figure.position() * S::SYMBOL_SPACE) + self.suit.position()
-    }
-
-    fn from_position(position: usize) -> Result<Self, CardError> {
-        let (figure, suit) = div_rem(position, S::SYMBOL_SPACE);
-        Ok(Self{figure: F::from_position(figure)?, suit: S::from_position(suit)?})
     }
 }
 
@@ -220,8 +205,9 @@ mod tests{
     #[test]
     fn test_card_element_for_card_std(){
         assert_eq!(Card::from_position(0).unwrap(), TWO_CLUBS);
-        assert_eq!(Card::from_position(1).unwrap(), TWO_DIAMONDS);
-        assert_eq!(Card::from_position(4).unwrap(), THREE_CLUBS);
+        assert_eq!(Card::from_position(1).unwrap(), THREE_CLUBS);
+        assert_eq!(Card::from_position(4).unwrap(), SIX_CLUBS);
+        assert_eq!(Card::from_position(13).unwrap(), TWO_DIAMONDS);
         assert_eq!(Card::from_position(51).unwrap(), ACE_SPADES);
     }
 

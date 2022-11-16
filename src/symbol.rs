@@ -58,8 +58,8 @@ pub trait CardSymbol: Sized + Eq +  std::hash::Hash  + Clone + Debug{
     /// use karty::symbol::CardSymbol;
     /// assert_eq!(Figure::from_position(10).unwrap(), Queen);
     /// assert_eq!(Suit::from_position(2).unwrap(), Hearts);
-    /// assert_eq!(Card::from_position(12).unwrap(), FIVE_CLUBS);
-    /// assert_eq!(Card::from_position(39).unwrap(), JACK_SPADES);
+    /// assert_eq!(Card::from_position(3).unwrap(), FIVE_CLUBS);
+    /// assert_eq!(Card::from_position(48).unwrap(), JACK_SPADES);
     /// ```
     fn from_position(position: usize) -> Result<Self, CardError>;
     /// Method constructs [`CardSymbolIterator`][crate::symbol::CardSymbolIterator] iterating symbols from the one numbered `0` to
