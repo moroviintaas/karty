@@ -57,6 +57,13 @@ impl<Crd: CardSymbol + Display> HandTrait for HandSet<Crd>{
         self.cards.len()
     }
 
+    fn union(&self, other: &Self) -> Self {
+        Self{cards:  self.cards.union(&other.cards).cloned().collect()}
+    }
+
+    fn intersection(&self, other: &Self) -> Self {
+        Self{cards: self.cards.intersection(&other.cards).cloned().collect()}
+    }
 }
 
 pub type HandSetStd = HandSet<Card>;

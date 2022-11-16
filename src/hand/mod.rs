@@ -17,4 +17,6 @@ pub trait HandTrait: Debug + Clone + Eq + IntoIterator<Item=Self::CardType> + Di
     fn is_empty(&self) -> bool{
         self.len() == 0
     }
+    fn union(&self, other: &Self) -> Self;
+    fn intersection(&self, other: &Self) -> Self;
 }

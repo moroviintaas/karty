@@ -1,10 +1,12 @@
 use std::fmt::{Display, Formatter};
-use crate::cards::Card;
+use crate::cards::{Card, MASK_CLUBS, MASK_DIAMONDS, MASK_HEARTS, MASK_SPADES};
 
 use crate::error::HandError;
 use crate::hand::HandTrait;
 #[cfg(feature="speedy")]
 use crate::speedy::{Readable, Writable};
+use crate::suits::Suit;
+use crate::symbol::CardSymbol;
 
 
 const LARGEST_MASK:u64 = 1<<63;
@@ -15,12 +17,49 @@ pub struct StackHand {
     pub(crate) cards: u64,
 }
 
-pub struct StackHandStdIterator{
+impl StackHand{
+    ///
+    /// ```
+    /// use karty::cards::{ACE_CLUBS, ACE_DIAMONDS, ACE_HEARTS, ACE_SPADES, Card, THREE_SPADES, TWO_SPADES};
+    /// use karty::hand::{HandTrait, StackHand};
+    /// use karty::suits::Suit::{Clubs, Spades};
+    /// let mut hand = StackHand::new_empty();
+    /// hand.add_card(ACE_HEARTS).unwrap();
+    /// hand.add_card(ACE_DIAMONDS).unwrap();
+    /// hand.add_card(ACE_CLUBS).unwrap();
+    /// hand.add_card(ACE_SPADES).unwrap();
+    /// hand.add_card(TWO_SPADES).unwrap();
+    /// hand.add_card(THREE_SPADES).unwrap();
+    /// let spades: Vec<Card> = hand.cards_in_suit(Spades).collect();
+    /// let clubs: Vec<Card> = hand.cards_in_suit(Clubs).collect();
+    /// assert_eq!(spades, vec![TWO_SPADES, THREE_SPADES, ACE_SPADES]);
+    /// assert_eq!(clubs, vec![ACE_CLUBS]);
+    ///
+    /// ```
+    pub fn cards_in_suit(&self, suit: Suit) -> StackHandSuitIterator {
+        StackHandSuitIterator::new(*self, suit)
+    }
+
+
+
+}
+
+impl Into<u64> for StackHand{
+    fn into(self) -> u64 {
+        self.cards
+    }
+}
+
+
+
+pub struct StackHandIterator {
     hand: StackHand,
     mask: u64,
     end: bool
 }
-impl StackHandStdIterator{
+
+
+impl StackHandIterator {
     pub fn new(hand: StackHand) -> Self{
 
         Self{mask: 1, hand, end: false}
@@ -38,12 +77,10 @@ impl StackHandStdIterator{
 /// assert_eq!(v.len(), 4);
 /// assert_eq!(v[0], ACE_CLUBS);
 /// ```
-impl Iterator for StackHandStdIterator{
+impl Iterator for StackHandIterator {
     type Item = Card;
 
     fn next(&mut self) -> Option<Self::Item> {
-
-        
         if !self.end{
             while self.mask != (LARGEST_MASK){
                 if self.mask & self.hand.cards != 0{
@@ -62,19 +99,59 @@ impl Iterator for StackHandStdIterator{
         else{
             None
         }
-        
-        
-
     }
 }
+
+pub struct StackHandSuitIterator {
+    hand: StackHand,
+    mask: u64,
+    guard: u64,
+    end: bool,
+
+}
+impl StackHandSuitIterator {
+    pub fn new(hand: StackHand, suit: Suit) -> Self{
+
+        let mask = 1u64 <<(suit.position()*16);
+        let guard = 1u64<<(suit.position()*16 + 15);
+        Self{mask, hand, end: false, guard}
+    }
+}
+
+impl Iterator for StackHandSuitIterator {
+    type Item = Card;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if !self.end{
+            while self.mask != (self.guard){
+                if self.mask & self.hand.cards != 0{
+                    let card = Card::from_mask(self.mask).unwrap();
+                    self.mask <<=1;
+                    return Some(card);
+                }
+                else{
+                    self.mask<<=1;
+                }
+            }
+            self.end = true;
+            Card::from_mask(self.mask)
+
+        }
+        else{
+            None
+        }
+    }
+}
+
+
 
 impl IntoIterator for StackHand {
     type Item = Card;
 
-    type IntoIter = StackHandStdIterator;
+    type IntoIter = StackHandIterator;
 
     fn into_iter(self) -> Self::IntoIter {
-        StackHandStdIterator::new(self)
+        StackHandIterator::new(self)
     }
 }
 
@@ -112,6 +189,14 @@ impl HandTrait for StackHand {
     fn len(&self) -> usize {
         self.cards.count_ones() as usize
     }
+
+    fn union(&self, other: &Self) -> Self {
+        Self{cards: self.cards | other.cards}
+    }
+
+    fn intersection(&self, other: &Self) -> Self {
+        Self{cards: self.cards & other.cards}
+    }
 }
 
 impl Display for StackHand {
@@ -133,3 +218,8 @@ impl Display for StackHand {
         write!(f, "]")
     }
 }
+
+pub const HAND_OF_SPADES: StackHand = StackHand{cards: MASK_SPADES};
+pub const HAND_OF_HEARTS: StackHand = StackHand{cards: MASK_HEARTS};
+pub const HAND_OF_DIAMONDS: StackHand = StackHand{cards: MASK_DIAMONDS};
+pub const HAND_OF_CLUBS: StackHand = StackHand{cards: MASK_CLUBS};

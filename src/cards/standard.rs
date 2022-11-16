@@ -57,10 +57,6 @@ impl Card2SGen<Figure, Suit>{
     }
 }
 
-
-
-pub type Card =  Card2SGen<Figure, Suit>;
-
 impl<F: FigureTrait, S: SuitTrait> CardSymbol for Card2SGen<F, S> {
     const SYMBOL_SPACE: usize = F::SYMBOL_SPACE * S::SYMBOL_SPACE;
 
@@ -73,6 +69,38 @@ impl<F: FigureTrait, S: SuitTrait> CardSymbol for Card2SGen<F, S> {
         Ok(Self{figure: F::from_position(figure)?, suit: S::from_position(suit)?})
     }
 }
+
+
+/// ```
+/// use karty::cards::Card;
+/// assert_eq!(std::mem::size_of::<Card>(), 3);
+/// ```
+pub type Card =  Card2SGen<Figure, Suit>;
+
+
+
+
+
+
+
+
+/*
+impl Card{
+    fn suit_num(&self) -> u8{
+        self.index>>4
+    }
+    fn figure_num(&self) -> u8{
+        self.index&0x0f
+    }
+
+    pub fn mask(&self) -> u64{
+
+        self.figure().mask() << (self.suit().position() * 16)
+    }
+}
+*/
+
+
 
 impl Display for Card {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -99,8 +127,8 @@ pub const CARD_COMPARATOR_VISUAL: ComparatorCardStd<ComparatorAHCD> =
         _phantom: PhantomData{}
     };
 
-
 //pub const TWO_CLUBS: Card<FigureStd, SuitStd> = Card { suit: SuitStd::Clubs, figure: Numbered(F2)};
+
 pub const TWO_CLUBS: Card = Card { suit: Clubs, figure: F2};
 pub const THREE_CLUBS: Card = Card { suit: Clubs, figure: F3};
 pub const FOUR_CLUBS: Card = Card { suit: Clubs, figure: F4};
@@ -172,6 +200,11 @@ pub const STANDARD_DECK: [Card; Card::SYMBOL_SPACE] = [
     KING_CLUBS,	    KING_DIAMONDS,	KING_HEARTS,	KING_SPADES,
     ACE_CLUBS,	    ACE_DIAMONDS,	ACE_HEARTS,	    ACE_SPADES
 ];
+
+pub const MASK_CLUBS: u64 =                 0x7ffc;
+pub const MASK_DIAMONDS: u64 =          0x7ffc0000;
+pub const MASK_HEARTS: u64 =        0x7ffc00000000;
+pub const MASK_SPADES: u64 =    0x7ffc000000000000;
 
 #[cfg(test)]
 mod tests{

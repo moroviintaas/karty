@@ -12,7 +12,8 @@ pub enum CardError{
     /// Instance indicating that wrong position for [`Suit`][crate::suits::Suit] was used, associated value is violating value.
     WrongSuitPosition(usize),
     /// Instance indicating that wrong position for [`Figure`][crate::figures::Figure] was used, associated value is violating value.
-    WrongFigurePosition(usize)
+    WrongFigurePosition(usize),
+    WrongPosition(usize)
 }
 impl Display for CardError{
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
