@@ -12,7 +12,7 @@ use super::Card2SymTrait;
 impl Card2SGen<Figure, Suit>{
     /// ```
     /// use karty::cards::KING_HEARTS;
-    /// assert_eq!(KING_HEARTS.mask(), 0x200000000000);
+    /// assert_eq!(KING_HEARTS.mask(), 0x2000000000);//37 bit from ls
     /// ```
     /// ```
     /// use karty::cards::STANDARD_DECK;
@@ -21,22 +21,28 @@ impl Card2SGen<Figure, Suit>{
     ///     assert_eq!(bin_sum & c.mask(), 0);
     ///     bin_sum |= c.mask();
     /// }
-    /// assert_eq!(bin_sum, 0x7ffc7ffc7ffc7ffc)
+    /// assert_eq!(bin_sum, 0x0fffffffffffff)
     /// ```
     pub fn mask(&self) -> u64{
 
-        self.figure().mask() << (self.suit().position() * 16)
+        //self.figure().mask() << (self.suit().position() * 16)
+        1u64<<self.position()
     }
     /// ```
     /// use karty::cards::{Card, TWO_CLUBS, KING_SPADES};
-    /// assert_eq!(Card::from_mask(0x04).unwrap(), TWO_CLUBS);
-    /// assert_eq!(Card::from_mask(0x2000000000000000).unwrap(), KING_SPADES);
+    /// assert_eq!(Card::from_mask(0x01).unwrap(), TWO_CLUBS);
+    /// assert_eq!(Card::from_mask(0x4000000000000).unwrap(), KING_SPADES);
     /// ```
     pub fn from_mask(mask: u64) -> Option<Self>{
+
         if mask.count_ones() != 1{
             return None
         }
+
+
         let t0 = mask.trailing_zeros();
+        Some(Self::from_position(t0 as usize).unwrap())
+        /*
         let suit_mask = t0/16;
         let figure_mask = mask >> (suit_mask * 16);
         match Suit::from_position(suit_mask as usize){
@@ -48,6 +54,8 @@ impl Card2SGen<Figure, Suit>{
             },*/
             Err(_) => None
         }
+
+         */
 
 
 
