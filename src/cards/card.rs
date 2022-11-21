@@ -37,6 +37,7 @@ pub trait Card2SymTrait: Debug + Clone + Eq{
             ord => ord
         }
     }
+    fn from_figure_and_suit(figure: Self::Figure, suit: Self::Suit) -> Self;
 }
 
 /// Generic 2-symbol card - one named figure, second suit. Traits [`FigureTrait`](crate::figures::FigureTrait) and [`SuitTrait`](crate::suits::SuitTrait) can be are actually organising markers, as these traits do not add new restrictions for basic [`CardSymbol`](crate::symbol::CardSymbol).
@@ -183,6 +184,11 @@ impl<F: FigureTrait, S: SuitTrait> Card2SymTrait for Card2SGen<F, S>{
     fn figure(&self) -> &Self::Figure {
         &self.figure
     }
+
+    fn from_figure_and_suit(figure: Self::Figure, suit: Self::Suit) -> Self {
+        Self{suit, figure}
+    }
+    
 
 
 
