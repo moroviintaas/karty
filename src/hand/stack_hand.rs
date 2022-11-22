@@ -11,6 +11,7 @@ use crate::symbol::CardSymbol;
 
 
 const CARD_MASK_GUARD:u64 = 1<<52;
+const MASK_STACK_HAND_LEGAL: u64 = MASK_DIAMONDS | MASK_CLUBS | MASK_HEARTS | MASK_SPADES;
 
 #[derive(Debug, Clone, PartialEq, Eq, Copy, Hash)]
 #[cfg_attr(feature = "speedy", derive(Writable, Readable))]
@@ -49,6 +50,12 @@ impl StackHand{
 impl From<StackHand> for u64{
     fn from(hand: StackHand) -> Self {
         hand.cards
+    }
+}
+
+impl From<u64> for StackHand{
+    fn from(cards: u64) -> Self {
+        Self{cards: cards & MASK_STACK_HAND_LEGAL}
     }
 }
 
@@ -244,7 +251,36 @@ impl Display for StackHand {
     }
 }
 
+#[macro_export]
+macro_rules! stack_hand {
+    [ $( $x:expr ),* ] => {
+        {
+            let mut h = 0u64;
+            $(
+                h = h | $x.mask();
+            )*
+            StackHand::from(h)
+        }
+    };
+}
+
 pub const HAND_OF_SPADES: StackHand = StackHand{cards: MASK_SPADES};
 pub const HAND_OF_HEARTS: StackHand = StackHand{cards: MASK_HEARTS};
 pub const HAND_OF_DIAMONDS: StackHand = StackHand{cards: MASK_DIAMONDS};
 pub const HAND_OF_CLUBS: StackHand = StackHand{cards: MASK_CLUBS};
+
+
+
+#[cfg(test)]
+mod tests{
+    use crate::cards::{ACE_SPADES, KING_HEARTS, TEN_DIAMONDS, FOUR_SPADES};
+    use crate::hand::{HandTrait, StackHand};
+
+    #[test]
+    fn stack_hand_macro(){
+
+        let hand = stack_hand![ACE_SPADES, KING_HEARTS, TEN_DIAMONDS, FOUR_SPADES];
+        assert_eq!(hand.len(), 4);
+        assert!(hand.contains(&ACE_SPADES));
+    }
+}
