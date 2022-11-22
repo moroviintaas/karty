@@ -11,5 +11,6 @@ pub enum HandError{
     HandFull,
     CardDuplicated,
     HandNotInitialised,
+    DifferentLengths(usize, usize)
 }
 

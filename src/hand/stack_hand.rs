@@ -25,12 +25,12 @@ impl StackHand{
     /// use karty::hand::{HandTrait, StackHand};
     /// use karty::suits::Suit::{Clubs, Spades};
     /// let mut hand = StackHand::new_empty();
-    /// hand.add_card(ACE_HEARTS).unwrap();
-    /// hand.add_card(ACE_DIAMONDS).unwrap();
-    /// hand.add_card(ACE_CLUBS).unwrap();
-    /// hand.add_card(ACE_SPADES).unwrap();
-    /// hand.add_card(TWO_SPADES).unwrap();
-    /// hand.add_card(THREE_SPADES).unwrap();
+    /// hand.insert_card(ACE_HEARTS).unwrap();
+    /// hand.insert_card(ACE_DIAMONDS).unwrap();
+    /// hand.insert_card(ACE_CLUBS).unwrap();
+    /// hand.insert_card(ACE_SPADES).unwrap();
+    /// hand.insert_card(TWO_SPADES).unwrap();
+    /// hand.insert_card(THREE_SPADES).unwrap();
     /// let spades: Vec<Card> = hand.cards_in_suit(Spades).collect();
     /// let clubs: Vec<Card> = hand.cards_in_suit(Clubs).collect();
     /// assert_eq!(spades, vec![TWO_SPADES, THREE_SPADES, ACE_SPADES]);
@@ -70,11 +70,11 @@ impl StackHandIterator {
 /// use karty::cards::{ACE_CLUBS, ACE_SPADES, Card, JACK_SPADES, KING_HEARTS, QUEEN_DIAMONDS};
 /// use karty::hand::{HandTrait, StackHand};
 /// let mut hand = StackHand::new_empty();
-/// hand.add_card(ACE_CLUBS).unwrap();
-/// hand.add_card( KING_HEARTS).unwrap();
-/// hand.add_card( QUEEN_DIAMONDS).unwrap();
-/// hand.add_card( JACK_SPADES).unwrap();
-/// hand.add_card( ACE_SPADES).unwrap();
+/// hand.insert_card(ACE_CLUBS).unwrap();
+/// hand.insert_card( KING_HEARTS).unwrap();
+/// hand.insert_card( QUEEN_DIAMONDS).unwrap();
+/// hand.insert_card( JACK_SPADES).unwrap();
+/// hand.insert_card( ACE_SPADES).unwrap();
 /// let v: Vec<Card> = hand.into_iter().collect();
 /// assert_eq!(v.len(), 5);
 /// assert_eq!(v[0], ACE_CLUBS);
@@ -183,7 +183,7 @@ impl IntoIterator for StackHand {
 impl HandTrait for StackHand {
     type CardType = Card;
 
-    fn add_card(&mut self, card: Self::CardType) -> Result<(), crate::error::HandError> {
+    fn insert_card(&mut self, card: Self::CardType) -> Result<(), crate::error::HandError> {
         match self.contains(&card){
             true => Err(HandError::CardDuplicated),
             false => {

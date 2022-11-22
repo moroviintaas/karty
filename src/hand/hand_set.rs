@@ -30,7 +30,7 @@ impl <Crd: CardSymbol + Display> IntoIterator for HandSet<Crd>{
 impl<Crd: CardSymbol + Display> HandTrait for HandSet<Crd>{
     type CardType = Crd;
 
-    fn add_card(&mut self, card: Crd) -> Result<(), crate::error::HandError> {
+    fn insert_card(&mut self, card: Crd) -> Result<(), crate::error::HandError> {
         if self.cards.insert(card){
             Ok(())
         }

@@ -9,7 +9,7 @@ use crate::symbol::CardSymbol;
 
 pub trait HandTrait: Debug + Clone + Eq + IntoIterator<Item=Self::CardType> + Display{
     type CardType : CardSymbol;
-    fn add_card(&mut self, card: Self::CardType) -> Result<(), HandError>;
+    fn insert_card(&mut self, card: Self::CardType) -> Result<(), HandError>;
     fn remove_card(&mut self, card: &Self::CardType) -> Result<(), HandError>;
     fn new_empty() -> Self;
     fn contains(&self, card: &Self::CardType) -> bool;
@@ -19,4 +19,5 @@ pub trait HandTrait: Debug + Clone + Eq + IntoIterator<Item=Self::CardType> + Di
     }
     fn union(&self, other: &Self) -> Self;
     fn intersection(&self, other: &Self) -> Self;
+
 }
