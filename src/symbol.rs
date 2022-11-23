@@ -97,6 +97,7 @@ pub trait CardSymbol: Sized + Eq +  std::hash::Hash  + Clone + Debug{
 /// let symbols = Vec::from_iter(iterator);
 /// assert_eq!(symbols, [Clubs, Diamonds, Hearts, Spades]);
 /// ```
+#[derive(Clone)]
 pub struct CardSymbolIterator<E: CardSymbol>{
     iterator_position: usize,
     phantom: PhantomData<E>,

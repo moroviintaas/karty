@@ -9,6 +9,7 @@ use crate::suits::{ SuitTrait};
 use crate::symbol::{CardSymbol};
 #[cfg(feature = "speedy")]
 use speedy::{Readable, Writable};
+use crate::cards::Card2SGenSubset;
 use crate::error::CardError;
 
 pub trait Card2S<F: FigureTrait, S: SuitTrait>{
@@ -38,6 +39,27 @@ pub trait Card2SymTrait: Debug + Clone + Eq{
         }
     }
     fn from_figure_and_suit(figure: Self::Figure, suit: Self::Suit) -> Self;
+
+    /// ```
+    /// use karty::cards::{ACE_HEARTS, ACE_SPADES, Card, Card2SGenSubset, Card2SymTrait, KING_HEARTS, KING_SPADES, QUEEN_HEARTS, QUEEN_SPADES};
+    /// use karty::figures::{Ace, King, Queen};
+    /// use karty::suits::Suit::{Hearts, Spades};
+    /// let cards_iterated: Vec<Card> = Card::card_subset(vec![Ace, King, Queen], vec![Spades, Hearts]).into_iter().collect();
+    /// assert_eq!(cards_iterated, vec![ACE_SPADES, KING_SPADES, QUEEN_SPADES, ACE_HEARTS, KING_HEARTS, QUEEN_HEARTS ]);
+    /// ```
+    /// ```
+    /// use karty::cards::{Card, Card2SymTrait};
+    /// use karty::figures::Figure;
+    /// use karty::suits::Suit;
+    /// use karty::symbol::CardSymbol;
+    /// let all_cards: Vec<Card> = Card::card_subset(Figure::iterator(), Suit::iterator()).collect();
+    /// assert_eq!(all_cards.len(), 52);
+    /// ```
+    fn card_subset<IFigure: IntoIterator<Item=Self::Figure>,
+        ISuit: IntoIterator<Item=Self::Suit>>(figures: IFigure, suits: ISuit) -> Card2SGenSubset<IFigure, ISuit>
+        where <IFigure as IntoIterator>::IntoIter: Clone{
+        Card2SGenSubset::new(figures, suits)
+    }
 }
 
 /// Generic 2-symbol card - one named figure, second suit. Traits [`FigureTrait`](crate::figures::FigureTrait) and [`SuitTrait`](crate::suits::SuitTrait) can be are actually organising markers, as these traits do not add new restrictions for basic [`CardSymbol`](crate::symbol::CardSymbol).
@@ -188,6 +210,8 @@ impl<F: FigureTrait, S: SuitTrait> Card2SymTrait for Card2SGen<F, S>{
     fn from_figure_and_suit(figure: Self::Figure, suit: Self::Suit) -> Self {
         Self{suit, figure}
     }
+
+
     
 
 

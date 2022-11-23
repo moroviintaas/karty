@@ -3,6 +3,7 @@ use nom::bytes::complete::tag_no_case;
 use nom::character::complete::digit1;
 use nom::error::ErrorKind;
 use nom::IResult;
+use crate::figures::F10;
 
 use crate::figures::standard::{Figure, MAX_NUMBER_FIGURE, MIN_NUMBER_FIGURE, NumberFigure};
 /* In case nom parsers should be published
@@ -33,6 +34,10 @@ fn parse_jack(s: &str) -> IResult<&str, Figure>{
     alt((tag_no_case("jack"), tag_no_case("j")))(s)
         .map(|(i, _)| (i, Figure::Jack))
 }
+fn parse_ten(s: &str) -> IResult<&str, Figure>{
+    alt((tag_no_case("ten"), tag_no_case("t")))(s)
+        .map(|(i, _)| (i, F10))
+}
 
 fn parse_numbered_figure(s: &str) -> IResult<&str, Figure>{
     match digit1(s){
@@ -56,7 +61,7 @@ fn parse_numbered_figure(s: &str) -> IResult<&str, Figure>{
 /// assert_eq!(parse_figure("deadfish"), Err(nom::Err::Error(nom::error::Error::new("deadfish", ErrorKind::Tag))));
 /// ```
 pub fn parse_figure(s: &str) -> IResult<&str, Figure>{
-    alt((parse_numbered_figure, parse_ace, parse_king, parse_queen, parse_jack))(s)
+    alt((parse_ten, parse_numbered_figure, parse_ace, parse_king, parse_queen, parse_jack))(s)
 }
 
 #[cfg(test)]
@@ -77,6 +82,6 @@ mod tests{
         assert_eq!(parse::parse_numbered_figure("10fg"), Ok(("fg", Figure::Numbered(NumberFigure::new(10)))));
         assert_eq!(parse::parse_numbered_figure("11fg"), Err(nom::Err::Error(nom::error::Error::new("11fg", ErrorKind::Digit))));
         assert_eq!(parse::parse_numbered_figure("512fg"), Err(nom::Err::Error(nom::error::Error::new("512fg", ErrorKind::Fail))));
-
+        assert_eq!(parse::parse_figure("tfg"), Ok(("fg", Figure::Numbered(NumberFigure::new(10)))));
     }
 }
