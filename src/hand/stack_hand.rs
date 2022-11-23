@@ -1,7 +1,7 @@
 use std::fmt::{Display, Formatter};
 use crate::cards::{Card, MASK_CLUBS, MASK_DIAMONDS, MASK_HEARTS, MASK_SPADES};
 
-use crate::error::HandError;
+use crate::error::HandErrorGen;
 use crate::figures::Figure;
 use crate::hand::HandTrait;
 #[cfg(feature="speedy")]
@@ -190,9 +190,9 @@ impl IntoIterator for StackHand {
 impl HandTrait for StackHand {
     type CardType = Card;
 
-    fn insert_card(&mut self, card: Self::CardType) -> Result<(), crate::error::HandError> {
+    fn insert_card(&mut self, card: Self::CardType) -> Result<(), crate::error::HandErrorGen<Self::CardType>> {
         match self.contains(&card){
-            true => Err(HandError::CardDuplicated),
+            true => Err(HandErrorGen::CardDuplicated(card)),
             false => {
                 self.cards |= card.mask();
                 Ok(())
@@ -200,13 +200,13 @@ impl HandTrait for StackHand {
         }
     }
 
-    fn remove_card(&mut self, card: &Self::CardType) -> Result<(), crate::error::HandError> {
+    fn remove_card(&mut self, card: &Self::CardType) -> Result<(), crate::error::HandErrorGen<Self::CardType>> {
         match self.contains(card){
             true => {
                 self.cards ^= card.mask();
                 Ok(())
             },
-            false => Err(HandError::CardNotInHand)
+            false => Err(HandErrorGen::CardNotInHand(*card))
         }
     }
 

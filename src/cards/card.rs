@@ -16,7 +16,7 @@ pub trait Card2S<F: FigureTrait, S: SuitTrait>{
     const CARD_SPACE: usize = F::SYMBOL_SPACE * S::SYMBOL_SPACE;
 }
 
-pub trait Card2SymTrait: Debug + Clone + Eq{
+pub trait Card2SymTrait: Debug + Clone + Eq + CardSymbol{
     type Figure: FigureTrait;
     type Suit: SuitTrait;
     const CARD_SPACE: usize = Self::Figure::SYMBOL_SPACE * Self::Suit::SYMBOL_SPACE;

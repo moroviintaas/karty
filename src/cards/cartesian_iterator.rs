@@ -35,7 +35,7 @@ where <IFigure as IntoIterator>::IntoIter: Clone{
     type Item = Card2SGen<F, S>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.product.next().and_then(|(suit, figure)| Some(Card2SGen::from_figure_and_suit(figure, suit) ))
+        self.product.next().map(|(suit, figure)| Card2SGen::from_figure_and_suit(figure, suit) )
 
     }
 }

@@ -1,12 +1,12 @@
 
 use std::fmt::{Debug, Display};
-use crate::error::HandError;
+use crate::error::HandErrorGen;
 use crate::symbol::CardSymbol;
 
-pub trait HandTrait: Debug + Clone + Eq + IntoIterator<Item=Self::CardType> + Display{
+pub trait HandTrait: Debug + Clone + Eq + IntoIterator<Item=Self::CardType> + Display + IntoIterator{
     type CardType : CardSymbol;
-    fn insert_card(&mut self, card: Self::CardType) -> Result<(), HandError>;
-    fn remove_card(&mut self, card: &Self::CardType) -> Result<(), HandError>;
+    fn insert_card(&mut self, card: Self::CardType) -> Result<(), HandErrorGen<Self::CardType>>;
+    fn remove_card(&mut self, card: &Self::CardType) -> Result<(), HandErrorGen<Self::CardType>>;
     fn empty() -> Self;
     fn contains(&self, card: &Self::CardType) -> bool;
     fn len(&self) -> usize;
@@ -28,7 +28,7 @@ pub trait HandTrait: Debug + Clone + Eq + IntoIterator<Item=Self::CardType> + Di
     /// assert!(!hand.contains(&NINE_CLUBS));
     ///
     /// ```
-    fn insert_from_iterator<I: Iterator<Item = Self::CardType>>(&mut self, iter: I) -> Result<(), HandError>{
+    fn insert_from_iterator<I: Iterator<Item = Self::CardType>>(&mut self, iter: I) -> Result<(), HandErrorGen<Self::CardType>>{
         let mut result = Ok(());
         for c in iter{
             match self.insert_card(c){
@@ -57,5 +57,9 @@ pub trait HandTrait: Debug + Clone + Eq + IntoIterator<Item=Self::CardType> + Di
          hand.insert_from_iterator(iter).unwrap_or(());
          hand
      }
+
+    fn to_vec(self) -> Vec<Self::CardType>{
+        self.into_iter().collect()
+    }
 
 }
