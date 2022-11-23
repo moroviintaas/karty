@@ -46,7 +46,7 @@ impl<Crd: CardSymbol + Display> HandTrait for HandSet<Crd>{
         }
     }
 
-    fn new_empty() -> Self {
+    fn empty() -> Self {
         Self{cards: HashSet::new()}
     }
 

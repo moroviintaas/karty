@@ -25,7 +25,7 @@ impl StackHand{
     /// use karty::cards::{ACE_CLUBS, ACE_DIAMONDS, ACE_HEARTS, ACE_SPADES, Card, THREE_SPADES, TWO_SPADES};
     /// use karty::hand::{HandTrait, StackHand};
     /// use karty::suits::Suit::{Clubs, Spades};
-    /// let mut hand = StackHand::new_empty();
+    /// let mut hand = StackHand::empty();
     /// hand.insert_card(ACE_HEARTS).unwrap();
     /// hand.insert_card(ACE_DIAMONDS).unwrap();
     /// hand.insert_card(ACE_CLUBS).unwrap();
@@ -76,7 +76,7 @@ impl StackHandIterator {
 /// ```
 /// use karty::cards::{ACE_CLUBS, ACE_SPADES, Card, JACK_SPADES, KING_HEARTS, QUEEN_DIAMONDS};
 /// use karty::hand::{HandTrait, StackHand};
-/// let mut hand = StackHand::new_empty();
+/// let mut hand = StackHand::empty();
 /// hand.insert_card(ACE_CLUBS).unwrap();
 /// hand.insert_card( KING_HEARTS).unwrap();
 /// hand.insert_card( QUEEN_DIAMONDS).unwrap();
@@ -210,7 +210,7 @@ impl HandTrait for StackHand {
         }
     }
 
-    fn new_empty() -> Self {
+    fn empty() -> Self {
         Self{cards: 0u64}
     }
 
@@ -248,6 +248,24 @@ impl Display for StackHand {
             }
         }
         write!(f, "]")
+    }
+}
+
+impl FromIterator<Card> for StackHand{
+    /// ```
+    /// use karty::hand::{HandTrait, StackHand};
+    /// use karty::stack_hand;
+    /// use karty::cards::*;
+    /// let mut hand = StackHand::from_iter(vec![KING_SPADES, QUEEN_DIAMONDS, FOUR_SPADES, THREE_CLUBS]);
+    /// assert_eq!(hand.len(), 4);
+    /// assert!(hand.contains(&QUEEN_DIAMONDS));
+    /// assert!(!hand.contains(&NINE_CLUBS));
+    ///
+    /// ```
+    fn from_iter<T: IntoIterator<Item=Card>>(iter: T) -> Self {
+        let mut hand = StackHand::empty();
+        hand.insert_from_iterator(iter.into_iter()).unwrap_or(());
+        hand
     }
 }
 
