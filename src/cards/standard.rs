@@ -193,11 +193,17 @@ pub const STANDARD_DECK: [Card; Card::SYMBOL_SPACE] = [
     KING_CLUBS,	    KING_DIAMONDS,	KING_HEARTS,	KING_SPADES,
     ACE_CLUBS,	    ACE_DIAMONDS,	ACE_HEARTS,	    ACE_SPADES
 ];
-
+/* 
 pub const MASK_CLUBS: u64 =                 0x7ffc;
 pub const MASK_DIAMONDS: u64 =          0x7ffc0000;
 pub const MASK_HEARTS: u64 =        0x7ffc00000000;
 pub const MASK_SPADES: u64 =    0x7ffc000000000000;
+*/
+pub const MASK_CLUBS: u64 =                 0x1fff;
+pub const MASK_DIAMONDS: u64 =          0x03ffe000;
+pub const MASK_HEARTS: u64 =        0x007ffc000000;
+pub const MASK_SPADES: u64 =    0x000fff8000000000;
+
 
 #[cfg(test)]
 mod tests{

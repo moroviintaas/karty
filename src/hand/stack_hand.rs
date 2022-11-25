@@ -300,9 +300,14 @@ macro_rules! stack_hand {
         {
             let mut h = 0u64;
             $(
-                h = h | $x.mask();
+                 h |= $x.mask();
             )*
             StackHand::from(h)
+            /*let mut hand = StackHand::empty();
+            $(
+                hand.insert_card($x).unwrap();
+            )*
+            hand*/
         }
     };
 }
@@ -316,7 +321,7 @@ pub const HAND_OF_CLUBS: StackHand = StackHand{cards: MASK_CLUBS};
 
 #[cfg(test)]
 mod tests{
-    use crate::cards::{ACE_SPADES, KING_HEARTS, TEN_DIAMONDS, FOUR_SPADES};
+    use crate::cards::{ACE_SPADES, KING_HEARTS, TEN_DIAMONDS, FOUR_SPADES, QUEEN_SPADES, JACK_CLUBS, KING_CLUBS};
     use crate::hand::{HandTrait, StackHand};
 
     #[test]
@@ -325,5 +330,20 @@ mod tests{
         let hand = stack_hand![ACE_SPADES, KING_HEARTS, TEN_DIAMONDS, FOUR_SPADES];
         assert_eq!(hand.len(), 4);
         assert!(hand.contains(&ACE_SPADES));
+        let hand_2 = stack_hand![ACE_SPADES, JACK_CLUBS, KING_CLUBS, QUEEN_SPADES];
+        assert!(hand_2.contains(&ACE_SPADES));
+        assert!(hand_2.contains(&QUEEN_SPADES));
+        assert!(hand_2.contains(&JACK_CLUBS));
+        assert!(hand_2.contains(&KING_CLUBS));
+        //assert_eq!(hand_2.len(), 4);
+    }
+
+    #[test]
+    fn insert_qeen_spades(){
+        assert_eq!(QUEEN_SPADES.mask(), 1u64<<49);
+        let mut hand = StackHand::empty();
+        hand.insert_card(QUEEN_SPADES).unwrap();
+        assert!(hand.contains(&QUEEN_SPADES));
+        assert_eq!(stack_hand![QUEEN_SPADES].cards, hand.cards);
     }
 }
