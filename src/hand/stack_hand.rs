@@ -42,6 +42,31 @@ impl StackHand{
         StackHandSuitIterator::new(*self, suit)
     }
 
+    /// ```
+    /// use karty::cards::{ACE_HEARTS, KING_HEARTS, KING_SPADES};
+    /// use karty::hand::{HandTrait, StackHand};
+    /// use karty::suits::Suit::{Hearts, Spades};
+    /// let mut hand = StackHand::empty();
+    /// assert!(!hand.contains_in_suit(Spades));
+    /// assert!(!hand.contains_in_suit(Hearts));
+    /// hand.insert_card(ACE_HEARTS).unwrap();
+    /// assert!(hand.contains_in_suit(Hearts));
+    /// hand.insert_card(KING_SPADES).unwrap();
+    /// assert!(hand.contains_in_suit(Spades))
+    /// ```
+    pub fn contains_in_suit(&self, suit: Suit) -> bool{
+        self.cards & Self::suit_mask(suit) != 0
+    }
+
+    fn suit_mask(suit: Suit) -> u64{
+        match suit{
+            Suit::Spades => MASK_SPADES,
+            Suit::Hearts => MASK_HEARTS,
+            Suit::Diamonds => MASK_DIAMONDS,
+            Suit::Clubs => MASK_CLUBS
+        }
+    }
+
 
 
 }
