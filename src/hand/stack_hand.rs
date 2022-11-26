@@ -302,7 +302,7 @@ macro_rules! stack_hand {
             $(
                  h |= $x.mask();
             )*
-            StackHand::from(h)
+            $crate::hand::StackHand::from(h)
             /*let mut hand = StackHand::empty();
             $(
                 hand.insert_card($x).unwrap();

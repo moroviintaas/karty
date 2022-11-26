@@ -104,6 +104,21 @@ impl Display for Card {
 
     }
 }
+/* 
+impl Display for &Vec<Card>{
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "[")?;
+        let mut v_iter = self.into_iter();
+        while let Some(element) = v_iter.next(){
+
+        }
+        match f.alternate(){
+            true => write!(f, "{:#}{:#}", self.figure(), self.suit()),
+            false => write!(f, "{} of {}", self.figure(), self.suit())
+        }
+        write!(f, "]")
+    }
+}*/
 
 pub type ComparatorCardStd<CS> = CardComparatorGen<Figure, Suit, FigureComparator, CS>;
 
