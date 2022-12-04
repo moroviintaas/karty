@@ -29,7 +29,7 @@ Card2SGenSubset<IFigure, ISuit>  {
 
 }
 
-impl <F: FigureTrait, S: SuitTrait, IFigure: IntoIterator<Item = F>, ISuit: IntoIterator<Item = S>>
+impl <F: FigureTrait + Copy, S: SuitTrait + Copy, IFigure: IntoIterator<Item = F>, ISuit: IntoIterator<Item = S>>
 Iterator for Card2SGenSubset<IFigure, ISuit>
 where <IFigure as IntoIterator>::IntoIter: Clone{
     type Item = Card2SGen<F, S>;

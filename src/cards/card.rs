@@ -20,20 +20,20 @@ pub trait Card2SymTrait: Debug + Clone + Eq + CardSymbol{
     type Figure: FigureTrait;
     type Suit: SuitTrait;
     const CARD_SPACE: usize = Self::Figure::SYMBOL_SPACE * Self::Suit::SYMBOL_SPACE;
-    fn suit(&self) -> &Self::Suit;
-    fn figure(&self) -> &Self::Figure;
+    fn suit(&self) -> Self::Suit;
+    fn figure(&self) -> Self::Figure;
     fn compare_suit_first(&self, other: &Self) -> Ordering{
-        match self.suit().cmp(other.suit()){
+        match self.suit().cmp(&other.suit()){
             Ordering::Equal => {
-              self.figure().cmp(other.figure())
+              self.figure().cmp(&other.figure())
             },
             ord => ord
         }
     }
     fn compare_figure_first(&self, other: &Self) -> Ordering{
-        match self.figure().cmp(other.figure()){
+        match self.figure().cmp(&other.figure()){
             Ordering::Equal => {
-              self.suit().cmp(other.suit())
+              self.suit().cmp(&other.suit())
             },
             ord => ord
         }
@@ -74,7 +74,7 @@ pub trait Card2SymTrait: Debug + Clone + Eq + CardSymbol{
 /// use karty::figures::FigureTrait;
 /// use karty::suits::SuitTrait;
 /// use karty::symbol::{CardSymbol};
-/// #[derive(Clone, Debug, Hash, PartialEq, Eq)]
+/// #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq)]
 /// pub enum Color{
 ///     Red, Blue, Green, Yellow
 /// }
@@ -122,7 +122,7 @@ pub trait Card2SymTrait: Debug + Clone + Eq + CardSymbol{
 /// }
 ///
 /// //Now the same for figures
-/// #[derive(Clone, Debug, Hash, PartialEq, Eq)]
+/// #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq)]
 /// pub enum Machine{
 ///     Train, Bike, Car
 /// }
@@ -171,10 +171,10 @@ pub trait Card2SymTrait: Debug + Clone + Eq + CardSymbol{
 /// // Now we have access to few automatically implemented methods:
 /// let card1 = MyCard::from_position(10).unwrap();
 /// let card2 = MyCard::from_position(5).unwrap();
-/// assert_eq!(card1.figure(), &Machine::Bike);
-/// assert_eq!(card1.suit(), &Color::Red);
-/// assert_eq!(card2.figure(), &Machine::Train);
-/// assert_eq!(card2.suit(), &Color::Green);
+/// assert_eq!(card1.figure(), Machine::Bike);
+/// assert_eq!(card1.suit(), Color::Red);
+/// assert_eq!(card2.figure(), Machine::Train);
+/// assert_eq!(card2.suit(), Color::Green);
 /// // For example compare suit first//////
 /// let mut v: Vec<MyCard> = MyCard::iterator().collect();
 /// v.sort_by(|a,b| a.compare_suit_first(&b));
@@ -192,19 +192,19 @@ pub struct Card2SGen<F: FigureTrait,
     pub(crate) suit: S,
     pub(crate) figure: F
 }
-impl<F: FigureTrait, S: SuitTrait> Card2SymTrait for Card2SGen<F, S>{
+impl<F: FigureTrait + Copy, S: SuitTrait + Copy> Card2SymTrait for Card2SGen<F, S>{
     type Figure = F;
 
     type Suit = S;
 
     const CARD_SPACE: usize = Self::Figure::SYMBOL_SPACE * Self::Suit::SYMBOL_SPACE;
 
-    fn suit(&self) -> &Self::Suit {
-        &self.suit
+    fn suit(&self) -> Self::Suit {
+        self.suit
     }
 
-    fn figure(&self) -> &Self::Figure {
-        &self.figure
+    fn figure(&self) -> Self::Figure {
+        self.figure
     }
 
     fn from_figure_and_suit(figure: Self::Figure, suit: Self::Suit) -> Self {
@@ -259,7 +259,7 @@ for CardComparatorGen<F, S, CF, CS>{
     }
 }
 
-impl<F: FigureTrait, S: SuitTrait, CS: Comparator<S> + Default, CF: Comparator<F> + Default>
+impl<F: FigureTrait + Copy, S: SuitTrait + Copy, CS: Comparator<S> + Default, CF: Comparator<F> + Default>
 CardComparatorGen<F, S, CF, CS>{
 
 /// ```
@@ -277,8 +277,8 @@ CardComparatorGen<F, S, CF, CS>{
 /// assert_eq!(deck[50], KING_SPADES);
 /// ```
     pub fn cmp_suit_figure(&self, l: &Card2SGen<F, S>, r: &Card2SGen<F, S>) -> Ordering {
-        match self.suit_comparator.compare(l.suit(), r.suit()){
-            Ordering::Equal => self.figure_comparator.compare(l.figure(), r.figure() ),
+        match self.suit_comparator.compare(&l.suit(), &r.suit()){
+            Ordering::Equal => self.figure_comparator.compare(&l.figure(), &r.figure() ),
             ordering => ordering
         }
     }
@@ -302,8 +302,8 @@ CardComparatorGen<F, S, CF, CS>{
 /// assert_eq!(deck[48], ACE_DIAMONDS);
 /// ```
     pub fn cmp_figure_suit(&self, l: &Card2SGen<F, S>, r: &Card2SGen<F, S>) -> Ordering {
-        match self.figure_comparator.compare(l.figure(), r.figure()){
-            Ordering::Equal => self.suit_comparator.compare(l.suit(), r.suit() ),
+        match self.figure_comparator.compare(&l.figure(), &r.figure()){
+            Ordering::Equal => self.suit_comparator.compare(&l.suit(), &r.suit() ),
             ordering => ordering
         }
     }
@@ -311,7 +311,7 @@ CardComparatorGen<F, S, CF, CS>{
 
 
 
-impl<F: FigureTrait, S: SuitTrait> CardSymbol for Card2SGen<F, S> {
+impl<F: FigureTrait+ Copy, S: SuitTrait + Copy> CardSymbol for Card2SGen<F, S> {
     const SYMBOL_SPACE: usize = F::SYMBOL_SPACE * S::SYMBOL_SPACE;
 
     fn position(&self) -> usize {
