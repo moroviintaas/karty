@@ -4,11 +4,9 @@
 //! # Authors:
 //! [morovintaas](mailto:moroviintaas@gmail.com)
 //!
-use std::cmp::Ordering;
-use std::marker::PhantomData;
 use crate::error::CardError;
 use std::fmt::Debug;
-use comparator::Comparator;
+use crate::symbol::CardSymbolIterator;
 
 /// Trait representing a symbol on a playing card.
 /// Typical playing card (one of 52 card deck) is defined by two symbols - [`Figure`][crate::figures::Figure]  and [`Suit`][crate::suits::Suit]
@@ -82,105 +80,4 @@ pub trait CardSymbol: Sized + Eq +  std::hash::Hash  + Clone + Debug{
     fn iterator() -> CardSymbolIterator<Self>{
         CardSymbolIterator::new()
     }
-}
-
-
-/// Iterator over CardSymbol space, starts with card associated with number `0` and ends on card
-/// with associated number
-/// # Example:
-/// ```
-/// use karty::suits::{Suit, Suit::*};
-/// use karty::symbol::CardSymbol;
-/// use std::iter::FromIterator;
-///
-/// let iterator = Suit::iterator();
-/// let symbols = Vec::from_iter(iterator);
-/// assert_eq!(symbols, [Clubs, Diamonds, Hearts, Spades]);
-/// ```
-#[derive(Clone)]
-pub struct CardSymbolIterator<E: CardSymbol>{
-    iterator_position: usize,
-    phantom: PhantomData<E>,
-}
-
-impl<E: CardSymbol> CardSymbolIterator<E>{
-    pub fn new() -> Self{
-        Self{iterator_position: 0, phantom: PhantomData}
-    }
-}
-
-impl<E: CardSymbol> Default for CardSymbolIterator<E>{
-    fn default() -> Self {
-        Self{iterator_position: 0, phantom: PhantomData}
-    }
-}
-
-impl<E: CardSymbol> Iterator for CardSymbolIterator<E>{
-    type Item = E;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        let element = E::from_position(self.iterator_position).ok();
-        self.iterator_position += 1;
-        element
-    }
-}
-/*
-#[derive(Default)]
-pub struct SymbolComparator<S: CardSymbol>{
-}
-impl<S: CardSymbol> Comparator<S> for SymbolComparator<S>{
-    fn compare(&self, a: &S, b: &S) -> Ordering {
-        a.position().cmp(b)
-    }
-}*/
-
-
-pub struct SimpleSymbolComparator<S: CardSymbol>{
-    _phantom_symbol: PhantomData<S>
-}
-
-impl<S: CardSymbol> Comparator<S> for SimpleSymbolComparator<S>{
-    fn compare(&self, a: &S, b: &S) -> Ordering {
-        a.position().cmp(&b.position())
-    }
-}
-
-#[cfg(test)]
-mod tests{
-    use crate::symbol::CardSymbolIterator;
-    use crate::figures::{*};
-    use crate::suits::Suit;
-    use crate::suits::Suit::{Clubs, Diamonds, Hearts, Spades};
-
-    #[test]
-    fn suit_iterator(){
-        let iterator = CardSymbolIterator::<Suit>::new();
-        let vec = Vec::from_iter(iterator);
-        assert_eq!(vec.len(), 4);
-        assert_eq!(vec[0], Clubs);
-        assert_eq!(vec[1], Diamonds);
-        assert_eq!(vec[2], Hearts);
-        assert_eq!(vec[3], Spades);
-    }
-
-    #[test]
-    fn figure_iterator(){
-        let iterator = CardSymbolIterator::<Figure>::new();
-        let vec = Vec::from_iter(iterator);
-        assert_eq!(vec.len(), 13);
-        assert_eq!(vec[0], F2);
-        assert_eq!(vec[1], F3);
-        assert_eq!(vec[2], F4);
-        assert_eq!(vec[3], F5);
-        assert_eq!(vec[4], F6);
-        assert_eq!(vec[5], F7);
-        assert_eq!(vec[6], F8);
-        assert_eq!(vec[7], F9);
-        assert_eq!(vec[8], F10);
-        assert_eq!(vec[9], Jack);
-        assert_eq!(vec[10], Queen);
-        assert_eq!(vec[11], King);
-        assert_eq!(vec[12], Ace);
-    }
-
 }
