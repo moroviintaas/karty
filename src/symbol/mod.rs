@@ -1,12 +1,12 @@
 mod iterator;
 mod r#trait;
-mod symbol_map;
+//mod symbol_map;
 mod symbol_comparator;
 
 
 pub use iterator::*;
 pub use r#trait::*;
-pub use symbol_map::*;
+//pub use symbol_map::*;
 pub use symbol_comparator::*;
 
 

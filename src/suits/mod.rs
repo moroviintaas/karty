@@ -11,3 +11,5 @@ pub use r#trait::*;
 
 #[cfg(feature = "parse")]
 pub mod parse;
+mod standard_map;
+pub use standard_map::*;
