@@ -1,7 +1,7 @@
 
 use std::fmt::{Debug, Display};
 use crate::error::HandErrorGen;
-use crate::suits::{Suit, SuitTrait};
+use crate::suits::{SuitTrait};
 use crate::symbol::CardSymbol;
 
 pub trait HandTrait: Debug + Clone + Eq + IntoIterator<Item=Self::CardType> + Display + IntoIterator{
