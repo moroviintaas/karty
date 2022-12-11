@@ -1,7 +1,6 @@
 use std::ops::{Index, IndexMut};
 use crate::suits::{Suit};
 use crate::suits::Suit::{Clubs, Diamonds, Hearts, Spades};
-use crate::symbol::CardSymbol;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Default)]
 pub struct SuitMap<T>{

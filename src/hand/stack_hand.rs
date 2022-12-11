@@ -9,6 +9,8 @@ use crate::speedy::{Readable, Writable};
 use crate::suits::Suit;
 use crate::symbol::CardSymbol;
 
+use super::HandSuitedTrait;
+
 
 const CARD_MASK_GUARD:u64 = 1<<52;
 const MASK_STACK_HAND_LEGAL: u64 = MASK_DIAMONDS | MASK_CLUBS | MASK_HEARTS | MASK_SPADES;
@@ -20,43 +22,9 @@ pub struct StackHand {
 }
 
 impl StackHand{
-    ///
-    /// ```
-    /// use karty::cards::{ACE_CLUBS, ACE_DIAMONDS, ACE_HEARTS, ACE_SPADES, Card, THREE_SPADES, TWO_SPADES};
-    /// use karty::hand::{HandTrait, StackHand};
-    /// use karty::suits::Suit::{Clubs, Spades};
-    /// let mut hand = StackHand::empty();
-    /// hand.insert_card(ACE_HEARTS).unwrap();
-    /// hand.insert_card(ACE_DIAMONDS).unwrap();
-    /// hand.insert_card(ACE_CLUBS).unwrap();
-    /// hand.insert_card(ACE_SPADES).unwrap();
-    /// hand.insert_card(TWO_SPADES).unwrap();
-    /// hand.insert_card(THREE_SPADES).unwrap();
-    /// let spades: Vec<Card> = hand.cards_in_suit(Spades).collect();
-    /// let clubs: Vec<Card> = hand.cards_in_suit(Clubs).collect();
-    /// assert_eq!(spades, vec![TWO_SPADES, THREE_SPADES, ACE_SPADES]);
-    /// assert_eq!(clubs, vec![ACE_CLUBS]);
-    ///
-    /// ```
-    pub fn cards_in_suit(&self, suit: Suit) -> StackHandSuitIterator {
-        StackHandSuitIterator::new(*self, suit)
-    }
+    
 
-    /// ```
-    /// use karty::cards::{ACE_HEARTS, KING_HEARTS, KING_SPADES};
-    /// use karty::hand::{HandTrait, StackHand};
-    /// use karty::suits::Suit::{Hearts, Spades};
-    /// let mut hand = StackHand::empty();
-    /// assert!(!hand.contains_in_suit(Spades));
-    /// assert!(!hand.contains_in_suit(Hearts));
-    /// hand.insert_card(ACE_HEARTS).unwrap();
-    /// assert!(hand.contains_in_suit(Hearts));
-    /// hand.insert_card(KING_SPADES).unwrap();
-    /// assert!(hand.contains_in_suit(Spades))
-    /// ```
-    pub fn contains_in_suit(&self, suit: Suit) -> bool{
-        self.cards & Self::suit_mask(suit) != 0
-    }
+    
 
     fn suit_mask(suit: Suit) -> u64{
         match suit{
@@ -254,6 +222,58 @@ impl HandTrait for StackHand {
     fn intersection(&self, other: &Self) -> Self {
         Self{cards: self.cards & other.cards}
     }
+}
+
+
+
+
+impl HandSuitedTrait for StackHand{
+    type SuitIterator = StackHandSuitIterator;
+    type St = Suit;
+
+    /// ```
+    /// use karty::cards::{ACE_HEARTS, KING_HEARTS, KING_SPADES};
+    /// use karty::hand::{HandTrait, StackHand};
+    /// use crate::karty::hand::HandSuitedTrait;
+    /// use karty::suits::Suit::{Hearts, Spades};
+    /// let mut hand = StackHand::empty();
+    /// assert!(!hand.contains_in_suit(&Spades));
+    /// assert!(!hand.contains_in_suit(&Hearts));
+    /// hand.insert_card(ACE_HEARTS).unwrap();
+    /// assert!(hand.contains_in_suit(&Hearts));
+    /// hand.insert_card(KING_SPADES).unwrap();
+    /// assert!(hand.contains_in_suit(&Spades))
+    /// ```
+    fn contains_in_suit(&self, suit: &Suit) -> bool{
+        self.cards & Self::suit_mask(*suit) != 0
+    }
+
+    ///
+    /// ```
+    /// use karty::cards::{ACE_CLUBS, ACE_DIAMONDS, ACE_HEARTS, ACE_SPADES, Card, THREE_SPADES, TWO_SPADES};
+    /// use karty::hand::{HandTrait, StackHand};
+    /// use karty::suits::Suit::{Clubs, Spades};
+    /// use crate::karty::hand::HandSuitedTrait;
+    /// let mut hand = StackHand::empty();
+    /// hand.insert_card(ACE_HEARTS).unwrap();
+    /// hand.insert_card(ACE_DIAMONDS).unwrap();
+    /// hand.insert_card(ACE_CLUBS).unwrap();
+    /// hand.insert_card(ACE_SPADES).unwrap();
+    /// hand.insert_card(TWO_SPADES).unwrap();
+    /// hand.insert_card(THREE_SPADES).unwrap();
+    /// let spades: Vec<Card> = hand.suit_iterator(&Spades).collect();
+    /// let clubs: Vec<Card> = hand.suit_iterator(&Clubs).collect();
+    /// assert_eq!(spades, vec![TWO_SPADES, THREE_SPADES, ACE_SPADES]);
+    /// assert_eq!(clubs, vec![ACE_CLUBS]);
+    ///
+    /// ```
+    fn suit_iterator(&self, suit: &Suit) -> Self::SuitIterator {
+        StackHandSuitIterator::new(*self, *suit)
+    }
+
+    
+    
+    
 }
 
 impl Display for StackHand {
