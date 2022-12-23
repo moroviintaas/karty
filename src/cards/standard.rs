@@ -2,11 +2,14 @@ use std::fmt::{Display, Formatter};
 use std::marker::PhantomData;
 use crate::symbol::CardSymbol;
 use crate::cards::{Card2SGen, CardComparatorGen};
+//use crate::error::CardError::{WrongMaskFormat, WrongPosition};
 use crate::figures::{Ace, FigureComparator, F10, F2, F3, F4, F5, F6, F7, F8, F9, Figure, Jack, King, Queen};
 use crate::suits::Suit::*;
 use crate::suits::{ComparatorAHCD, ComparatorAHDC, Suit};
 
 use super::Card2SymTrait;
+//#[cfg(feature = "speedy")]
+//use speedy::{Readable, Writable};
 
 
 impl Card2SGen<Figure, Suit>{
@@ -70,28 +73,91 @@ impl Card2SGen<Figure, Suit>{
 /// ```
 pub type Card =  Card2SGen<Figure, Suit>;
 
-
-
-
-
-
-
-
 /*
+#[cfg_attr(feature = "speedy", derive(Writable, Readable))]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
+pub struct Card{
+    mask: u64
+}
+
 impl Card{
-    fn suit_num(&self) -> u8{
-        self.index>>4
-    }
-    fn figure_num(&self) -> u8{
-        self.index&0x0f
-    }
-
     pub fn mask(&self) -> u64{
-
-        self.figure().mask() << (self.suit().position() * 16)
+        self.mask
+    }
+    pub fn from_mask(mask: u64) -> Result<Self, CardError>{
+        if mask.count_ones() != 1{
+            return Err(CardError::WrongMaskFormat)
+        }
+        if mask > (0x1<<51){
+            return Err(CardError::MaskSpaceViolated)
+        }
+        Ok(Self{mask})
     }
 }
+
+impl CardSymbol for Card{
+    const SYMBOL_SPACE: usize = 52;
+
+    fn position(&self) -> usize {
+        self.mask.trailing_zeros() as usize
+    }
+
+    fn from_position(position: usize) -> Result<Self, CardError> {
+        match position{
+            good @ 0..=51 => Ok(Self{mask: 0x1<<good}),
+            e => Err(CardError::WrongPosition(e))
+        }
+    }
+}
+
+
+impl From<Card2SGen<Figure, Suit>> for Card{
+    fn from(crd: Card2SGen<Figure, Suit>) -> Self {
+        Self{mask: crd.mask()}
+    }
+}
+impl From<Card> for Card2SGen<Figure, Suit>{
+    fn from(crd: Card) -> Self {
+        Self{figure: crd.figure(), suit: crd.suit()}
+    }
+}
+
+impl Card2SymTrait for Card{
+    type Figure = Figure;
+    type Suit = Suit;
+
+    fn suit(&self) -> Self::Suit {
+        match self.mask.trailing_zeros(){
+            0..=12 => Clubs,
+            13..=25 => Diamonds,
+            26..=38 => Hearts,
+            39..=51 => Spades,
+            e => panic!("Bad mask with {} trailing zeros.", e)
+
+        }
+    }
+
+    fn figure(&self) -> Self::Figure {
+        Figure::from_mask(match self.mask.trailing_zeros() {
+            n @ 0..=12 => self.mask,
+            n @ 13..=25 => self.mask >> 13,
+            n @ 26..=38 => self.mask >> 26,
+            n @ 39..=51 => self.mask >> 39,
+            e => panic!("Too big internal mask, this should not occur. It is a bug.")
+        } as u64).unwrap()
+
+    }
+
+    fn from_figure_and_suit(figure: Self::Figure, suit: Self::Suit) -> Self {
+        let suit_mask = 0x1u64 << (13 * suit.position());
+        let figure_position = figure.position();
+        Self{mask: suit_mask<<figure_position}
+    }
+}
+
 */
+
+
 
 
 
@@ -104,21 +170,7 @@ impl Display for Card {
 
     }
 }
-/* 
-impl Display for &Vec<Card>{
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "[")?;
-        let mut v_iter = self.into_iter();
-        while let Some(element) = v_iter.next(){
 
-        }
-        match f.alternate(){
-            true => write!(f, "{:#}{:#}", self.figure(), self.suit()),
-            false => write!(f, "{} of {}", self.figure(), self.suit())
-        }
-        write!(f, "]")
-    }
-}*/
 
 pub type ComparatorCardStd<CS> = CardComparatorGen<Figure, Suit, FigureComparator, CS>;
 
@@ -193,6 +245,63 @@ pub const QUEEN_SPADES: Card = Card { suit: Spades, figure: Queen};
 pub const KING_SPADES: Card = Card { suit: Spades, figure: King};
 pub const ACE_SPADES: Card = Card { suit: Spades, figure: Ace};
 
+/*
+pub const TWO_CLUBS: Card = Card{mask: 0x0001};
+pub const THREE_CLUBS: Card = Card{mask: 0x0002};
+pub const FOUR_CLUBS: Card = Card{mask: 0x0004};
+pub const FIVE_CLUBS: Card = Card{mask: 0x0008};
+pub const SIX_CLUBS: Card = Card{mask: 0x0010};
+pub const SEVEN_CLUBS: Card = Card{mask: 0x0020};
+pub const EIGHT_CLUBS: Card = Card{mask: 0x0040};
+pub const NINE_CLUBS: Card = Card{mask: 0x0080};
+pub const TEN_CLUBS: Card = Card{mask: 0x0100};
+pub const JACK_CLUBS: Card = Card{mask: 0x0200};
+pub const QUEEN_CLUBS: Card = Card{mask: 0x0400};
+pub const KING_CLUBS: Card = Card{mask: 0x0800};
+pub const ACE_CLUBS: Card = Card{mask: 0x1000};
+
+pub const TWO_DIAMONDS: Card =      Card{mask:  0x00002000};
+pub const THREE_DIAMONDS: Card =    Card{mask:  0x00004000};
+pub const FOUR_DIAMONDS: Card =     Card{mask:  0x00008000};
+pub const FIVE_DIAMONDS: Card =     Card{mask:  0x00010000};
+pub const SIX_DIAMONDS: Card =      Card{mask:  0x00020000};
+pub const SEVEN_DIAMONDS: Card =    Card{mask:  0x00040000};
+pub const EIGHT_DIAMONDS: Card =    Card{mask:  0x00080000};
+pub const NINE_DIAMONDS: Card =     Card{mask:  0x00100000};
+pub const TEN_DIAMONDS: Card =      Card{mask:  0x00200000};
+pub const JACK_DIAMONDS: Card =     Card{mask:  0x00400000};
+pub const QUEEN_DIAMONDS: Card =    Card{mask:  0x00800000};
+pub const KING_DIAMONDS: Card =     Card{mask:  0x01000000};
+pub const ACE_DIAMONDS: Card =      Card{mask:  0x02000000};
+
+pub const TWO_HEARTS: Card =        Card{mask:  0x04000000};
+pub const THREE_HEARTS: Card =      Card{mask:  0x08000000};
+pub const FOUR_HEARTS: Card =       Card{mask:  0x10000000};
+pub const FIVE_HEARTS: Card =       Card{mask:  0x20000000};
+pub const SIX_HEARTS: Card =        Card{mask:  0x40000000};
+pub const SEVEN_HEARTS: Card =      Card{mask:  0x80000000};
+pub const EIGHT_HEARTS: Card =      Card{mask:  0x000100000000};
+pub const NINE_HEARTS: Card =       Card{mask:  0x000200000000};
+pub const TEN_HEARTS: Card =        Card{mask:  0x000400000000};
+pub const JACK_HEARTS: Card =       Card{mask:  0x000800000000};
+pub const QUEEN_HEARTS: Card =      Card{mask:  0x001000000000};
+pub const KING_HEARTS: Card =       Card{mask:  0x002000000000};
+pub const ACE_HEARTS: Card =        Card{mask:  0x004000000000};
+
+pub const TWO_SPADES: Card =        Card{mask:  0x008000000000};
+pub const THREE_SPADES: Card =      Card{mask:  0x010000000000};
+pub const FOUR_SPADES: Card =       Card{mask:  0x020000000000};
+pub const FIVE_SPADES: Card =       Card{mask:  0x040000000000};
+pub const SIX_SPADES: Card =        Card{mask:  0x080000000000};
+pub const SEVEN_SPADES: Card =      Card{mask:  0x100000000000};
+pub const EIGHT_SPADES: Card =      Card{mask:  0x200000000000};
+pub const NINE_SPADES: Card =       Card{mask:  0x400000000000};
+pub const TEN_SPADES: Card =        Card{mask:  0x800000000000};
+pub const JACK_SPADES: Card =       Card{mask:  0x0001000000000000};
+pub const QUEEN_SPADES: Card =      Card{mask:  0x0002000000000000};
+pub const KING_SPADES: Card =       Card{mask:  0x0004000000000000};
+pub const ACE_SPADES: Card =        Card{mask:  0x0008000000000000};
+*/
 pub const STANDARD_DECK: [Card; Card::SYMBOL_SPACE] = [
     TWO_CLUBS,	    TWO_DIAMONDS,	TWO_HEARTS,	    TWO_SPADES,
     THREE_CLUBS,	THREE_DIAMONDS,	THREE_HEARTS,	THREE_SPADES,

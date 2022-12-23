@@ -12,7 +12,7 @@ use crate::symbol::CardSymbol;
 use super::HandSuitedTrait;
 
 
-const CARD_MASK_GUARD:u64 = 1<<52;
+//const CARD_MASK_GUARD:u64 = 1<<52;
 const MASK_STACK_HAND_LEGAL: u64 = MASK_DIAMONDS | MASK_CLUBS | MASK_HEARTS | MASK_SPADES;
 
 #[derive(Debug, Clone, PartialEq, Eq, Copy, Hash)]
