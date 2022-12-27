@@ -36,7 +36,7 @@ impl StackHand{
     }
 
     pub fn only_in_suit(&self, suit: &Suit) -> Self{
-        Self{cards: &self.cards & Self::suit_mask(*suit)}
+        Self{cards: self.cards & Self::suit_mask(*suit)}
     }
 
 
