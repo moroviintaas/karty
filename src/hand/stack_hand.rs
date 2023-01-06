@@ -14,6 +14,7 @@ use super::HandSuitedTrait;
 
 //const CARD_MASK_GUARD:u64 = 1<<52;
 const MASK_STACK_HAND_LEGAL: u64 = MASK_DIAMONDS | MASK_CLUBS | MASK_HEARTS | MASK_SPADES;
+//const STACK_HAND_LARGEST_MASK:u64 = 0x1<<53;
 
 #[derive(Debug, Clone, PartialEq, Eq, Copy, Hash)]
 #[cfg_attr(feature = "speedy", derive(Writable, Readable))]
@@ -155,11 +156,44 @@ impl Iterator for StackHandIterator {
 
     }
 }
-
+/* 
+/// ```
+/// use karty::cards::{ACE_CLUBS, ACE_SPADES, Card, JACK_SPADES, KING_HEARTS, QUEEN_DIAMONDS};
+/// use karty::hand::{HandTrait, StackHand};
+/// let mut hand = StackHand::empty();
+/// hand.insert_card(ACE_CLUBS).unwrap();
+/// hand.insert_card( KING_HEARTS).unwrap();
+/// hand.insert_card( QUEEN_DIAMONDS).unwrap();
+/// hand.insert_card( JACK_SPADES).unwrap();
+/// hand.insert_card( ACE_SPADES).unwrap();
+/// let v: Vec<Card> = hand.into_iter().rev().collect();
+/// assert_eq!(v.len(), 5);
+/// assert_eq!(v[0], ACE_CLUBS);
+/// assert_eq!(v[4], ACE_SPADES);
+/// ```
+impl DoubleEndedIterator for StackHandIterator{
+    fn next_back(&mut self) -> Option<Self::Item> {
+        self.mask <<=1;
+        while self.mask <= STACK_HAND_LARGEST_MASK{
+            if self.mask & self.hand.cards != 0{
+                let card = Card::from_mask(self.mask).unwrap();
+                self.mask <<=1;
+                return Some(card);
+            }
+            else{
+                self.mask<<=1;
+            }
+        }
+        None
+        
+    }
+}
+*/
 pub struct StackHandSuitIterator {
     hand: StackHand,
     mask: u64,
-    guard: u64,
+    lower_guard: u64,
+    //higher_guard: u64,
 
 }
 impl StackHandSuitIterator {
@@ -167,7 +201,7 @@ impl StackHandSuitIterator {
 
         let guard = 1u64 <<(suit.position()*Figure::SYMBOL_SPACE);
         let mask = 1u64<<(suit.position()*Figure::SYMBOL_SPACE + Figure::SYMBOL_SPACE -1);
-        Self{mask, hand, guard}
+        Self{mask, hand, lower_guard: guard, /*higher_guard: mask*/}
     }
 }
 
@@ -193,7 +227,7 @@ impl Iterator for StackHandSuitIterator {
         else{
             None
         }*/
-        while self.mask >= (self.guard){
+        while self.mask >= (self.lower_guard){
             if self.mask & self.hand.cards != 0{
                 let card = Card::from_mask(self.mask).unwrap();
                 self.mask >>=1;
@@ -207,8 +241,23 @@ impl Iterator for StackHandSuitIterator {
 
     }
 }
-
-
+/* 
+impl DoubleEndedIterator for StackHandSuitIterator{
+    fn next_back(&mut self) -> Option<Self::Item> {
+        self.mask <<=1;
+        while self.mask <= (self.higher_guard){
+            if self.mask & self.hand.cards != 0{
+                let card = Card::from_mask(self.mask).unwrap();
+                self.mask <<=1;
+                return Some(card);
+            }
+            else{
+                self.mask<<=1;
+            }
+        }
+        None
+    }
+}*/
 
 impl IntoIterator for StackHand {
     type Item = Card;
