@@ -54,3 +54,4 @@ impl<T> IndexMut<Suit> for SuitMap<T>{
         }
     }
 }
+
