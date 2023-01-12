@@ -67,17 +67,6 @@ impl StackHand{
             },
             _ => None,
         }
-        /*match (self.cards & Self::suit_mask(*suit)).leading_zeros(){
-            some @ 0..=63 => {
-
-            },
-            _ => None
-
-        }
-        */
-
-        //let card_pos = 63 - ;
-        //Card::from_mask(1<<card_pos).unwrap()
     }
 
 
@@ -276,6 +265,66 @@ impl DoubleEndedIterator for StackHandSuitIterator{
     }
 }
 
+/// ```
+///  use karty::cards::{Card, EIGHT_HEARTS, JACK_HEARTS, KING_HEARTS, NINE_HEARTS, QUEEN_HEARTS, SEVEN_HEARTS};
+/// use karty::hand::StackHandIntervalIterator;
+/// use karty::stack_hand;
+/// let mut hand = stack_hand![KING_HEARTS, QUEEN_HEARTS, JACK_HEARTS, NINE_HEARTS];
+/// assert_eq!(StackHandIntervalIterator::new(hand, &SEVEN_HEARTS, &EIGHT_HEARTS).next(), None);
+/// assert_eq!(StackHandIntervalIterator::new(hand, &SEVEN_HEARTS, &QUEEN_HEARTS).collect::<Vec<Card>>(), vec![NINE_HEARTS, JACK_HEARTS, QUEEN_HEARTS]);
+/// assert_eq!(StackHandIntervalIterator::new(hand, &SEVEN_HEARTS, &KING_HEARTS).rev().collect::<Vec<Card>>(), vec![KING_HEARTS, QUEEN_HEARTS, JACK_HEARTS, NINE_HEARTS]);
+///
+/// ```
+pub struct StackHandIntervalIterator{
+    hand: StackHand,
+    higher_position: u64,
+    lower_position: u64
+}
+
+
+impl Iterator for StackHandIntervalIterator{
+    type Item = Card;
+
+    fn next(&mut self) -> Option<Self::Item> {
+
+        while self.lower_position <= self.higher_position{
+            if self.lower_position & self.hand.cards != 0{
+                let card = Card::from_mask(self.lower_position).unwrap();
+                self.lower_position <<=1;
+                return Some(card);
+            }
+            else{
+                self.lower_position <<=1;
+            }
+        }
+        None
+
+    }
+}
+
+impl DoubleEndedIterator for StackHandIntervalIterator{
+    fn next_back(&mut self) -> Option<Self::Item> {
+        while self.higher_position >= self.lower_position{
+            if self.higher_position & self.hand.cards != 0{
+                let card = Card::from_mask(self.higher_position).unwrap();
+                self.higher_position >>=1;
+                return Some(card);
+            }
+            else{
+                self.higher_position >>=1;
+            }
+        }
+        None
+
+    }
+}
+
+impl StackHandIntervalIterator{
+    pub fn new(hand: StackHand, lower_card: &Card, higher_card: &Card) -> Self{
+        Self{hand, lower_position: lower_card.mask(), higher_position: higher_card.mask()}
+    }
+}
+
 impl IntoIterator for StackHand {
     type Item = Card;
 
@@ -367,15 +416,15 @@ impl HandSuitedTrait for StackHand{
     /// hand.insert_card(ACE_SPADES).unwrap();
     /// hand.insert_card(TWO_SPADES).unwrap();
     /// hand.insert_card(THREE_SPADES).unwrap();
-    /// let spades: Vec<Card> = hand.suit_iterator(&Spades).collect();
-    /// let clubs: Vec<Card> = hand.suit_iterator(&Clubs).collect();
-    /// let spades_reverse: Vec<Card> = hand.suit_iterator(&Spades).rev().collect();
+    /// let spades: Vec<Card> = hand.into_iter_suit(&Spades).collect();
+    /// let clubs: Vec<Card> = hand.into_iter_suit(&Clubs).collect();
+    /// let spades_reverse: Vec<Card> = hand.into_iter_suit(&Spades).rev().collect();
     /// assert_eq!(spades, vec![ TWO_SPADES, THREE_SPADES, ACE_SPADES]);
     /// assert_eq!(spades_reverse, vec![ ACE_SPADES, THREE_SPADES, TWO_SPADES]);
     /// assert_eq!(clubs, vec![ACE_CLUBS]);
     ///
     /// ```
-    fn suit_iterator(&self, suit: &Suit) -> Self::SuitIterator {
+    fn into_iter_suit(&self, suit: &Suit) -> Self::SuitIterator {
         StackHandSuitIterator::new(*self, *suit)
     }
 
