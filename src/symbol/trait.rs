@@ -80,4 +80,16 @@ pub trait CardSymbol: Sized + Eq +  std::hash::Hash  + Clone + Debug{
     fn iterator() -> CardSymbolIterator<Self>{
         CardSymbolIterator::new()
     }
+    fn higher_n(&self, n: usize) -> Option<Self>{
+        Self::from_position(self.position()+n).ok()
+    }
+    fn lower_n(&self, n: usize) -> Option<Self>{
+        match self.position().checked_sub(n){
+            Some(k) => {
+                Self::from_position(k).ok()
+            },
+            None => None,
+        }
+        //Self::from_position(self.position().checked_sub(n)).ok()
+    }
 }
