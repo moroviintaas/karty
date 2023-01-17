@@ -1,8 +1,8 @@
-use std::cmp::Ordering;
+
+use std::iter::Chain;
 use std::ops::{Index, IndexMut};
 use crate::suits::{Suit};
 use crate::suits::Suit::{Clubs, Diamonds, Hearts, Spades};
-use crate::symbol::CardSymbol;
 
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Default)]
@@ -68,21 +68,6 @@ impl<T> IndexMut<Suit> for SuitMap<T>{
 }
 
 
-pub struct SuitMapIterator<T: IntoIterator>{
-    current_low_suit: Suit,
-    current_high_suit: Suit,
-    map: SuitMap<<T as IntoIterator>::IntoIter>,
-}
-
-impl<T: IntoIterator> SuitMapIterator<T>{
-    pub fn new(suit_map: SuitMap<T>) -> Self{
-        let map = SuitMap::new(suit_map.spades.into_iter(),
-        suit_map.hearts.into_iter(), suit_map.diamonds.into_iter(), suit_map.clubs.into_iter());
-        Self{current_high_suit: Spades, current_low_suit: Clubs, map}
-        //Self { current_low_suit: Suit::Clubs, current_low_iterator: (), current_high_suit: (), current_high_iterator: (), source: suit_map }
-    }
-}
-
 
 /// ```
 /// use karty::cards::{ACE_HEARTS, ACE_SPADES, Card, FIVE_SPADES, FOUR_HEARTS, JACK_CLUBS, NINE_DIAMONDS, NINE_HEARTS, NINE_SPADES, QUEEN_HEARTS, SIX_DIAMONDS, SIX_SPADES, THREE_HEARTS, TWO_CLUBS, TWO_SPADES};
@@ -101,32 +86,7 @@ impl<T: IntoIterator> SuitMapIterator<T>{
 /// assert_eq!(suit_map_card_iterator.into_iter().collect::<Vec<Card>>(), vec![JACK_CLUBS, SIX_DIAMONDS, NINE_DIAMONDS, THREE_HEARTS, FOUR_HEARTS, NINE_HEARTS, QUEEN_HEARTS, ACE_HEARTS,
 /// TWO_SPADES, FIVE_SPADES, SIX_SPADES, NINE_SPADES, ACE_SPADES]);
 /// ```
-impl<T: IntoIterator> Iterator for SuitMapIterator<T>{
-    type Item = <T as IntoIterator>::Item;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        match self.current_low_suit.cmp(&self.current_high_suit){
-            std::cmp::Ordering::Less => match self.map[self.current_low_suit].next(){
-                None => {
-                    self.current_low_suit = self.current_low_suit.higher_n(1).unwrap_or(self.current_high_suit);
-                    self.next()
-                }
-                Some(item) => Some(item)
-            },
-            std::cmp::Ordering::Equal => self.map[self.current_low_suit].next() ,
-            std::cmp::Ordering::Greater => None,
-        }
-    }
-}
-
-impl<T: IntoIterator> IntoIterator for SuitMap<T>{
-    type Item = <T as IntoIterator>::Item;
-    type IntoIter = SuitMapIterator<T>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        SuitMapIterator::new(self)
-    }
-}
+/// # DoubleSidedIterator:
 /// ```
 /// use karty::cards::{ACE_HEARTS, ACE_SPADES, Card, FIVE_SPADES, FOUR_HEARTS, JACK_CLUBS, NINE_DIAMONDS, NINE_HEARTS, NINE_SPADES, QUEEN_HEARTS, SIX_DIAMONDS, SIX_SPADES, THREE_HEARTS, TWO_CLUBS, TWO_SPADES};
 /// use karty::figures::{*, Figure};
@@ -141,20 +101,50 @@ impl<T: IntoIterator> IntoIterator for SuitMap<T>{
 /// assert_eq!(suit_map_card_iterator.into_iter().rev().collect::<Vec<Card>>(), vec![ACE_SPADES, NINE_SPADES, SIX_SPADES, FIVE_SPADES, TWO_SPADES,
 ///     ACE_HEARTS, QUEEN_HEARTS, NINE_HEARTS, FOUR_HEARTS, THREE_HEARTS, NINE_DIAMONDS, SIX_DIAMONDS, JACK_CLUBS]);
 /// ```
+pub struct SuitMapIterator<T: IntoIterator>{
+    iter: Chain<
+    <T as IntoIterator>::IntoIter, Chain<
+    <T as IntoIterator>::IntoIter, Chain<
+    <T as IntoIterator>::IntoIter, <T as IntoIterator>::IntoIter>
+    >>
+
+
+}
+
+impl<T: IntoIterator> SuitMapIterator<T>{
+    fn new(iter: Chain<
+    <T as IntoIterator>::IntoIter, Chain<
+    <T as IntoIterator>::IntoIter, Chain<
+    <T as IntoIterator>::IntoIter, <T as IntoIterator>::IntoIter>
+    >>) -> Self{
+        Self{iter}
+    }
+}
+impl<T: IntoIterator> Iterator for SuitMapIterator<T>{
+    type Item = <T as IntoIterator>::Item;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.iter.next()
+    }
+}
 impl<T: IntoIterator<IntoIter=I, Item=It>, I: DoubleEndedIterator + Iterator<Item=It>, It> DoubleEndedIterator for SuitMapIterator<T>
 {
     fn next_back(&mut self) -> Option<Self::Item> {
-        match self.current_high_suit.cmp(&self.current_low_suit){
-            Ordering::Less => None,
-            Ordering::Equal => self.map[self.current_high_suit].next_back(),
-            Ordering::Greater => match self.map[self.current_high_suit].next_back(){
-                None => {
-                    self.current_high_suit = self.current_high_suit.lower_n(1).unwrap_or(self.current_low_suit);
-                    self.next_back()
-                }
-                Some(item) => Some(item)
-            }
-        }
+        self.iter.next_back()
     }
 }
 
+
+
+impl<T: IntoIterator> IntoIterator for SuitMap<T>{
+    type Item = <T as IntoIterator>::Item;
+    type IntoIter = SuitMapIterator<T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        Self::IntoIter::new(self.clubs.into_iter()
+            .chain(self.diamonds.into_iter()
+                .chain(self.hearts.into_iter()
+                    .chain(self.spades.into_iter()))))
+
+    }
+}
