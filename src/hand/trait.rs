@@ -71,5 +71,5 @@ pub trait HandSuitedTrait: HandTrait{
     type St: SuitTrait;
     
     fn contains_in_suit(&self, suit: &Self::St) -> bool;
-    fn into_iter_suit(&self, suit: &Self::St) -> Self::SuitIterator;
+    fn create_suit_iterator(&self, suit: &Self::St) -> Self::SuitIterator;
 }

@@ -5,6 +5,10 @@ use crate::symbol::CardSymbol;
 pub struct SymbolMap<T, const SIZE: usize > where {
     pub associated: [T;SIZE]
 }
+/*
+pub struct SymbolMap<T: CardSymbol>{
+    associated: [T; T::SYMBOL_SPACE]
+}*/
 
 impl<T, const SIZE: usize, S:CardSymbol > Index<S> for SymbolMap<T, SIZE>
 where {

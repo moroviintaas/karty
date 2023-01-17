@@ -416,15 +416,15 @@ impl HandSuitedTrait for StackHand{
     /// hand.insert_card(ACE_SPADES).unwrap();
     /// hand.insert_card(TWO_SPADES).unwrap();
     /// hand.insert_card(THREE_SPADES).unwrap();
-    /// let spades: Vec<Card> = hand.into_iter_suit(&Spades).collect();
-    /// let clubs: Vec<Card> = hand.into_iter_suit(&Clubs).collect();
-    /// let spades_reverse: Vec<Card> = hand.into_iter_suit(&Spades).rev().collect();
+    /// let spades: Vec<Card> = hand.create_suit_iterator(&Spades).collect();
+    /// let clubs: Vec<Card> = hand.create_suit_iterator(&Clubs).collect();
+    /// let spades_reverse: Vec<Card> = hand.create_suit_iterator(&Spades).rev().collect();
     /// assert_eq!(spades, vec![ TWO_SPADES, THREE_SPADES, ACE_SPADES]);
     /// assert_eq!(spades_reverse, vec![ ACE_SPADES, THREE_SPADES, TWO_SPADES]);
     /// assert_eq!(clubs, vec![ACE_CLUBS]);
     ///
     /// ```
-    fn into_iter_suit(&self, suit: &Suit) -> Self::SuitIterator {
+    fn create_suit_iterator(&self, suit: &Suit) -> Self::SuitIterator {
         StackHandSuitIterator::new(*self, *suit)
     }
 
