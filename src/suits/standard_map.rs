@@ -15,6 +15,10 @@ pub struct SuitMap<T>{
 }
 
 impl<T> SuitMap<T>{
+
+
+
+
     pub fn new(spades: T, hearts: T, diamonds: T, clubs:T) -> Self{
         Self{
             spades,
@@ -23,6 +27,11 @@ impl<T> SuitMap<T>{
             clubs,
             privileged_suit: None
         }
+    }
+
+
+    pub fn set_at(&mut self, suit: &Suit, value: T){
+        self[*suit] = value;
     }
     
     pub fn with_privilege(mut self, privileged: Suit) -> Self{
@@ -40,8 +49,27 @@ impl<T> SuitMap<T>{
             privileged_suit: None
         }
     }
+
+    pub fn and<F: Fn(&T) -> bool>(&self, f: F) -> bool{
+        f(&self.spades) && f(&self.hearts) && f(&self.diamonds) && f(&self.clubs)
+    }
 }
 
+impl <T:Default> SuitMap<T>{
+    pub fn single(suit: &Suit, value: T) -> Self{
+        let mut s = Self::default();
+        s.set_at(suit, value);
+        s
+    }
+}
+
+
+/*
+impl<I, const C: usize> SuitMap<SmallVec<[I; C]>>{
+    pub fn is_empty(&self) -> bool{
+        self.spades.is_empty()
+    }
+}*/
 
 impl<T> Index<Suit> for SuitMap<T>{
     type Output = T;
@@ -126,6 +154,8 @@ impl<T: IntoIterator> Iterator for SuitMapIterator<T>{
     fn next(&mut self) -> Option<Self::Item> {
         self.iter.next()
     }
+
+
 }
 impl<T: IntoIterator<IntoIter=I, Item=It>, I: DoubleEndedIterator + Iterator<Item=It>, It> DoubleEndedIterator for SuitMapIterator<T>
 {
@@ -133,7 +163,18 @@ impl<T: IntoIterator<IntoIter=I, Item=It>, I: DoubleEndedIterator + Iterator<Ite
         self.iter.next_back()
     }
 }
-
+/*
+/// ```
+/// use karty::cards::{FOUR_HEARTS, KING_HEARTS, SEVEN_CLUBS, SIX_DIAMONDS, TEN_SPADES, THREE_CLUBS, THREE_SPADES};
+/// use karty::suits::SuitMap;
+/// let sm = SuitMap::new(vec![THREE_SPADES, TEN_SPADES], vec![FOUR_HEARTS, KING_HEARTS], vec![SIX_DIAMONDS], vec![THREE_CLUBS, SEVEN_CLUBS]);
+/// let sm_iter = sm.into_iter();
+/// assert_eq!(sm_iter.size_hint(), (8, Some(8)));
+/// ```
+impl<T: IntoIterator<IntoIter=I, Item=It>, I: ExactSizeIterator + Iterator<Item=It>, It> ExactSizeIterator for SuitMapIterator<T>
+{
+    
+}*/
 
 
 impl<T: IntoIterator> IntoIterator for SuitMap<T>{

@@ -133,6 +133,41 @@ impl Iterator for StackHandIterator {
         None
 
     }
+
+    /// ```
+    /// use karty::cards::*;
+    /// use karty::stack_hand;
+    /// let mut v = stack_hand![TWO_CLUBS, THREE_CLUBS, NINE_DIAMONDS].into_iter();
+    /// assert_eq!(v.size_hint(), (3,Some(3)));
+    /// assert_eq!(v.next_back(), Some(NINE_DIAMONDS));
+    /// assert_eq!(v.size_hint(), (2, Some(2)));
+    ///
+    /// ```
+    ///
+    /// # Full StackHand
+    /// ```
+    /// use karty::cards::Card;
+    /// use karty::hand::StackHand;
+    /// use karty::symbol::CardSymbol;
+    /// let mut full_hand = StackHand::from_iter(Card::iterator()).into_iter();
+    /// assert_eq!(full_hand.size_hint(), (52, Some(52)));
+    /// for _ in 0..5{
+    ///     full_hand.next();
+    /// }
+    /// assert_eq!(full_hand.size_hint(), (47, Some(47)));
+    ///
+    /// ```
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let mut mask: u64 = 0;
+        let mut m =self.lower_position;
+        while m <= self.higher_position{
+            mask |= m;
+            m<<=1;
+        }
+        let sum = (self.hand.cards & mask).count_ones();
+        (sum as usize, Some(sum as usize))
+
+    }
 }
 
 /// ```
@@ -165,6 +200,8 @@ impl DoubleEndedIterator for StackHandIterator{
         
     }
 }
+
+impl ExactSizeIterator for StackHandIterator{}
 
 pub struct StackHandSuitIterator {
     hand: StackHand,

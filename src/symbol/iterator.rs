@@ -87,6 +87,9 @@ impl<E: CardSymbol> Iterator for CardSymbolIterator<E>{
         } 
         
     }
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        (E::SYMBOL_SPACE-self.iterator_position_low, Some(E::SYMBOL_SPACE-self.iterator_position_low))
+    }
     
 }
 
@@ -137,3 +140,7 @@ impl <E: CardSymbol> DoubleEndedIterator for CardSymbolIterator<E>{
         } 
     }
 }
+
+/*impl<E: CardSymbol> ExactSizeIterator for CardSymbolIterator<E>{
+    
+}*/
