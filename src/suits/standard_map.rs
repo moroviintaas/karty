@@ -1,6 +1,6 @@
 
 use std::iter::Chain;
-use std::ops::{Index, IndexMut};
+use std::ops::{Add, Index, IndexMut};
 use crate::suits::{Suit};
 use crate::suits::Suit::{Clubs, Diamonds, Hearts, Spades};
 
@@ -49,11 +49,30 @@ impl<T> SuitMap<T>{
             privileged_suit: None
         }
     }
+    pub fn map<R, F: Fn(&T) -> R>(&self, f: F) -> SuitMap<R>{
+
+        SuitMap::<R>{
+            spades: f(&self.spades),
+            hearts: f(&self.hearts),
+            diamonds: f(&self.diamonds),
+            clubs: f(&self.clubs),
+            privileged_suit: self.privileged_suit.clone(),
+        }
+    }
 
     pub fn and<F: Fn(&T) -> bool>(&self, f: F) -> bool{
         f(&self.spades) && f(&self.hearts) && f(&self.diamonds) && f(&self.clubs)
     }
 }
+
+impl<T: Add<Output = T> + Copy> SuitMap<T>{
+    pub fn sum(&self) -> T{
+        self.spades.add(self.hearts.add(self.diamonds.add(self.clubs)))
+    }
+}
+
+
+
 
 impl <T:Default> SuitMap<T>{
     pub fn single(suit: &Suit, value: T) -> Self{
