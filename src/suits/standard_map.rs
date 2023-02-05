@@ -56,7 +56,7 @@ impl<T> SuitMap<T>{
             hearts: f(&self.hearts),
             diamonds: f(&self.diamonds),
             clubs: f(&self.clubs),
-            privileged_suit: self.privileged_suit.clone(),
+            privileged_suit: self.privileged_suit,
         }
     }
 
@@ -148,6 +148,7 @@ impl<T> IndexMut<Suit> for SuitMap<T>{
 /// assert_eq!(suit_map_card_iterator.into_iter().rev().collect::<Vec<Card>>(), vec![ACE_SPADES, NINE_SPADES, SIX_SPADES, FIVE_SPADES, TWO_SPADES,
 ///     ACE_HEARTS, QUEEN_HEARTS, NINE_HEARTS, FOUR_HEARTS, THREE_HEARTS, NINE_DIAMONDS, SIX_DIAMONDS, JACK_CLUBS]);
 /// ```
+#[allow(clippy::type_complexity)]
 pub struct SuitMapIterator<T: IntoIterator>{
     iter: Chain<
     <T as IntoIterator>::IntoIter, Chain<
@@ -157,7 +158,7 @@ pub struct SuitMapIterator<T: IntoIterator>{
 
 
 }
-
+#[allow(clippy::type_complexity)]
 impl<T: IntoIterator> SuitMapIterator<T>{
     fn new(iter: Chain<
     <T as IntoIterator>::IntoIter, Chain<

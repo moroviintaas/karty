@@ -36,7 +36,7 @@ impl NumberFigure {
     pub fn new(power: u8) -> Self{
         match power{
             legit @MIN_NUMBER_FIGURE..=MAX_NUMBER_FIGURE => Self{power: legit},
-            e => panic!("Invalid power value {:?}", e)
+            e => panic!("Invalid power value {e:?}")
         }
     }
 
@@ -253,7 +253,7 @@ impl std::fmt::Display for Figure {
                 King => write!(f, "𝑲"),
                 Queen => write!(f, "𝑸"),
                 Jack => write!(f, "𝑱"),
-                Numbered(n) => write!(f, "{}", n)
+                Numbered(n) => write!(f, "{n}")
             }
         }
         else{
@@ -262,7 +262,7 @@ impl std::fmt::Display for Figure {
                 King => write!(f, "King"),
                 Queen => write!(f, "Queen"),
                 Jack => write!(f, "Jack"),
-                Numbered(n) => write!(f, "{}", n)
+                Numbered(n) => write!(f, "{n}")
             }
 
         }

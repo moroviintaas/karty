@@ -79,14 +79,14 @@ impl<Crd: CardSymbol + Display> Display for HandSet<Crd>{
         write!(f,  "[")?;
         if f.alternate(){
             for e in self.cards.iter(){
-                write!(f, "{:#}, ", e)?;
+                write!(f, "{e:#}, ")?;
             }
 
 
         }
         else{
             for e in self.cards.iter(){
-                write!(f, "{}, ", e)?;
+                write!(f, "{e}, ")?;
             }
         }
         write!(f, "]")

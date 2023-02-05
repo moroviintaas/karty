@@ -521,14 +521,14 @@ impl Display for StackHand {
         write!(f,  "[")?;
         if f.alternate(){
             for e in v.into_iter(){
-                write!(f, "{:#}, ", e)?;
+                write!(f, "{e:#}, ")?;
             }
 
 
         }
         else{
             for e in v.into_iter(){
-                write!(f, "{}, ", e)?;
+                write!(f, "{e}, ")?;
             }
         }
         write!(f, "]")

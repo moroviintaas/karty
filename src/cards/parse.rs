@@ -76,7 +76,7 @@ impl FromStr for Card2SGen<Figure, Suit> {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        parse_card(s).map(|(_, card)| card).map_err(|e| format!("{}", e))
+        parse_card(s).map(|(_, card)| card).map_err(|e| format!("{e}"))
     }
 }
 

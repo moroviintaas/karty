@@ -96,7 +96,7 @@ impl FromStr for Suit {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        parse_suit(s).map(|(_, suit)| suit).map_err(|e| format!("{:?}", e))
+        parse_suit(s).map(|(_, suit)| suit).map_err(|e| format!("{e:?}"))
     }
 }
 
