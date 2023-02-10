@@ -127,9 +127,22 @@ pub struct StackHandIterator {
 
 
 impl StackHandIterator {
+    /// ```
+    /// use karty::cards::{*};
+    /// use karty::hand::StackHandIterator;
+    /// use karty::stack_hand;
+    /// let mut iter_empty = StackHandIterator::new(stack_hand![]);
+    /// assert!(iter_empty.next().is_none());
+    /// let mut iter_empty = StackHandIterator::new(stack_hand![KING_SPADES, ACE_HEARTS, JACK_CLUBS, TEN_DIAMONDS]);
+    /// assert_eq!(iter_empty.collect::<Vec<Card>>(), vec![JACK_CLUBS, TEN_DIAMONDS, ACE_HEARTS, KING_SPADES]);
+    /// ```
     pub fn new(hand: StackHand) -> Self{
+        match hand.cards.trailing_zeros(){
+            n @ 0..=63 => Self{ lower_position: 1<<n, hand, higher_position:1<<(63-hand.cards.leading_zeros())},
+            _ => Self{lower_position: 1<<63, hand, higher_position: 0}
+        }
 
-        Self{ lower_position: 1<<hand.cards.trailing_zeros(), hand, higher_position:1<<(63-hand.cards.leading_zeros())}//51
+        //Self{ lower_position: 1<<hand.cards.trailing_zeros(), hand, higher_position:1<<(63-hand.cards.leading_zeros())}//51
     }
 }
 /// ```
@@ -254,13 +267,16 @@ pub struct StackHandSuitIterator {
 }
 impl StackHandSuitIterator {
     pub fn new(hand: StackHand, suit: Suit) -> Self{
+        match hand.is_empty(){
+            true => Self{lower_position: 1<<63, higher_position: 0, hand},
+            false => {
+                let lower_position = 1u64 <<(suit.position()*Figure::SYMBOL_SPACE);
+                let higher_position = 1u64<<(suit.position()*Figure::SYMBOL_SPACE + Figure::SYMBOL_SPACE -1);
+                Self{lower_position, higher_position, hand}
+            }
+        }
 
-        //let guard = 1u64 <<(suit.position()*Figure::SYMBOL_SPACE);
-        //let mask = 1u64<<(suit.position()*Figure::SYMBOL_SPACE + Figure::SYMBOL_SPACE -1);
-        let lower_position = 1u64 <<(suit.position()*Figure::SYMBOL_SPACE);
-        let higher_position = 1u64<<(suit.position()*Figure::SYMBOL_SPACE + Figure::SYMBOL_SPACE -1);
-        //Self{mask, hand, lower_guard: guard, /*higher_guard: mask*/}
-        Self{lower_position, higher_position, hand}
+
 
     }
 }
