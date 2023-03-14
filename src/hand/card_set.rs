@@ -43,9 +43,9 @@ impl CardSet {
 
     /// ```
     /// use karty::cards::{*};
-    /// use karty::stack_hand;
+    /// use karty::card_set;
     /// use karty::suits::Suit::{Clubs, Diamonds, Hearts, Spades};
-    /// let hand = stack_hand![TWO_DIAMONDS, THREE_CLUBS, JACK_CLUBS, KING_CLUBS, ACE_HEARTS, TWO_SPADES];
+    /// let hand = card_set![TWO_DIAMONDS, THREE_CLUBS, JACK_CLUBS, KING_CLUBS, ACE_HEARTS, TWO_SPADES];
     /// assert_eq!(hand.highest_in_suit(&Spades).unwrap(), TWO_SPADES);
     /// assert_eq!(hand.highest_in_suit(&Clubs).unwrap(), KING_CLUBS);
     /// assert_eq!(hand.highest_in_suit(&Diamonds).unwrap(), TWO_DIAMONDS);
@@ -53,9 +53,9 @@ impl CardSet {
     /// ```
     /// ```
     /// use karty::cards::{*};
-    /// use karty::stack_hand;
+    /// use karty::card_set;
     /// use karty::suits::Suit::Hearts;
-    /// let hand = stack_hand![ACE_HEARTS, KING_CLUBS];
+    /// let hand = card_set![ACE_HEARTS, KING_CLUBS];
     /// assert_eq!(hand.highest_in_suit(&Hearts).unwrap(), ACE_HEARTS);
     /// ```
     pub fn highest_in_suit(&self, suit: &Suit) -> Option<Card>{
@@ -130,10 +130,10 @@ impl StackHandIterator {
     /// ```
     /// use karty::cards::{*};
     /// use karty::hand::StackHandIterator;
-    /// use karty::stack_hand;
-    /// let mut iter_empty = StackHandIterator::new(stack_hand![]);
+    /// use karty::card_set;
+    /// let mut iter_empty = StackHandIterator::new(card_set![]);
     /// assert!(iter_empty.next().is_none());
-    /// let mut iter_empty = StackHandIterator::new(stack_hand![KING_SPADES, ACE_HEARTS, JACK_CLUBS, TEN_DIAMONDS]);
+    /// let mut iter_empty = StackHandIterator::new(card_set![KING_SPADES, ACE_HEARTS, JACK_CLUBS, TEN_DIAMONDS]);
     /// assert_eq!(iter_empty.collect::<Vec<Card>>(), vec![JACK_CLUBS, TEN_DIAMONDS, ACE_HEARTS, KING_SPADES]);
     /// ```
     pub fn new(hand: CardSet) -> Self{
@@ -189,8 +189,8 @@ impl Iterator for StackHandIterator {
 
     /// ```
     /// use karty::cards::*;
-    /// use karty::stack_hand;
-    /// let mut v = stack_hand![TWO_CLUBS, THREE_CLUBS, NINE_DIAMONDS].into_iter();
+    /// use karty::card_set;
+    /// let mut v = card_set![TWO_CLUBS, THREE_CLUBS, NINE_DIAMONDS].into_iter();
     /// assert_eq!(v.size_hint(), (3,Some(3)));
     /// assert_eq!(v.next_back(), Some(NINE_DIAMONDS));
     /// assert_eq!(v.size_hint(), (2, Some(2)));
@@ -361,8 +361,8 @@ impl DoubleEndedIterator for StackHandSuitIterator{
 /// ```
 ///  use karty::cards::{Card, EIGHT_HEARTS, JACK_HEARTS, KING_HEARTS, NINE_HEARTS, QUEEN_HEARTS, SEVEN_HEARTS};
 /// use karty::hand::StackHandIntervalIterator;
-/// use karty::stack_hand;
-/// let mut hand = stack_hand![KING_HEARTS, QUEEN_HEARTS, JACK_HEARTS, NINE_HEARTS];
+/// use karty::card_set;
+/// let mut hand = card_set![KING_HEARTS, QUEEN_HEARTS, JACK_HEARTS, NINE_HEARTS];
 /// assert_eq!(StackHandIntervalIterator::new(hand, &SEVEN_HEARTS, &EIGHT_HEARTS).next(), None);
 /// assert_eq!(StackHandIntervalIterator::new(hand, &SEVEN_HEARTS, &QUEEN_HEARTS).collect::<Vec<Card>>(), vec![NINE_HEARTS, JACK_HEARTS, QUEEN_HEARTS]);
 /// assert_eq!(StackHandIntervalIterator::new(hand, &SEVEN_HEARTS, &KING_HEARTS).rev().collect::<Vec<Card>>(), vec![KING_HEARTS, QUEEN_HEARTS, JACK_HEARTS, NINE_HEARTS]);
@@ -554,7 +554,7 @@ impl Display for CardSet {
 impl FromIterator<Card> for CardSet {
     /// ```
     /// use karty::hand::{HandTrait, CardSet};
-    /// use karty::stack_hand;
+    /// use karty::card_set;
     /// use karty::cards::*;
     /// let mut hand = CardSet::from_iter(vec![KING_SPADES, QUEEN_DIAMONDS, FOUR_SPADES, THREE_CLUBS]);
     /// assert_eq!(hand.len(), 4);
@@ -570,7 +570,7 @@ impl FromIterator<Card> for CardSet {
 }
 
 #[macro_export]
-macro_rules! stack_hand {
+macro_rules! card_set {
     [ $( $x:expr ),* ] => {
         {
             let mut h = 0u64;
@@ -602,10 +602,10 @@ mod tests{
     #[test]
     fn stack_hand_macro(){
 
-        let hand = stack_hand![ACE_SPADES, KING_HEARTS, TEN_DIAMONDS, FOUR_SPADES];
+        let hand = card_set![ACE_SPADES, KING_HEARTS, TEN_DIAMONDS, FOUR_SPADES];
         assert_eq!(hand.len(), 4);
         assert!(hand.contains(&ACE_SPADES));
-        let hand_2 = stack_hand![ACE_SPADES, JACK_CLUBS, KING_CLUBS, QUEEN_SPADES];
+        let hand_2 = card_set![ACE_SPADES, JACK_CLUBS, KING_CLUBS, QUEEN_SPADES];
         assert!(hand_2.contains(&ACE_SPADES));
         assert!(hand_2.contains(&QUEEN_SPADES));
         assert!(hand_2.contains(&JACK_CLUBS));
@@ -619,6 +619,6 @@ mod tests{
         let mut hand = CardSet::empty();
         hand.insert_card(QUEEN_SPADES).unwrap();
         assert!(hand.contains(&QUEEN_SPADES));
-        assert_eq!(stack_hand![QUEEN_SPADES].cards, hand.cards);
+        assert_eq!(card_set![QUEEN_SPADES].cards, hand.cards);
     }
 }
