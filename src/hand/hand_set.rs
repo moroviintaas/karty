@@ -12,12 +12,12 @@ use crate::symbol::CardSymbol;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[cfg_attr(feature = "speedy", derive(Writable, Readable))]
-pub struct HandSet<Crd: CardSymbol + Display>{
+pub struct CardGenHashSet<Crd: CardSymbol + Display>{
     cards: HashSet<Crd>,
     //_phantom: PhantomData<>
 }
 
-impl <Crd: CardSymbol + Display> IntoIterator for HandSet<Crd>{
+impl <Crd: CardSymbol + Display> IntoIterator for CardGenHashSet<Crd>{
     type Item = Crd;
 
     type IntoIter = std::collections::hash_set::IntoIter<Crd>;
@@ -27,7 +27,7 @@ impl <Crd: CardSymbol + Display> IntoIterator for HandSet<Crd>{
     }
 }
 
-impl<Crd: CardSymbol + Display> HandTrait for HandSet<Crd>{
+impl<Crd: CardSymbol + Display> HandTrait for CardGenHashSet<Crd>{
     type CardType = Crd;
 
     fn insert_card(&mut self, card: Crd) -> Result<(), crate::error::HandErrorGen<Crd>> {
@@ -66,14 +66,14 @@ impl<Crd: CardSymbol + Display> HandTrait for HandSet<Crd>{
     }
 }
 
-pub type HandSetStd = HandSet<Card>;
+pub type HandSetStd = CardGenHashSet<Card>;
 
 
-impl<Crd: CardSymbol + Display> HandSet<Crd>{
+impl<Crd: CardSymbol + Display> CardGenHashSet<Crd>{
     
 
 }
-impl<Crd: CardSymbol + Display> Display for HandSet<Crd>{
+impl<Crd: CardSymbol + Display> Display for CardGenHashSet<Crd>{
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         //let v: Vec<CardStd> = self.cards.iter().collect();
         write!(f,  "[")?;
