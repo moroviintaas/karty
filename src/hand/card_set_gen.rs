@@ -2,7 +2,7 @@ use std::{collections::HashSet};
 use std::fmt::{Display, Formatter};
 
 
-use crate::{error::HandErrorGen};
+use crate::{error::CardErrorGen};
 use crate::cards::{Card};
 use crate::hand::HandTrait;
 #[cfg(feature="speedy")]
@@ -30,19 +30,19 @@ impl <Crd: CardSymbol + Display> IntoIterator for CardGenHashSet<Crd>{
 impl<Crd: CardSymbol + Display> HandTrait for CardGenHashSet<Crd>{
     type CardType = Crd;
 
-    fn insert_card(&mut self, card: Crd) -> Result<(), crate::error::HandErrorGen<Crd>> {
+    fn insert_card(&mut self, card: Crd) -> Result<(), crate::error::CardErrorGen<Crd>> {
         if self.cards.insert(card.to_owned()){
             Ok(())
         }
         else{
-            Err(HandErrorGen::CardDuplicated(card))
+            Err(CardErrorGen::CardDuplicated(card))
         }
     }
 
-    fn remove_card(&mut self, card: &Crd) -> Result<(), crate::error::HandErrorGen<Crd>> {
+    fn remove_card(&mut self, card: &Crd) -> Result<(), crate::error::CardErrorGen<Crd>> {
         match self.cards.remove(card){
             true => Ok(()),
-            false => Err(HandErrorGen::CardNotInHand(card.to_owned()))
+            false => Err(CardErrorGen::CardNotInHand(card.to_owned()))
         }
     }
 

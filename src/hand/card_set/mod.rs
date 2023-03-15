@@ -1,7 +1,8 @@
+
+
 use std::fmt::{Display, Formatter};
 use crate::cards::{Card, MASK_CLUBS, MASK_DIAMONDS, MASK_HEARTS, MASK_SPADES};
-
-use crate::error::HandErrorGen;
+use crate::error::{CardErrorGen};
 use crate::figures::Figure;
 use crate::hand::HandTrait;
 #[cfg(feature="speedy")]
@@ -12,6 +13,8 @@ use crate::symbol::CardSymbol;
 use super::HandSuitedTrait;
 
 
+#[cfg(feature = "parse")]
+mod parse;
 //const CARD_MASK_GUARD:u64 = 1<<52;
 const MASK_STACK_HAND_LEGAL: u64 = MASK_DIAMONDS | MASK_CLUBS | MASK_HEARTS | MASK_SPADES;
 //const STACK_HAND_LARGEST_MASK:u64 = 0x1<<53;
@@ -23,9 +26,9 @@ pub struct CardSet {
 }
 
 impl CardSet {
-    
 
-    
+
+
 
     fn suit_mask(suit: Suit) -> u64{
         match suit{
@@ -250,7 +253,7 @@ impl DoubleEndedIterator for StackHandIterator{
             }
         }
         None
-        
+
     }
 }
 
@@ -434,9 +437,9 @@ impl IntoIterator for CardSet {
 impl HandTrait for CardSet {
     type CardType = Card;
 
-    fn insert_card(&mut self, card: Self::CardType) -> Result<(), crate::error::HandErrorGen<Self::CardType>> {
+    fn insert_card(&mut self, card: Self::CardType) -> Result<(), crate::error::CardErrorGen<Self::CardType>> {
         match self.contains(&card){
-            true => Err(HandErrorGen::CardDuplicated(card)),
+            true => Err(CardErrorGen::CardDuplicated(card)),
             false => {
                 self.cards |= card.mask();
                 Ok(())
@@ -444,13 +447,13 @@ impl HandTrait for CardSet {
         }
     }
 
-    fn remove_card(&mut self, card: &Self::CardType) -> Result<(), crate::error::HandErrorGen<Self::CardType>> {
+    fn remove_card(&mut self, card: &Self::CardType) -> Result<(), crate::error::CardErrorGen<Self::CardType>> {
         match self.contains(card){
             true => {
                 self.cards ^= card.mask();
                 Ok(())
             },
-            false => Err(HandErrorGen::CardNotInHand(*card))
+            false => Err(CardErrorGen::CardNotInHand(*card))
         }
     }
 
@@ -526,9 +529,9 @@ impl HandSuitedTrait for CardSet {
 
 
 
-    
-    
-    
+
+
+
 }
 
 impl Display for CardSet {
@@ -569,6 +572,8 @@ impl FromIterator<Card> for CardSet {
     }
 }
 
+
+
 #[macro_export]
 macro_rules! card_set {
     [ $( $x:expr ),* ] => {
@@ -578,11 +583,7 @@ macro_rules! card_set {
                  h |= $x.mask();
             )*
             $crate::hand::CardSet::from(h)
-            /*let mut hand = StackHand::empty();
-            $(
-                hand.insert_card($x).unwrap();
-            )*
-            hand*/
+
         }
     };
 }
@@ -621,4 +622,7 @@ mod tests{
         assert!(hand.contains(&QUEEN_SPADES));
         assert_eq!(card_set![QUEEN_SPADES].cards, hand.cards);
     }
+
+
 }
+

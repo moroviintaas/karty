@@ -1,13 +1,13 @@
 
 use std::fmt::{Debug, Display};
-use crate::error::HandErrorGen;
+use crate::error::CardErrorGen;
 use crate::suits::{SuitTrait};
 use crate::symbol::CardSymbol;
 
 pub trait HandTrait: Debug + Clone + Eq + IntoIterator<Item=Self::CardType> + Display + IntoIterator{
     type CardType : CardSymbol;
-    fn insert_card(&mut self, card: Self::CardType) -> Result<(), HandErrorGen<Self::CardType>>;
-    fn remove_card(&mut self, card: &Self::CardType) -> Result<(), HandErrorGen<Self::CardType>>;
+    fn insert_card(&mut self, card: Self::CardType) -> Result<(), CardErrorGen<Self::CardType>>;
+    fn remove_card(&mut self, card: &Self::CardType) -> Result<(), CardErrorGen<Self::CardType>>;
     fn empty() -> Self;
     fn contains(&self, card: &Self::CardType) -> bool;
     fn len(&self) -> usize;
@@ -16,6 +16,9 @@ pub trait HandTrait: Debug + Clone + Eq + IntoIterator<Item=Self::CardType> + Di
     }
     fn union(&self, other: &Self) -> Self;
     fn intersection(&self, other: &Self) -> Self;
+    fn insert_card_noerr(&mut self, card: Self::CardType){
+        self.insert_card(card).unwrap_or(());
+    }
 
     /// Inserts cards from vector. All inserts are tried, if at least one produces `Err(e)`, an `Err(e)` is returned (first encountered).
     /// ```
@@ -29,7 +32,7 @@ pub trait HandTrait: Debug + Clone + Eq + IntoIterator<Item=Self::CardType> + Di
     /// assert!(!hand.contains(&NINE_CLUBS));
     ///
     /// ```
-    fn insert_from_iterator<I: Iterator<Item = Self::CardType>>(&mut self, iter: I) -> Result<(), HandErrorGen<Self::CardType>>{
+    fn insert_from_iterator<I: Iterator<Item = Self::CardType>>(&mut self, iter: I) -> Result<(), CardErrorGen<Self::CardType>>{
         let mut result = Ok(());
         for c in iter{
             match self.insert_card(c){

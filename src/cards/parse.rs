@@ -4,6 +4,7 @@ use nom::character::complete::space0;
 use nom::IResult;
 use nom::sequence::{separated_pair};
 use crate::cards::Card2SGen;
+use crate::error::{CardError};
 use crate::figures::parse_figure;
 use crate::figures::Figure;
 use crate::suits::parse::parse_suit;
@@ -73,10 +74,10 @@ pub fn parse_card_delimited(s: &str) -> IResult<&str, Card<FigureStd, SuitStd>>{
 /// assert_eq!(Card2SGen::from_str("9♠"), Ok(NINE_SPADES));
 /// ```
 impl FromStr for Card2SGen<Figure, Suit> {
-    type Err = String;
+    type Err = CardError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        parse_card(s).map(|(_, card)| card).map_err(|e| format!("{e}"))
+        parse_card(s).map(|(_, card)| card).map_err(|_e| CardError::ParseError)
     }
 }
 

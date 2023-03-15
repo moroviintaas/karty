@@ -1,5 +1,5 @@
 mod card;
 pub use card::CardError;
 
-mod hand;
-pub use hand::{HandErrorGen, HandError};
+mod card_set;
+pub use card_set::{CardErrorGen, CardSetError};

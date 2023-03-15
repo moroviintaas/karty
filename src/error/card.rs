@@ -7,7 +7,7 @@
 use std::fmt::{Display, Formatter};
 
 /// Type used for indicating errors related with operations defined in crate
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum CardError{
     /// Instance indicating that wrong position for [`Suit`][crate::suits::Suit] was used, associated value is violating value.
     WrongSuitPosition(usize),
@@ -15,7 +15,8 @@ pub enum CardError{
     WrongFigurePosition(usize),
     WrongPosition(usize),
     WrongMaskFormat,
-    MaskSpaceViolated
+    MaskSpaceViolated,
+    ParseError
 }
 impl Display for CardError{
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {

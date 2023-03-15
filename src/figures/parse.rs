@@ -1,6 +1,5 @@
 use nom::branch::alt;
-use nom::bytes::complete::tag_no_case;
-use nom::character::complete::digit1;
+use nom::bytes::complete::{tag, tag_no_case};
 use nom::error::ErrorKind;
 use nom::IResult;
 use crate::figures::F10;
@@ -40,7 +39,7 @@ fn parse_ten(s: &str) -> IResult<&str, Figure>{
 }
 
 fn parse_numbered_figure(s: &str) -> IResult<&str, Figure>{
-    match digit1(s){
+    /*match digit1(s){
         Ok((i, ns)) => match ns.parse::<u8>(){
             Ok(n @MIN_NUMBER_FIGURE..=MAX_NUMBER_FIGURE )=> Ok((i, Figure::Numbered(NumberFigure::new(n)))),
             Ok(_) => Err(nom::Err::Error(nom::error::Error::new(s, ErrorKind::Digit))),
@@ -48,26 +47,105 @@ fn parse_numbered_figure(s: &str) -> IResult<&str, Figure>{
             Err(_) => Err(nom::Err::Error(nom::error::Error::new(s, ErrorKind::Fail)))
         }
         Err(e) => Err(e)
+    }*/
+
+    /*
+    let r = alt((
+        tag("10"),
+
+        //satisfy(|c| c>= '2' && c <='9')
+        //one_of::<_, _, (&str, ErrorKind)>("2345678")
+        ))(s);
+
+     */
+    /*
+    match r{
+        Ok((rem, t)) => match t.parse::<u8>(){
+            Ok(n @MIN_NUMBER_FIGURE..=MAX_NUMBER_FIGURE )=> Ok((i, Figure::Numbered(NumberFigure::new(n)))),
+            Ok(_) => Err(nom::Err::Error(nom::error::Error::new(s, ErrorKind::Digit))),
+            Err(_) => Err(nom::Err::Error(nom::error::Error::new(s, ErrorKind::Fail)))
+
+        },
+        Err(e) => Err(e)
     }
 
+     */
+
+    alt((
+        tag("10"),
+        tag("9"),
+        tag("8"),
+        tag("7"),
+        tag("6"),
+        tag("5"),
+        tag("4"),
+        tag("3"),
+        tag("2"),
+        //satisfy(|c| c>= '2' && c <='9')
+        //one_of::<_, _, (&str, ErrorKind)>("2345678")
+        ))(s)
+            .and_then(|(rem, t)| {
+                match t.parse::<u8>(){
+                     Ok(n @MIN_NUMBER_FIGURE..=MAX_NUMBER_FIGURE )=> Ok((rem, Figure::Numbered(NumberFigure::new(n)))),
+                    Ok(_) => Err(nom::Err::Error(nom::error::Error::new(s, ErrorKind::Digit))),
+                    Err(_) => Err(nom::Err::Error(nom::error::Error::new(s, ErrorKind::Fail)))
+
+                }
+            }
+            )
+}
+
+    /*r.map(|(rem, t)| {
+        match t.parse::<u8>(){
+
+        }
+    })*/
+
+
+
+
+
+
+pub fn parse_high_figure(s: &str) -> IResult<&str, Figure>{
+    alt((parse_ten, parse_numbered_figure, parse_ace, parse_king, parse_queen, parse_jack))(s)
 }
 /// Parses a figure
 /// ```
-/// use karty::figures::{Figure, NumberFigure};
+/// use karty::figures::{F9, Figure, NumberFigure};
 /// use karty::figures::parse_figure;
 /// use nom::error::ErrorKind;
 /// assert_eq!(parse_figure("kc"), Ok(("c", Figure::King)));
 /// assert_eq!(parse_figure("qdiamonds"), Ok(("diamonds", Figure::Queen)));
+/// assert_eq!(parse_figure("9hggg"), Ok(("hggg", F9)));
 /// assert_eq!(parse_figure("deadfish"), Err(nom::Err::Error(nom::error::Error::new("deadfish", ErrorKind::Tag))));
 /// ```
 pub fn parse_figure(s: &str) -> IResult<&str, Figure>{
-    alt((parse_ten, parse_numbered_figure, parse_ace, parse_king, parse_queen, parse_jack))(s)
+    alt((parse_high_figure, parse_numbered_figure))(s)
 }
 
 #[cfg(test)]
 mod tests{
     use nom::error::ErrorKind;
-    use crate::figures::{Figure, NumberFigure, parse};
+    use nom::multi::fold_many0;
+    use crate::figures::{*, Figure, NumberFigure, parse};
+
+    #[test]
+    fn parse_4_figures(){
+        let p_result = fold_many0(
+                parse_figure,
+                Vec::new,
+                |mut v: Vec<Figure>, fig| {
+                v.push(fig);
+                v
+            }
+
+
+        )("AT86.");
+        assert_eq!(p_result, Ok((".", (vec![Ace, F10, F8, F6]))));
+
+
+          //  e("AT86."), Ok((".", (Ace, F10, F8, F6))));
+    }
 
     #[test]
     fn parse_ace(){
@@ -80,8 +158,8 @@ mod tests{
     #[test]
     fn parse_numbered_figure(){
         assert_eq!(parse::parse_numbered_figure("10fg"), Ok(("fg", Figure::Numbered(NumberFigure::new(10)))));
-        assert_eq!(parse::parse_numbered_figure("11fg"), Err(nom::Err::Error(nom::error::Error::new("11fg", ErrorKind::Digit))));
-        assert_eq!(parse::parse_numbered_figure("512fg"), Err(nom::Err::Error(nom::error::Error::new("512fg", ErrorKind::Fail))));
-        assert_eq!(parse::parse_figure("tfg"), Ok(("fg", Figure::Numbered(NumberFigure::new(10)))));
+        assert_eq!(parse::parse_numbered_figure("11fg"), Err(nom::Err::Error(nom::error::Error::new("11fg", ErrorKind::Tag))));
+        assert_eq!(parse::parse_numbered_figure("512fg"), Ok(("12fg", Figure::Numbered(NumberFigure::new(5)))));
+        assert_eq!(parse::parse_high_figure("tfg"), Ok(("fg", Figure::Numbered(NumberFigure::new(10)))));
     }
 }

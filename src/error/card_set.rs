@@ -5,14 +5,15 @@ use crate::symbol::CardSymbol;
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 #[cfg_attr(feature = "speedy", derive(Writable, Readable))]
-pub enum HandErrorGen<Crd: CardSymbol>{
+pub enum CardErrorGen<Crd: CardSymbol>{
     CardNotInHand(Crd),
     EmptyHand,
     HandFull,
     CardDuplicated(Crd),
     HandNotInitialised,
-    DifferentLengths(usize, usize)
+    DifferentLengths(usize, usize),
+    ParseError,
 }
 
-pub type HandError = HandErrorGen<Card>;
+pub type CardSetError = CardErrorGen<Card>;
 
