@@ -131,9 +131,9 @@ impl Display for Suit {
 }
 
 #[derive(Default, Copy, Clone)]
-pub struct ComparatorAHCD{}
+pub struct ComparatorDCHS {}
 
-impl Comparator<Suit> for ComparatorAHCD{
+impl Comparator<Suit> for ComparatorDCHS {
     fn compare(&self, l: &Suit, r: &Suit) -> Ordering {
         match l{
             Spades => match r{
@@ -159,10 +159,10 @@ impl Comparator<Suit> for ComparatorAHCD{
 }
 
 #[derive(Default, Copy, Clone)]
-pub struct ComparatorAHDC{}
+pub struct ComparatorCDHS {}
 
 
-impl Comparator<Suit> for ComparatorAHDC{
+impl Comparator<Suit> for ComparatorCDHS {
     fn compare(&self, l: &Suit, r: &Suit) -> Ordering {
         match l{
             Spades => match r{

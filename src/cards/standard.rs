@@ -5,7 +5,7 @@ use crate::cards::{Card2SGen, CardComparatorGen};
 //use crate::error::CardError::{WrongMaskFormat, WrongPosition};
 use crate::figures::{Ace, FigureComparator, F10, F2, F3, F4, F5, F6, F7, F8, F9, Figure, Jack, King, Queen};
 use crate::suits::Suit::*;
-use crate::suits::{ComparatorAHCD, ComparatorAHDC, Suit};
+use crate::suits::{ComparatorDCHS, ComparatorCDHS, Suit};
 
 use super::Card2SymTrait;
 //#[cfg(feature = "speedy")]
@@ -174,15 +174,15 @@ impl Display for Card {
 
 pub type ComparatorCardStd<CS> = CardComparatorGen<Figure, Suit, FigureComparator, CS>;
 
-pub const CARD_COMPARATOR_BRIDGE: ComparatorCardStd<ComparatorAHDC> =
+pub const CARD_COMPARATOR_BRIDGE: ComparatorCardStd<ComparatorCDHS> =
     CardComparatorGen {
-        suit_comparator: ComparatorAHDC{},
+        suit_comparator: ComparatorCDHS {},
         figure_comparator: FigureComparator {},
         _phantom: PhantomData{}
     };
-pub const CARD_COMPARATOR_VISUAL: ComparatorCardStd<ComparatorAHCD> =
+pub const CARD_COMPARATOR_VISUAL: ComparatorCardStd<ComparatorDCHS> =
     CardComparatorGen {
-        suit_comparator: ComparatorAHCD{},
+        suit_comparator: ComparatorDCHS {},
         figure_comparator: FigureComparator {},
         _phantom: PhantomData{}
     };

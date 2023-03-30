@@ -265,7 +265,7 @@ CardComparatorGen<F, S, CF, CS>{
 /// ```
 /// use karty::cards::{STANDARD_DECK};
 /// use karty::figures::FigureComparator;
-/// use karty::suits::ComparatorAHCD;
+/// use karty::suits::ComparatorDCHS;
 /// use karty::cards::*;
 ///
 /// let mut deck = Vec::from(STANDARD_DECK);
@@ -286,7 +286,7 @@ CardComparatorGen<F, S, CF, CS>{
 /// ```
 /// use karty::cards::{STANDARD_DECK};
 /// use karty::figures::FigureComparator;
-/// use karty::suits::ComparatorAHCD;
+/// use karty::suits::ComparatorDCHS;
 /// use karty::cards::*;
 ///
 /// let mut deck = Vec::from(STANDARD_DECK);
