@@ -103,5 +103,8 @@ mod tests{
         let card_set = CardSet::from_str("AT86.KJT93.4T.2A").unwrap();
         let card_vec: Vec<Card> = card_set.into_iter().collect();
         assert_eq!(card_vec, [TWO_CLUBS, ACE_CLUBS, FOUR_DIAMONDS, TEN_DIAMONDS, THREE_HEARTS, NINE_HEARTS, TEN_HEARTS, JACK_HEARTS, KING_HEARTS, SIX_SPADES, EIGHT_SPADES, TEN_SPADES, ACE_SPADES]);
+        let card_set = CardSet::from_str("AT86...2A").unwrap();
+        let card_vec: Vec<Card> = card_set.into_iter().collect();
+        assert_eq!(card_vec, [TWO_CLUBS, ACE_CLUBS, SIX_SPADES, EIGHT_SPADES, TEN_SPADES, ACE_SPADES]);
     }
 }

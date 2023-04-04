@@ -119,7 +119,85 @@ impl From<u64> for CardSet {
     }
 }
 
+#[cfg(feature = "serde")]
+mod serde{
+    use std::fmt::Formatter;
+    use nom::Finish;
+    use serde::{Deserialize, Deserializer, Serialize, Serializer};
+    use smallvec::SmallVec;
+    use serde::de::{Error, Visitor};
+    use crate::hand::{CardSet, HandSuitedTrait};
+    use crate::hand::card_set::parse::parse_card_set;
+    use crate::suits::Suit::{Clubs, Diamonds, Hearts, Spades};
 
+    impl Serialize for CardSet{
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: Serializer {
+            /*let cards_in_suits = [
+                self.suit_iterator(&Spades).fold(String::new(), | acc, s|{
+
+                })
+            ]*/
+            let cards_in_suits = [Spades, Hearts, Diamonds, Clubs].iter().map(|suit|{
+                self.suit_iterator(suit).rev().fold(String::new(), |acc, c|{
+                    acc + &c.figure.repr_char().to_string()
+                })
+            }).collect::<SmallVec<[String;4]>>();
+            let result = format!("{}.{}.{}.{}", cards_in_suits[0], cards_in_suits[1], cards_in_suits[2], cards_in_suits[3]);
+            serializer.serialize_str(&result)
+        }
+    }
+
+    impl<'de> Deserialize<'de> for CardSet{
+
+
+
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error> where D: Deserializer<'de> {
+            struct CardSetVisitor;
+
+            impl<'de> Visitor<'de> for CardSetVisitor{
+                type Value = CardSet;
+
+                fn expecting(&self, formatter: &mut Formatter) -> std::fmt::Result {
+                    formatter.write_str("Expected string \"<SPADES>.<HEARTS>.<DIAMONDS>.<CLUBS>\" or u64")
+                }
+
+                fn visit_str<E>(self, v: &str) -> Result<Self::Value, E> where E: Error {
+                    parse_card_set(v).finish()
+                        .map(|(_i,cs)| cs)
+                        .map_err(|e| E::custom(format!("Error parsing CardSet: {e:}")))
+                }
+                fn visit_u64<E>(self, _v: u64) -> Result<Self::Value, E> where E: Error {
+                    todo!() //match CardSet::fro
+                }
+            }
+
+            deserializer.deserialize_str(CardSetVisitor)
+                /*.or_else(
+                deserializer.deserialize_u64(CardSetVisitor)
+            )*/
+        }
+
+    }
+
+    #[cfg(test)]
+    mod tests{
+        use crate::card_set;
+        use crate::cards::{ACE_SPADES, KING_CLUBS, KING_SPADES, TEN_CLUBS, TWO_HEARTS};
+        use crate::hand::CardSet;
+
+        #[test]
+        fn card_set_serialize(){
+            let card_set1 = card_set![ACE_SPADES, KING_SPADES, KING_CLUBS, TEN_CLUBS, TWO_HEARTS];
+            assert_eq!(ron::to_string(&card_set1).unwrap(), "\"AK.2..KT\"");
+        }
+
+        #[test]
+        fn card_set_deserialize(){
+            let card_set1 = card_set![ACE_SPADES, KING_SPADES, KING_CLUBS, TEN_CLUBS, TWO_HEARTS];
+            assert_eq!(ron::from_str::<CardSet>( "\"AK.2..KT\"").unwrap(), card_set1);
+        }
+    }
+}
 
 pub struct StackHandIterator {
     hand: CardSet,

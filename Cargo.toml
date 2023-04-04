@@ -29,9 +29,9 @@ register = ["dep:array2d"]
 random = ["dep:rand"]
 #serde_json = ["dep:serde", "dep:serde_json"]
 speedy = ["dep:speedy"]
-serde = ["dep:serde"]
+serde = ["dep:serde", "serde_ron", "parse"]
 serde_postcard = ["dep:serde", "dep:postcard", "serde"]
-serde_ron = ["dep:serde", "dep:ron", "serde"]
+serde_ron = ["dep:serde", "dep:ron"]
 
 # docs.rs-specific configuration
 [package.metadata.docs.rs]

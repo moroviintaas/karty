@@ -67,6 +67,20 @@ impl NumberFigure {
         1u64<<self.power
     }
 
+    /// ```
+    /// use karty::figures::NumberFigure;
+    /// assert_eq!(NumberFigure::new(2).repr_char(), '2');
+    /// assert_eq!(NumberFigure::new(9).repr_char(), '9');
+    /// assert_eq!(NumberFigure::new(10).repr_char(), 'T');
+    /// ```
+    pub fn repr_char(&self) -> char{
+        match self.power{
+            10 => 'T',
+            legit @ 2..=9 => (0x30 + legit) as char,
+            bad => panic!("Bad number in NumberedFigure:{bad:} (should not happen, it is a bug).")
+        }
+    }
+
 }
 
 impl std::fmt::Display for NumberFigure {
@@ -197,6 +211,19 @@ impl Figure {
         }
         
     }
+
+    pub fn repr_char(&self) -> char{
+        match self{
+            Ace => 'A',
+            King => 'K',
+            Queen => 'Q',
+            Jack => 'J',
+            Numbered(n) => n.repr_char()
+        }
+
+    }
+
+
 
 
 
