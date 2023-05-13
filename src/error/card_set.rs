@@ -3,9 +3,9 @@ use crate::cards::{Card};
 use crate::speedy::{Readable, Writable};
 use crate::symbol::CardSymbol;
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 #[cfg_attr(feature = "speedy", derive(Writable, Readable))]
-pub enum CardErrorGen<Crd: CardSymbol>{
+pub enum CardSetErrorGen<Crd: CardSymbol>{
     CardNotInHand(Crd),
     EmptyHand,
     HandFull,
@@ -13,7 +13,8 @@ pub enum CardErrorGen<Crd: CardSymbol>{
     HandNotInitialised,
     DifferentLengths(usize, usize),
     ParseError,
+    BadProbabilitiesSum(f32, f32)
 }
 
-pub type CardSetError = CardErrorGen<Card>;
+pub type CardSetError = CardSetErrorGen<Card>;
 

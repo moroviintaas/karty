@@ -2,7 +2,7 @@
 
 use std::fmt::{Display, Formatter};
 use crate::cards::{Card, MASK_CLUBS, MASK_DIAMONDS, MASK_HEARTS, MASK_SPADES};
-use crate::error::{CardErrorGen};
+use crate::error::{CardSetErrorGen};
 use crate::figures::Figure;
 use crate::hand::HandTrait;
 #[cfg(feature="speedy")]
@@ -515,9 +515,9 @@ impl IntoIterator for CardSet {
 impl HandTrait for CardSet {
     type CardType = Card;
 
-    fn insert_card(&mut self, card: Self::CardType) -> Result<(), crate::error::CardErrorGen<Self::CardType>> {
+    fn insert_card(&mut self, card: Self::CardType) -> Result<(), crate::error::CardSetErrorGen<Self::CardType>> {
         match self.contains(&card){
-            true => Err(CardErrorGen::CardDuplicated(card)),
+            true => Err(CardSetErrorGen::CardDuplicated(card)),
             false => {
                 self.cards |= card.mask();
                 Ok(())
@@ -525,13 +525,13 @@ impl HandTrait for CardSet {
         }
     }
 
-    fn remove_card(&mut self, card: &Self::CardType) -> Result<(), crate::error::CardErrorGen<Self::CardType>> {
+    fn remove_card(&mut self, card: &Self::CardType) -> Result<(), crate::error::CardSetErrorGen<Self::CardType>> {
         match self.contains(card){
             true => {
                 self.cards ^= card.mask();
                 Ok(())
             },
-            false => Err(CardErrorGen::CardNotInHand(*card))
+            false => Err(CardSetErrorGen::CardNotInHand(*card))
         }
     }
 

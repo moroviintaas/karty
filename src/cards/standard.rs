@@ -337,6 +337,7 @@ pub const STANDARD_DECK_CDHS: [Card; Card::SYMBOL_SPACE] = [
 ];
 
 pub const DECK_SIZE:usize = 52;
+
 /* 
 pub const MASK_CLUBS: u64 =                 0x7ffc;
 pub const MASK_DIAMONDS: u64 =          0x7ffc0000;
