@@ -23,6 +23,7 @@ itertools = "0.10.5"
 smallvec = "1.10.0"
 approx = "0.5.1"
 serde-big-array = "0.5.1"
+thiserror = "1.0.40"
 
 [features]
 parse= ["dep:nom"]
