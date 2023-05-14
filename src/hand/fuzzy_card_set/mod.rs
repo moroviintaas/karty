@@ -4,7 +4,7 @@ use crate::cards::{Card, DECK_SIZE};
 use crate::error::CardSetErrorGen;
 use serde_big_array::BigArray;
 use crate::figures::Figure;
-use crate::suits::{SuitMap, SUITS};
+use crate::suits::{Suit, SuitMap, SUITS};
 use crate::symbol::CardSymbol;
 
 const FUZZY_CARD_SET_TOLERANCE: f32 = 0.01;
@@ -59,12 +59,134 @@ impl FuzzyCardSet{
     pub fn expected_card_number(&self) -> u8{
         self.expected_card_number as u8
     }
+
+    /// ```
+    /// use karty::suits::SuitMap;
+    /// use karty::hand::FuzzyCardSet;
+    /// use karty::suits::Suit::{Clubs, Diamonds, Hearts, Spades};
+    /// let cards_clubs =       [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3];
+    /// let cards_diamonds =    [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+    /// let cards_hearts =      [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3];
+    /// let cards_spades =      [0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.0];
+    /// let fset = FuzzyCardSet::new_check_epsilon(SuitMap::new(cards_spades, cards_hearts, cards_diamonds, cards_clubs), 13).unwrap();
+    /// assert_eq!(fset.count_ones_in_suit(&Clubs), 0);
+    /// assert_eq!(fset.count_ones_in_suit(&Diamonds), 1);
+    /// assert_eq!(fset.count_ones_in_suit(&Hearts), 0);
+    /// assert_eq!(fset.count_ones_in_suit(&Spades), 0);
+    /// ```
+    ///
+    pub fn count_ones_in_suit(&self, suit: &Suit) -> usize{
+        /*self.probabilities[suit].iter().fold(0, |acc, x|{
+            if *x>= 1.0{
+                acc + 1
+            } else {
+                acc
+            }
+        })*/
+        self.probabilities[suit].iter().filter(|&&x| x>= 1.0f32).count()
+    }
+
+    pub fn count_ones(&self) -> usize{
+        SUITS.iter().map(|s|self.count_ones_in_suit(s)).sum()
+    }
+
+    /// ```
+    /// use karty::suits::SuitMap;
+    /// use karty::hand::FuzzyCardSet;
+    /// use karty::suits::Suit::{Clubs, Diamonds, Hearts, Spades};
+    /// let cards_clubs =       [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3];
+    /// let cards_diamonds =    [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+    /// let cards_hearts =      [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3];
+    /// let cards_spades =      [0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.0];
+    /// let fset = FuzzyCardSet::new_check_epsilon(SuitMap::new(cards_spades, cards_hearts, cards_diamonds, cards_clubs), 13).unwrap();
+    /// assert_eq!(fset.count_zeros_in_suit(&Clubs), 0);
+    /// assert_eq!(fset.count_zeros_in_suit(&Diamonds), 12);
+    /// assert_eq!(fset.count_zeros_in_suit(&Hearts), 0);
+    /// assert_eq!(fset.count_zeros_in_suit(&Spades), 1);
+    /// ```
+    ///
+    pub fn count_zeros_in_suit(&self, suit: &Suit) -> usize{
+        self.probabilities[suit].iter().filter(|&&x| x<= 0.0f32).count()
+    }
+
+    pub fn count_zeros(&self) -> usize{
+        SUITS.iter().map(|s|self.count_zeros_in_suit(s)).sum()
+    }
+
+    /// ```
+    /// use karty::suits::SuitMap;
+    /// use karty::hand::FuzzyCardSet;
+    /// use karty::suits::Suit::{Clubs, Diamonds, Hearts, Spades};
+    /// let cards_clubs =       [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3];
+    /// let cards_diamonds =    [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+    /// let cards_hearts =      [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3];
+    /// let cards_spades =      [0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.0];
+    /// let fset = FuzzyCardSet::new_check_epsilon(SuitMap::new(cards_spades, cards_hearts, cards_diamonds, cards_clubs), 13).unwrap();
+    /// assert_eq!(fset.count_uncertain_in_suit(&Clubs), 13);
+    /// assert_eq!(fset.count_uncertain_in_suit(&Diamonds), 0);
+    /// assert_eq!(fset.count_uncertain_in_suit(&Hearts), 13);
+    /// assert_eq!(fset.count_uncertain_in_suit(&Spades), 12);
+    /// ```
+    pub fn count_uncertain_in_suit(&self, suit: &Suit) -> usize{
+        self.probabilities[suit].into_iter().filter(|&x| 0.0 < x && x < 1.0).count()
+    }
+
+    pub fn count_uncertain(&self) -> usize{
+        SUITS.iter().map(|s| self.count_uncertain_in_suit(s)).sum()
+
+    }
+
+    /// ```
+    /// use approx::assert_abs_diff_eq;
+    /// use karty::suits::SuitMap;
+    /// use karty::hand::FuzzyCardSet;
+    /// use karty::suits::Suit::{Clubs, Diamonds, Hearts, Spades};
+    /// let cards_clubs =       [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3];
+    /// let cards_diamonds =    [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+    /// let cards_hearts =      [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3];
+    /// let cards_spades =      [0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.0];
+    /// let fset = FuzzyCardSet::new_check_epsilon(SuitMap::new(cards_spades, cards_hearts, cards_diamonds, cards_clubs), 13).unwrap();
+    /// assert_abs_diff_eq!(fset.sum_probabilities_in_suit(&Clubs), 3.9, epsilon=0.001);
+    /// assert_eq!(fset.sum_probabilities_in_suit(&Diamonds), 1.0);
+    /// assert_abs_diff_eq!(fset.sum_probabilities_in_suit(&Spades), 4.2, epsilon=0.001);
+    ///
+    /// ```
+    ///
+    pub fn sum_probabilities_in_suit(&self, suit: &Suit) -> f32{
+        self.probabilities[suit].iter().sum()
+    }
+
+     /// ```
+    /// use approx::assert_abs_diff_eq;
+    /// use karty::suits::SuitMap;
+    /// use karty::hand::FuzzyCardSet;
+    /// use karty::suits::Suit::{Clubs, Diamonds, Hearts, Spades};
+    /// let cards_clubs =       [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3];
+    /// let cards_diamonds =    [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+    /// let cards_hearts =      [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3];
+    /// let cards_spades =      [0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.0];
+    /// assert_abs_diff_eq!(FuzzyCardSet::new_check_epsilon(SuitMap::new(cards_spades, cards_hearts, cards_diamonds, cards_clubs), 13).unwrap().sum_probabilities(), 13.0, epsilon=0.001);
+    /// ```
+    pub fn sum_probabilities(&self) -> f32{
+        SUITS.iter().map(|s| self.sum_probabilities_in_suit(s)).sum()
+    }
 }
 
-impl Index<Card> for FuzzyCardSet{
-    type Output = f32;
 
-    fn index(&self, index: Card) -> &Self::Output {
+impl Index<&Card> for FuzzyCardSet{
+    type Output = f32;
+    /// ```
+    /// use karty::cards::TWO_DIAMONDS;
+    /// use karty::suits::SuitMap;
+    /// use karty::hand::FuzzyCardSet;
+    /// use karty::suits::Suit::{Clubs, Diamonds, Hearts, Spades};
+    /// let cards_clubs =       [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3];
+    /// let cards_diamonds =    [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+    /// let cards_hearts =      [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3];
+    /// let cards_spades =      [0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.0];
+    /// assert_eq!(FuzzyCardSet::new_check_epsilon(SuitMap::new(cards_spades, cards_hearts, cards_diamonds, cards_clubs),13 ).unwrap()[&TWO_DIAMONDS], 1.0);
+    /// ```
+    fn index(&self, index: &Card) -> &Self::Output {
         &self.probabilities[index.suit][index.figure.position()]
     }
 }

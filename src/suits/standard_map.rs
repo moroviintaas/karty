@@ -103,6 +103,19 @@ impl<T> Index<Suit> for SuitMap<T>{
     }
 }
 
+impl<T> Index<&Suit> for SuitMap<T>{
+    type Output = T;
+
+    fn index(&self, index: &Suit) -> &Self::Output {
+        match index{
+            Suit::Spades => &self.spades,
+            Suit::Hearts => &self.hearts,
+            Suit::Diamonds => &self.diamonds,
+            Suit::Clubs => &self.clubs
+        }
+    }
+}
+
 impl<T> IndexMut<Suit> for SuitMap<T>{
     fn index_mut(&mut self, index: Suit) -> &mut Self::Output {
         match index{
@@ -113,6 +126,18 @@ impl<T> IndexMut<Suit> for SuitMap<T>{
         }
     }
 }
+
+impl<T> IndexMut<&Suit> for SuitMap<T>{
+    fn index_mut(&mut self, index: &Suit) -> &mut Self::Output {
+        match index{
+            Suit::Spades => &mut self.spades,
+            Suit::Hearts => &mut self.hearts,
+            Suit::Diamonds => &mut self.diamonds,
+            Suit::Clubs => &mut self.clubs
+        }
+    }
+}
+
 
 
 
