@@ -1,5 +1,6 @@
 use std::cmp::Ordering;
-use crate::cards::{Card, DECK_SIZE};
+use std::ops::{Mul, MulAssign};
+use crate::cards::{Card};
 use crate::error::CardSetErrorGen;
 use crate::error::CardSetErrorGen::{BadProbability, ProbabilityBelowZero, ProbabilityOverOne};
 use crate::hand::FProbability::{Uncertain, Zero};
@@ -21,6 +22,41 @@ impl FProbability{
     }
 }
 
+impl Mul<f32> for FProbability{
+    type Output = Self;
+
+    fn mul(self, rhs: f32) -> Self::Output {
+        match self{
+            FProbability::One => {
+                if rhs > 1.0{
+                    FProbability::Bad(rhs)
+                } else if rhs == 0.0 {
+                    FProbability::Zero
+                } else if rhs < 0.0{
+                    FProbability::Bad(rhs)
+                } else {
+                    FProbability::Uncertain(rhs)
+                }
+            }
+            Zero => Zero,
+            Uncertain(p) => {
+                let new_p = p*rhs;
+                if new_p > 1.0 || new_p < 0.0{
+                    FProbability::Bad(new_p)
+                }  else {
+                    FProbability::Uncertain(new_p)
+                }
+            }
+            FProbability::Bad(p) => FProbability::Bad(p*rhs)
+        }
+    }
+}
+
+impl MulAssign<f32> for FProbability{
+    fn mul_assign(&mut self, rhs: f32) {
+        *self = *self * rhs
+    }
+}
 
 
 impl PartialEq<Self> for FProbability {

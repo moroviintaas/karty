@@ -6,19 +6,18 @@ pub use card_probability::*;
 pub use standard_tools::*;
 use std::ops::Index;
 use approx::abs_diff_ne;
-use crate::cards::{Card, DECK_SIZE};
+use crate::cards::{Card};
 use crate::error::{CardSetError, CardSetErrorGen};
-use serde_big_array::BigArray;
 use crate::figures::Figure;
 use crate::suits::{Suit, SuitMap, SUITS};
 use crate::symbol::CardSymbol;
 
 const FUZZY_CARD_SET_TOLERANCE: f32 = 0.01;
-
+/*
 pub(crate) fn is_uncertain(proba: f32) -> bool {
     proba > 0.0 && proba <1.0
 }
-
+*/
 
 //#[derive(serde::Serialize, serde::Deserialize, Clone)]
 #[derive(Clone)]
@@ -84,6 +83,9 @@ impl FuzzyCardSet{
     }
     pub fn expected_card_number(&self) -> u8{
         self.expected_card_number as u8
+    }
+    pub fn expected_card_number_f32(&self) -> f32{
+        self.expected_card_number
     }
 
     /// ```
@@ -241,6 +243,23 @@ impl FuzzyCardSet{
     }
 
 
+    pub fn repair_not_fixed(&mut self) -> Result<f32, CardSetError>{
+        let sum_uncertain = self.sum_uncertain();
+        let scale = (self.expected_card_number - self.count_ones() as f32) / sum_uncertain;
+        println!("{}", scale);
+        for s in SUITS{
+            for i in 0..self.probabilities[&s].len(){
+                if let FProbability::Uncertain(_ ) = self.probabilities()[&s][i]{
+                    self.probabilities[&s][i]  *= scale
+                } else if let FProbability::Bad(_ ) = self.probabilities()[&s][i]{
+                    self.probabilities[&s][i]  *= scale
+                }
+
+            }
+        }
+        Ok(scale)
+    }
+
     /*
     fn downscale_uncertain_no_check(&mut self, scale: f32) -> Result<(), CardSetError>{
         if scale <= 0.0 || scale >= 1.0{
@@ -248,9 +267,10 @@ impl FuzzyCardSet{
         }
         for s in SUITS{
             for i in 0..self.probabilities[&s].len(){
-                if is_uncertain(self.probabilities[&s][i]){
-                        self.probabilities[&s][i] *= scale
-                    }
+
+                if let FProbability::Uncertain(f) = self.probabilities[&s][i]{
+                    self.probabilities[&s][i] *= scale;
+                }
             }
         }
 
@@ -258,11 +278,13 @@ impl FuzzyCardSet{
         Ok(())
     }
 
+     */
+
     /// ```
     /// use approx::assert_abs_diff_eq;
-    /// use karty::cards::TWO_HEARTS;
+    /// use karty::cards::{TWO_DIAMONDS, TWO_HEARTS};
     /// use karty::suits::SuitMap;
-    /// use karty::hand::FuzzyCardSet;
+    /// use karty::hand::{FProbability, FuzzyCardSet};
     /// use karty::suits::Suit::{Clubs, Diamonds, Hearts, Spades};
     /// let cards_clubs =       [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3];
     /// let cards_diamonds =    [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
@@ -272,9 +294,59 @@ impl FuzzyCardSet{
     /// assert_abs_diff_eq!(fset.sum_probabilities(), 13.0, epsilon=0.001);
     /// let scale = fset.set_zero_card_probability(&TWO_HEARTS).unwrap();
     /// assert_abs_diff_eq!(scale, 0.9461, epsilon=0.01);
-    /// assert_abs_diff_eq!(fset.sum_probabilities(), 12.0, epsilon=0.02);
+    /// assert_abs_diff_eq!(fset.sum_probabilities(), 12.0, epsilon=0.001);
+    /// //assert_abs_diff_eq!(fset.expected_card_number_f32(), 12.0, epsilon=0.001);
+    /// //assert_eq!(fset[&TWO_DIAMONDS], FProbability::One);
+    /// //fset.repair_not_fixed();
+    /// //assert_abs_diff_eq!(fset.sum_probabilities(), 12.0, epsilon=0.02);
     /// ```
     pub fn set_zero_card_probability(&mut self, card: &Card) -> Result<f32, CardSetError>{
+        match self[card]{
+            FProbability::One => {
+                self.probabilities[card.suit][card.figure.position()] = FProbability::Zero;
+                self.expected_card_number -= 1.0;
+                Ok(1.0)
+            }
+            FProbability::Zero => Ok(1.0),
+            FProbability::Uncertain(deleted_card_proba_before) => {
+                let remaining_probability_to_remove = 1.0 - deleted_card_proba_before;
+
+                let uncertain_sum_before = self.sum_uncertain();
+                let new_uncertain = uncertain_sum_before - remaining_probability_to_remove;
+
+                self.probabilities[card.suit][card.figure.position()] = FProbability::Zero;
+
+                let scale = new_uncertain / uncertain_sum_before;
+
+                /*self.downscale_uncertain_no_check(scale).and_then(|_|{
+                    self.expected_card_number -= 1.0;
+                    Ok(scale)
+                })*/
+                self.expected_card_number -= 1.0;
+                match self.repair_not_fixed(){
+                    Ok(_) => Ok(scale),
+                    Err(e) => {
+                        self.expected_card_number += 1.0;
+                        Err(e)
+                    }
+                }
+
+
+                /*
+                match self.downscale_uncertain_no_check(scale){
+                    Ok(_) => {
+                        self.expected_card_number -= 1.0;
+                        Ok(())
+                    }
+                    Err(e) => {}
+                }
+
+                 */
+
+            }
+            FProbability::Bad(p) => Err(CardSetErrorGen::BadProbability(p))
+        }
+        /*
         if self[card] <= 0.0{
             return Ok(1.0)
         }
@@ -304,9 +376,10 @@ impl FuzzyCardSet{
 
 
         Ok(scale)
+        */
     }
 
-     */
+
 }
 
 
@@ -335,13 +408,13 @@ mod serde{
     use crate::hand::FuzzyCardSet;
 
     impl Serialize for FuzzyCardSet{
-        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: Serializer {
+        fn serialize<S>(&self, _serializer: S) -> Result<S::Ok, S::Error> where S: Serializer {
             todo!()
         }
     }
 
     impl<'de> Deserialize<'de> for FuzzyCardSet{
-        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error> where D: Deserializer<'de> {
+        fn deserialize<D>(_deserializer: D) -> Result<Self, D::Error> where D: Deserializer<'de> {
             todo!()
         }
     }
