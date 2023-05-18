@@ -13,11 +13,7 @@ pub enum CardSetErrorGen<Crd: CardSymbol>{
     HandNotInitialised,
     DifferentLengths(usize, usize),
     ParseError,
-    BadProbabilitiesSum(f32, f32),
-    ForbiddenDownscale(f32),
-    ProbabilityOverOne(f32),
-    ProbabilityBelowZero(f32),
-    BadProbability(f32)
+
 }
 
 pub type CardSetError = CardSetErrorGen<Card>;

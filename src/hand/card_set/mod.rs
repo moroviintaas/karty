@@ -161,13 +161,13 @@ mod serde{
                     formatter.write_str("Expected string \"<SPADES>.<HEARTS>.<DIAMONDS>.<CLUBS>\" or u64")
                 }
 
+                fn visit_u64<E>(self, _v: u64) -> Result<Self::Value, E> where E: Error {
+                    todo!() //match CardSet::fro
+                }
                 fn visit_str<E>(self, v: &str) -> Result<Self::Value, E> where E: Error {
                     parse_card_set(v).finish()
                         .map(|(_i,cs)| cs)
                         .map_err(|e| E::custom(format!("Error parsing CardSet: {e:}")))
-                }
-                fn visit_u64<E>(self, _v: u64) -> Result<Self::Value, E> where E: Error {
-                    todo!() //match CardSet::fro
                 }
             }
 
@@ -700,6 +700,7 @@ mod tests{
         assert!(hand.contains(&QUEEN_SPADES));
         assert_eq!(card_set![QUEEN_SPADES].cards, hand.cards);
     }
+
 
 
 }

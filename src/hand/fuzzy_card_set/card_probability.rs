@@ -1,13 +1,14 @@
 use std::cmp::Ordering;
 use std::ops::{Mul, MulAssign};
 use crate::cards::{Card};
-use crate::error::CardSetErrorGen;
-use crate::error::CardSetErrorGen::{BadProbability, ProbabilityBelowZero, ProbabilityOverOne};
+use crate::error::{FuzzyCardSetErrorGen};
+use crate::error::FuzzyCardSetErrorGen::{BadProbability, ProbabilityBelowZero, ProbabilityOverOne};
 use crate::hand::FProbability::{Uncertain, Zero};
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Default)]
 pub enum FProbability{
     One,
+    #[default]
     Zero,
     Uncertain(f32),
     Bad(f32)
@@ -15,10 +16,7 @@ pub enum FProbability{
 
 impl FProbability{
     pub fn is_uncertain(&self) -> bool{
-        match self{
-            Uncertain(_) => true,
-            _ => false
-        }
+        matches!(self, Uncertain(_))
     }
 }
 
@@ -41,7 +39,7 @@ impl Mul<f32> for FProbability{
             Zero => Zero,
             Uncertain(p) => {
                 let new_p = p*rhs;
-                if new_p > 1.0 || new_p < 0.0{
+                if !(0.0..=1.0).contains(&new_p){
                     FProbability::Bad(new_p)
                 }  else {
                     FProbability::Uncertain(new_p)
@@ -95,7 +93,7 @@ impl PartialOrd for FProbability{
         left_asf32.partial_cmp(&right_asf32)
     }
 }
-
+/*
 impl Into<f32> for FProbability{
     fn into(self) -> f32 {
         match self{
@@ -106,12 +104,22 @@ impl Into<f32> for FProbability{
         }
     }
 }
-
+*/
+impl From<FProbability> for f32{
+    fn from(value: FProbability) -> Self {
+         match value{
+            FProbability::One => 1.0,
+            FProbability::Zero => 0.0,
+            FProbability::Uncertain(f) => f,
+            FProbability::Bad(b) => b
+        }
+    }
+}
 
 
 
 impl TryFrom<f32> for FProbability{
-    type Error = CardSetErrorGen<Card>;
+    type Error = FuzzyCardSetErrorGen<Card>;
 
     fn try_from(value: f32) -> Result<Self, Self::Error> {
         if value > 0.0 && value < 1.0{

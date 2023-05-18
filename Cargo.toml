@@ -34,6 +34,7 @@ speedy = ["dep:speedy"]
 serde = ["dep:serde", "serde_ron", "parse"]
 serde_postcard = ["dep:serde", "dep:postcard", "serde"]
 serde_ron = ["dep:serde", "dep:ron"]
+fuzzy = []
 
 # docs.rs-specific configuration
 [package.metadata.docs.rs]
