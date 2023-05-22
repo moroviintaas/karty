@@ -37,7 +37,7 @@ pub struct FuzzyCardSet {
     //#[serde(with = "BigArray")]
     //probabilities: [f32; DECK_SIZE],
     probabilities: SuitMap<[FProbability; Figure::SYMBOL_SPACE]>,
-    expected_card_number : f32,
+    expected_card_number : u8,
 
 }
 impl FuzzyCardSet{
@@ -48,7 +48,7 @@ impl FuzzyCardSet{
     }
 
     pub fn empty() -> Self{
-        Self{probabilities: SuitMap::new_from_f(|_| Default::default()), expected_card_number: 0.0}
+        Self{probabilities: SuitMap::new_from_f(|_| Default::default()), expected_card_number: 0}
     }
     /*
     pub fn insert_card(card: Card, probability: FProbability){
@@ -83,7 +83,7 @@ impl FuzzyCardSet{
             }
         }
 
-        Ok(Self{probabilities: tmp, expected_card_number: sum})
+        Ok(Self{probabilities: tmp, expected_card_number: sum.round() as u8})
     }
 
     fn new_derive_sum(probabilities: SuitMap<[FProbability; Figure::SYMBOL_SPACE]>) -> Result<Self, FuzzyCardSetErrorGen<Card>>{
@@ -127,7 +127,7 @@ impl FuzzyCardSet{
             }
             global_sum += suit_sum
         }
-        Ok(Self{probabilities, expected_card_number: global_sum})
+        Ok(Self{probabilities, expected_card_number: global_sum.round() as u8})
 
 
     }
@@ -137,7 +137,7 @@ impl FuzzyCardSet{
         let sum = self.sum_probabilities();
         let expected_f32 = expected as f32;
         if abs_diff_eq!(sum, expected_f32, epsilon=epsilon){
-            self.expected_card_number = expected_f32;
+            self.expected_card_number = expected_f32.round() as u8;
             Ok(())
         } else{
             Err(FuzzyCardSetErrorGen::BadProbabilitiesSum(expected_f32, sum))
@@ -190,17 +190,17 @@ impl FuzzyCardSet{
         if abs_diff_ne!(expected, sum, epsilon = FUZZY_CARD_SET_TOLERANCE){
             return Err(FuzzyCardSetErrorGen::BadProbabilitiesSum(sum, expected))
         }
-        Ok(Self{probabilities: tmp, expected_card_number: expected})
+        Ok(Self{probabilities: tmp, expected_card_number })
     }
 
     pub fn probabilities(&self) -> &SuitMap<[FProbability; Figure::SYMBOL_SPACE]>{
         &self.probabilities
     }
     pub fn expected_card_number(&self) -> u8{
-        self.expected_card_number as u8
+        self.expected_card_number
     }
     pub fn expected_card_number_f32(&self) -> f32{
-        self.expected_card_number
+        self.expected_card_number as f32
     }
 
     /// ```
@@ -360,7 +360,7 @@ impl FuzzyCardSet{
 
     pub fn repair_not_fixed(&mut self) -> Result<f32, FuzzyCardSetErrorGen<Card>>{
         let sum_uncertain = self.sum_uncertain();
-        let scale = (self.expected_card_number - self.count_ones() as f32) / sum_uncertain;
+        let scale = (self.expected_card_number as f32 - self.count_ones() as f32) / sum_uncertain;
         println!("{}", scale);
         for s in SUITS{
             for i in 0..self.probabilities[&s].len(){
@@ -419,7 +419,7 @@ impl FuzzyCardSet{
         match self[card]{
             FProbability::One => {
                 self.probabilities[card.suit][card.figure.position()] = FProbability::Zero;
-                self.expected_card_number -= 1.0;
+                self.expected_card_number -= 1;
                 Ok(1.0)
             }
             FProbability::Zero => Ok(1.0),
@@ -437,11 +437,11 @@ impl FuzzyCardSet{
                     self.expected_card_number -= 1.0;
                     Ok(scale)
                 })*/
-                self.expected_card_number -= 1.0;
+                self.expected_card_number -= 1;
                 match self.repair_not_fixed(){
                     Ok(_) => Ok(scale),
                     Err(e) => {
-                        self.expected_card_number += 1.0;
+                        self.expected_card_number += 1;
                         Err(e)
                     }
                 }
@@ -492,6 +492,10 @@ impl FuzzyCardSet{
 
         Ok(scale)
         */
+    }
+
+    pub(crate) fn set_expected(&mut self, expected: u8){
+        self.expected_card_number = expected
     }
 
 

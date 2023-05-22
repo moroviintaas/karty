@@ -20,10 +20,10 @@ impl Serialize for FuzzyCardSet{
                         }
                         FProbability::Zero => {}
                         FProbability::Uncertain(p) => {
-                            suit_string = suit_string + "[" + &format!("{:.2}", p) + "]" + &Figure::from_position(i).unwrap().repr_char().to_string();
+                            suit_string = suit_string + "[" + &format!("{:.3}", p) + "]" + &Figure::from_position(i).unwrap().repr_char().to_string();
                         }
                         FProbability::Bad(p) => {
-                            suit_string = suit_string + "[" + &format!("{:.2}", p) + "]" + &Figure::from_position(i).unwrap().repr_char().to_string();
+                            suit_string = suit_string + "[" + &format!("{:.3}", p) + "]" + &Figure::from_position(i).unwrap().repr_char().to_string();
                         }
                     }
                 }
