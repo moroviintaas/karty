@@ -29,6 +29,18 @@ impl<T> SuitMap<T>{
         }
     }
 
+    pub fn new_symmetric(val: T) -> Self
+    where T: Clone{
+        Self{
+            spades: val.clone(),
+
+            hearts: val.clone(),
+            diamonds: val.clone(),
+            clubs: val.clone(),
+            privileged_suit: None,
+        }
+    }
+
 
     pub fn set_at(&mut self, suit: &Suit, value: T){
         self[*suit] = value;
