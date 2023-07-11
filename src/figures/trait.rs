@@ -41,11 +41,11 @@ use crate::symbol::CardSymbol;
 ///     //as space of suits does not include clubs it is now of size=3
 ///     const SYMBOL_SPACE: usize = 3;
 ///
-///     fn position(&self) -> usize {
+///     fn usize_index(&self) -> usize {
 ///         (self.power -1) as usize
 ///     }
 ///
-///     fn from_position(position: usize) -> Result<Self, CardError> {
+///     fn from_usize_index(position: usize) -> Result<Self, CardError> {
 ///         let power = (position + 1) as u8;
 ///         match power{
 ///             ok @MIN_MY_FIGURE..=MAX_MY_FIGURE => Ok(Self::new(power)),

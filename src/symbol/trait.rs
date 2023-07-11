@@ -31,19 +31,19 @@ pub trait CardSymbol: Sized + Eq +  std::hash::Hash  + Clone + Debug{
     /// ```
     /// use karty::suits::Suit::{Clubs, Diamonds, Hearts, Spades};
     /// use karty::symbol::CardSymbol;
-    /// assert_eq!(Spades.position(), 3);
-    /// assert_eq!(Hearts.position(), 2);
-    /// assert_eq!(Diamonds.position(), 1);
-    /// assert_eq!(Clubs.position(), 0);
+    /// assert_eq!(Spades.usize_index(), 3);
+    /// assert_eq!(Hearts.usize_index(), 2);
+    /// assert_eq!(Diamonds.usize_index(), 1);
+    /// assert_eq!(Clubs.usize_index(), 0);
     /// ```
     /// For standard figures:
     /// ```
     /// use karty::figures::{F10, King};
     /// use karty::symbol::CardSymbol;
-    /// assert_eq!(F10.position(), 8);
-    /// assert_eq!(King.position(), 11);
+    /// assert_eq!(F10.usize_index(), 8);
+    /// assert_eq!(King.usize_index(), 11);
     /// ```
-    fn position(&self) -> usize;
+    fn usize_index(&self) -> usize;
     /// Reverse function to [`position(&self)`][crate::symbol::CardSymbol::position], creates symbol instance, given it's associated number.
     /// # Returns:
     /// Instance of symbol associated with a number.
@@ -54,12 +54,12 @@ pub trait CardSymbol: Sized + Eq +  std::hash::Hash  + Clone + Debug{
     /// use karty::suits::Suit;
     /// use karty::suits::Suit::Hearts;
     /// use karty::symbol::CardSymbol;
-    /// assert_eq!(Figure::from_position(10).unwrap(), Queen);
-    /// assert_eq!(Suit::from_position(2).unwrap(), Hearts);
-    /// assert_eq!(Card::from_position(3).unwrap(), FIVE_CLUBS);
-    /// assert_eq!(Card::from_position(48).unwrap(), JACK_SPADES);
+    /// assert_eq!(Figure::from_usize_index(10).unwrap(), Queen);
+    /// assert_eq!(Suit::from_usize_index(2).unwrap(), Hearts);
+    /// assert_eq!(Card::from_usize_index(3).unwrap(), FIVE_CLUBS);
+    /// assert_eq!(Card::from_usize_index(48).unwrap(), JACK_SPADES);
     /// ```
-    fn from_position(position: usize) -> Result<Self, CardError>;
+    fn from_usize_index(position: usize) -> Result<Self, CardError>;
     /// Method constructs [`CardSymbolIterator`][crate::symbol::CardSymbolIterator] iterating symbols from the one numbered `0` to
     /// the last one (numbered [`SYMBOL_SPACE-1`][crate::symbol::CardSymbol::SYMBOL_SPACE].
     /// # Returns:
@@ -81,12 +81,12 @@ pub trait CardSymbol: Sized + Eq +  std::hash::Hash  + Clone + Debug{
         CardSymbolIterator::new()
     }
     fn higher_n(&self, n: usize) -> Option<Self>{
-        Self::from_position(self.position()+n).ok()
+        Self::from_usize_index(self.usize_index()+n).ok()
     }
     fn lower_n(&self, n: usize) -> Option<Self>{
-        match self.position().checked_sub(n){
+        match self.usize_index().checked_sub(n){
             Some(k) => {
-                Self::from_position(k).ok()
+                Self::from_usize_index(k).ok()
             },
             None => None,
         }

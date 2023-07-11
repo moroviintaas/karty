@@ -39,7 +39,7 @@ mod test{
     fn test_random_std_suit(){
         for _ in 0..=20 {
             let suit = Suit::random(&mut thread_rng());
-            assert!(suit.position() < 5);
+            assert!(suit.usize_index() < 5);
         }
     }
 
@@ -47,7 +47,7 @@ mod test{
     fn test_random_std_figure(){
         for _ in 0..=20{
             let figure = Figure::random(&mut thread_rng());
-            assert!(figure.position() < 13);
+            assert!(figure.usize_index() < 13);
         }
 
     }

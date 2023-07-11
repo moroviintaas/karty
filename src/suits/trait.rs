@@ -31,7 +31,7 @@ use crate::symbol::CardSymbol;
 ///     //as space of suits does not include clubs it is now of size=3
 ///     const SYMBOL_SPACE: usize = 3;
 ///
-///     fn position(&self) -> usize {
+///     fn usize_index(&self) -> usize {
 ///         match self{
 ///             MySuit::Spades => 2,
 ///             MySuit::Hearts => 1,
@@ -39,7 +39,7 @@ use crate::symbol::CardSymbol;
 ///         }
 ///     }
 ///
-///     fn from_position(position: usize) -> Result<Self, CardError> {
+///     fn from_usize_index(position: usize) -> Result<Self, CardError> {
 ///         match position{
 ///             2 => Ok(MySuit::Spades),
 ///             1 => Ok(MySuit::Hearts),
@@ -58,7 +58,7 @@ use crate::symbol::CardSymbol;
 ///
 /// impl Ord for MySuit {
 ///     fn cmp(&self, other: &Self) -> Ordering {
-///         self.position().cmp(&other.position())
+///         self.usize_index().cmp(&other.usize_index())
 ///     }
 /// }
 /// impl SuitTrait for MySuit{

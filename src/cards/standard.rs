@@ -29,7 +29,7 @@ impl Card2SGen<Figure, Suit>{
     pub fn mask(&self) -> u64{
 
         //self.figure().mask() << (self.suit().position() * 16)
-        1u64<<self.position()
+        1u64<<self.usize_index()
     }
     /// ```
     /// use karty::cards::{Card, TWO_CLUBS, KING_SPADES};
@@ -44,7 +44,7 @@ impl Card2SGen<Figure, Suit>{
 
 
         let t0 = mask.trailing_zeros();
-        Some(Self::from_position(t0 as usize).unwrap())
+        Some(Self::from_usize_index(t0 as usize).unwrap())
         /*
         let suit_mask = t0/16;
         let figure_mask = mask >> (suit_mask * 16);
@@ -363,11 +363,11 @@ mod tests{
 
     #[test]
     fn test_card_element_for_card_std(){
-        assert_eq!(Card::from_position(0).unwrap(), TWO_CLUBS);
-        assert_eq!(Card::from_position(1).unwrap(), THREE_CLUBS);
-        assert_eq!(Card::from_position(4).unwrap(), SIX_CLUBS);
-        assert_eq!(Card::from_position(13).unwrap(), TWO_DIAMONDS);
-        assert_eq!(Card::from_position(51).unwrap(), ACE_SPADES);
+        assert_eq!(Card::from_usize_index(0).unwrap(), TWO_CLUBS);
+        assert_eq!(Card::from_usize_index(1).unwrap(), THREE_CLUBS);
+        assert_eq!(Card::from_usize_index(4).unwrap(), SIX_CLUBS);
+        assert_eq!(Card::from_usize_index(13).unwrap(), TWO_DIAMONDS);
+        assert_eq!(Card::from_usize_index(51).unwrap(), ACE_SPADES);
     }
 
     #[test]

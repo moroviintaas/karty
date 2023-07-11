@@ -69,7 +69,7 @@ impl<E: CardSymbol> Iterator for CardSymbolIterator<E>{
                
                 true => None,
                 false => {
-                    let element = E::from_position(self.iterator_position_low).ok();
+                    let element = E::from_usize_index(self.iterator_position_low).ok();
                     self.stop = true;
                     self.iterator_position_low = self.iterator_position_low.saturating_add(1);
                     element
@@ -80,7 +80,7 @@ impl<E: CardSymbol> Iterator for CardSymbolIterator<E>{
             }
                 ,
             std::cmp::Ordering::Less => {
-                let element = E::from_position(self.iterator_position_low).ok();
+                let element = E::from_usize_index(self.iterator_position_low).ok();
                 self.iterator_position_low = self.iterator_position_low.saturating_add(1);
                 element
             },
@@ -123,7 +123,7 @@ impl <E: CardSymbol> DoubleEndedIterator for CardSymbolIterator<E>{
                 true => None,
                 false => {
                     self.stop = true;
-                    let element = E::from_position(self.iterator_position_high).ok();
+                    let element = E::from_usize_index(self.iterator_position_high).ok();
                     self.iterator_position_high = self.iterator_position_high.saturating_sub(1);
                     element
                     
@@ -133,7 +133,7 @@ impl <E: CardSymbol> DoubleEndedIterator for CardSymbolIterator<E>{
             }
                 ,
             std::cmp::Ordering::Greater => {
-                let element = E::from_position(self.iterator_position_high).ok();
+                let element = E::from_usize_index(self.iterator_position_high).ok();
                 self.iterator_position_high = self.iterator_position_high.saturating_sub(1);
                 element
             },

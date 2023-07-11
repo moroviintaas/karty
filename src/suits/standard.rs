@@ -69,7 +69,7 @@ impl PartialOrd<Self> for Suit {
 /// [`Clubs`][crate::suits::Suit::Clubs].
 impl Ord for Suit {
     fn cmp(&self, other: &Self) -> Ordering {
-        self.position().cmp(&other.position())
+        self.usize_index().cmp(&other.usize_index())
         //self.age().cmp(&other.age())
     }
 }
@@ -77,7 +77,7 @@ impl Ord for Suit {
 impl CardSymbol for Suit {
     const SYMBOL_SPACE: usize = 4;
 
-    fn position(&self) -> usize {
+    fn usize_index(&self) -> usize {
         match self{
             Spades => 3,
             Hearts => 2,
@@ -86,7 +86,7 @@ impl CardSymbol for Suit {
         }
     }
 
-    fn from_position(position: usize) -> Result<Self, CardError> {
+    fn from_usize_index(position: usize) -> Result<Self, CardError> {
         match position{
             3 => Ok(Spades),
             2 => Ok(Hearts),

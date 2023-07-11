@@ -9,7 +9,7 @@ pub struct SimpleSymbolComparator<S: CardSymbol>{
 
 impl<S: CardSymbol> Comparator<S> for SimpleSymbolComparator<S>{
     fn compare(&self, a: &S, b: &S) -> Ordering {
-        a.position().cmp(&b.position())
+        a.usize_index().cmp(&b.usize_index())
     }
 }
 

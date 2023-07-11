@@ -76,7 +76,7 @@ impl CardSet {
     ///  use karty::cards::{Card,*};
     /// use karty::hand::{CardSet, StackHandIntervalIterator};
     /// use karty::symbol::CardSymbol;
-    /// let hand = CardSet::from_iter(Card::iterator().filter(|c| c.position()%4==1));
+    /// let hand = CardSet::from_iter(Card::iterator().filter(|c| c.usize_index()%4==1));
     /// assert_eq!(hand.interval_iterator(&THREE_DIAMONDS, &FIVE_DIAMONDS).collect::<Vec<Card>>(), Vec::new());
     /// assert_eq!(hand.interval_iterator(&TWO_DIAMONDS, &QUEEN_DIAMONDS).collect::<Vec<Card>>(), vec![TWO_DIAMONDS, SIX_DIAMONDS, TEN_DIAMONDS]);
     /// //assert_eq!(StackHandIntervalIterator::new(hand, &SEVEN_HEARTS, &QUEEN_HEARTS).collect::<Vec<Card>>(), vec![NINE_HEARTS, JACK_HEARTS, QUEEN_HEARTS]);
@@ -91,7 +91,7 @@ impl CardSet {
     ///  use karty::cards::{Card,*};
     /// use karty::hand::{CardSet, StackHandIntervalIterator};
     /// use karty::symbol::CardSymbol;
-    /// let hand = CardSet::from_iter(Card::iterator().filter(|c| c.position()%4==1));
+    /// let hand = CardSet::from_iter(Card::iterator().filter(|c| c.usize_index()%4==1));
     /// assert_eq!(hand.excluding_interval_iterator(&THREE_DIAMONDS, &FIVE_DIAMONDS).collect::<Vec<Card>>(), Vec::new());
     /// assert_eq!(hand.excluding_interval_iterator(&TWO_DIAMONDS, &QUEEN_DIAMONDS).collect::<Vec<Card>>(), vec![SIX_DIAMONDS, TEN_DIAMONDS]);
     /// assert_eq!(hand.excluding_interval_iterator(&FOUR_SPADES, &ACE_SPADES).collect::<Vec<Card>>(), vec![EIGHT_SPADES, QUEEN_SPADES]);
@@ -351,8 +351,8 @@ impl StackHandSuitIterator {
         match hand.is_empty(){
             true => Self{lower_position: 1<<63, higher_position: 0, hand},
             false => {
-                let lower_position = 1u64 <<(suit.position()*Figure::SYMBOL_SPACE);
-                let higher_position = 1u64<<(suit.position()*Figure::SYMBOL_SPACE + Figure::SYMBOL_SPACE -1);
+                let lower_position = 1u64 <<(suit.usize_index()*Figure::SYMBOL_SPACE);
+                let higher_position = 1u64<<(suit.usize_index()*Figure::SYMBOL_SPACE + Figure::SYMBOL_SPACE -1);
                 Self{lower_position, higher_position, hand}
             }
         }

@@ -107,10 +107,10 @@ impl CardSymbol for NumberFigure {
     /// ```
     /// use karty::figures::{NumberFigure};
     /// use karty::symbol::CardSymbol;
-    /// assert_eq!(NumberFigure::new(2).position(), 0);
-    /// assert_eq!(NumberFigure::new(10).position(), 8);
+    /// assert_eq!(NumberFigure::new(2).usize_index(), 0);
+    /// assert_eq!(NumberFigure::new(10).usize_index(), 8);
     /// ```
-    fn position(&self) -> usize {
+    fn usize_index(&self) -> usize {
         (self.power - 2) as usize
     }
 
@@ -118,10 +118,10 @@ impl CardSymbol for NumberFigure {
     /// ```
     /// use karty::figures::{NumberFigure};
     /// use karty::symbol::CardSymbol;
-    /// assert_eq!(NumberFigure::from_position(6).unwrap(), NumberFigure::new(8));
-    /// assert_eq!(NumberFigure::from_position(3).unwrap(), NumberFigure::new(5));
+    /// assert_eq!(NumberFigure::from_usize_index(6).unwrap(), NumberFigure::new(8));
+    /// assert_eq!(NumberFigure::from_usize_index(3).unwrap(), NumberFigure::new(5));
     /// ```
-    fn from_position(position: usize) -> Result<Self, CardError> {
+    fn from_usize_index(position: usize) -> Result<Self, CardError> {
         match position{
             p@ 0..=8 => Ok(Self{power: (p + 2) as u8 }),
             s => Err(CardError::WrongFigurePosition(s))
@@ -235,11 +235,11 @@ impl CardSymbol for Figure {
     /// ```
     /// use karty::figures::{F10, F2, Queen};
     /// use karty::symbol::CardSymbol;
-    /// assert_eq!(F2.position(), 0);
-    /// assert_eq!(F10.position(), 8);
-    /// assert_eq!(Queen.position(), 10);
+    /// assert_eq!(F2.usize_index(), 0);
+    /// assert_eq!(F10.usize_index(), 8);
+    /// assert_eq!(Queen.usize_index(), 10);
     /// ```
-    fn position(&self) -> usize {
+    fn usize_index(&self) -> usize {
         match self{
             Ace => 12,
             King => 11,
@@ -251,13 +251,13 @@ impl CardSymbol for Figure {
     /// ```
     /// use karty::figures::{F5, F8, Figure, King};
     /// use karty::symbol::CardSymbol;
-    /// assert_eq!(Figure::from_position(6).unwrap(), F8);
-    /// assert_eq!(Figure::from_position(3).unwrap(), F5);
-    /// assert_eq!(Figure::from_position(11).unwrap(), King);
+    /// assert_eq!(Figure::from_usize_index(6).unwrap(), F8);
+    /// assert_eq!(Figure::from_usize_index(3).unwrap(), F5);
+    /// assert_eq!(Figure::from_usize_index(11).unwrap(), King);
     /// ```
-    fn from_position(position: usize) -> Result<Self, CardError> {
+    fn from_usize_index(position: usize) -> Result<Self, CardError> {
         match position{
-            p@ 0..=8 => Ok(Numbered(NumberFigure::from_position(p)?)),
+            p@ 0..=8 => Ok(Numbered(NumberFigure::from_usize_index(p)?)),
             9 => Ok(Jack),
             10 => Ok(Queen),
             11 => Ok(King),

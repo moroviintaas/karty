@@ -103,11 +103,11 @@ pub trait Card2SymTrait: Debug + Clone + Eq + CardSymbol{
 /// impl CardSymbol for Color {
 ///     const SYMBOL_SPACE: usize = 4;
 ///
-///     fn position(&self) -> usize {
+///     fn usize_index(&self) -> usize {
 ///         self.value() as usize
 ///     }
 ///
-///     fn from_position(position: usize) -> Result<Self, CardError> {
+///     fn from_usize_index(position: usize) -> Result<Self, CardError> {
 ///         match position{
 ///             3 => Ok(Self::Red),
 ///             2 => Ok(Self::Blue),
@@ -150,11 +150,11 @@ pub trait Card2SymTrait: Debug + Clone + Eq + CardSymbol{
 /// impl CardSymbol for Machine {
 ///     const SYMBOL_SPACE: usize = 3;
 ///
-///     fn position(&self) -> usize {
+///     fn usize_index(&self) -> usize {
 ///         self.value() as usize
 ///     }
 ///
-///     fn from_position(position: usize) -> Result<Self, CardError> {
+///     fn from_usize_index(position: usize) -> Result<Self, CardError> {
 ///         match position{
 ///             2 => Ok(Self::Train),
 ///             1 => Ok(Self::Bike),
@@ -169,8 +169,8 @@ pub trait Card2SymTrait: Debug + Clone + Eq + CardSymbol{
 ///
 /// type MyCard = Card2SGen<Machine, Color>;
 /// // Now we have access to few automatically implemented methods:
-/// let card1 = MyCard::from_position(10).unwrap();
-/// let card2 = MyCard::from_position(5).unwrap();
+/// let card1 = MyCard::from_usize_index(10).unwrap();
+/// let card2 = MyCard::from_usize_index(5).unwrap();
 /// assert_eq!(card1.figure(), Machine::Bike);
 /// assert_eq!(card1.suit(), Color::Red);
 /// assert_eq!(card2.figure(), Machine::Train);
@@ -314,13 +314,13 @@ CardComparatorGen<F, S, CF, CS>{
 impl<F: FigureTrait+ Copy, S: SuitTrait + Copy> CardSymbol for Card2SGen<F, S> {
     const SYMBOL_SPACE: usize = F::SYMBOL_SPACE * S::SYMBOL_SPACE;
 
-    fn position(&self) -> usize {
-        (self.suit().position() * F::SYMBOL_SPACE) + self.figure.position()
+    fn usize_index(&self) -> usize {
+        (self.suit().usize_index() * F::SYMBOL_SPACE) + self.figure.usize_index()
     }
 
-    fn from_position(position: usize) -> Result<Self, CardError> {
+    fn from_usize_index(position: usize) -> Result<Self, CardError> {
         let (suit, figure) = div_rem(position, F::SYMBOL_SPACE);
-        Ok(Self{figure: F::from_position(figure)?, suit: S::from_position(suit)?})
+        Ok(Self{figure: F::from_usize_index(figure)?, suit: S::from_usize_index(suit)?})
     }
     /*
     fn position(&self) -> usize {
