@@ -36,7 +36,7 @@ impl<T> SuitMap<T>{
 
             hearts: val.clone(),
             diamonds: val.clone(),
-            clubs: val.clone(),
+            clubs: val,
             privileged_suit: None,
         }
     }
