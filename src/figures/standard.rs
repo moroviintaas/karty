@@ -97,7 +97,7 @@ impl Ord for NumberFigure {
 
 impl PartialOrd<Self> for NumberFigure {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        self.power.partial_cmp(&other.power)
+        Some(self.cmp(other))
     }
 }
 
