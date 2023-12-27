@@ -44,7 +44,7 @@ pub trait CardSymbol: Sized + Eq +  std::hash::Hash  + Clone + Debug{
     /// assert_eq!(King.usize_index(), 11);
     /// ```
     fn usize_index(&self) -> usize;
-    /// Reverse function to [`position(&self)`][crate::symbol::CardSymbol::position], creates symbol instance, given it's associated number.
+    /// Reverse method to [`from_usize_index(&self)`][crate::symbol::CardSymbol::from_usize_index], creates symbol instance, given it's associated number.
     /// # Returns:
     /// Instance of symbol associated with a number.
     /// # Example:
