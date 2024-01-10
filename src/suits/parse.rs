@@ -1,5 +1,5 @@
-//! Module containing parsing functions for [`Suit`][crate::suits::Suit].
-//! To parse suits crate [`nom`][nom] is used.
+//! Module containing parsing functions for [`Suit`].
+//! To parse suits crate [`nom`] is used.
 //! # Licence:
 //! MIT: [https://mit-license.org/](https://mit-license.org/)
 //! # Authors:
