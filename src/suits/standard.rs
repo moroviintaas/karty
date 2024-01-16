@@ -51,6 +51,7 @@ impl Suit {
 
 }
 
+/// Array of standard suits `[Clubs, Diamonds, Hearts, Spades]`
 pub const SUITS: [Suit; 4] = [Clubs, Diamonds, Hearts, Spades];
 
 
@@ -129,7 +130,7 @@ impl Display for Suit {
         }
     }
 }
-
+/// Comparator implementing ordering `Spades > Hearts > Clubs > Diamonds`
 #[derive(Default, Copy, Clone)]
 pub struct ComparatorDCHS {}
 
@@ -157,7 +158,7 @@ impl Comparator<Suit> for ComparatorDCHS {
         }
     }
 }
-
+/// Comparator implementing ordering `Spades > Hearts > Diamonds > Clubs`
 #[derive(Default, Copy, Clone)]
 pub struct ComparatorCDHS {}
 

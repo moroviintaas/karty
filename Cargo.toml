@@ -2,7 +2,11 @@
 name = "karty"
 version = "0.1.0"
 edition = "2021"
-
+repository = "https://github.com/moroviintaas/karty"
+license-file = "LICENSE"
+keywords = ["game", "card", "52", "deck"]
+categories = ["games"]
+description = "Implementation playing cards"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]

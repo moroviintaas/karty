@@ -651,7 +651,15 @@ impl FromIterator<Card> for CardSet {
 }
 
 
-
+/// Build standard [`CardSet`] based on list of cards
+/// ```
+/// use karty::card_set;
+/// use crate::karty::hand::HandTrait;
+/// use karty::cards::{QUEEN_HEARTS, ACE_SPADES, TEN_CLUBS};
+/// let cards = card_set!{ACE_SPADES, QUEEN_HEARTS};
+/// assert!(cards.contains(&ACE_SPADES));
+/// assert!(!cards.contains(&TEN_CLUBS));
+/// ```
 #[macro_export]
 macro_rules! card_set {
     [ $( $x:expr ),* ] => {
