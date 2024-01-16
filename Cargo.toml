@@ -29,6 +29,8 @@ approx = "0.5.1"
 serde-big-array = "0.5.1"
 thiserror = "1.0.56"
 
+karty_proc_macro = { version = "0.1.0" }
+
 [features]
 parse= ["dep:nom"]
 register = ["dep:array2d"]
@@ -40,6 +42,7 @@ serde_postcard = ["dep:serde", "dep:postcard", "serde"]
 serde_ron = ["dep:serde", "dep:ron"]
 fuzzy = []
 
+
 # docs.rs-specific configuration
 [package.metadata.docs.rs]
 # document all features
@@ -47,4 +50,4 @@ all-features = true
 # defines the configuration attribute `docsrs`
 rustdoc-args = ["--cfg", "docsrs"]
 
-karty_proc_macro = { version = "0.1.0" }
+
