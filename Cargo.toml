@@ -13,7 +13,7 @@ description = "Implementation playing cards"
 nom= {version= "7.1.3", optional = true}
 array2d = {version = "0.3.2", optional = true}
 rand = {version = "0.8.5", optional = true}
-karty_proc_macro ={ path="../karty_proc_macro"}
+
 num-integer = "0.1.45"
 serde = {version = "1.0.195", optional = true, features= ["derive"]}
 speedy = {version = "0.8.6", optional =true}
@@ -46,3 +46,5 @@ fuzzy = []
 all-features = true
 # defines the configuration attribute `docsrs`
 rustdoc-args = ["--cfg", "docsrs"]
+
+karty_proc_macro = { version = "0.1.0" }
