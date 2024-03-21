@@ -3,7 +3,7 @@ use crate::cards::{Card};
 use crate::speedy::{Readable, Writable};
 use crate::symbol::CardSymbol;
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, thiserror::Error)]
 #[cfg_attr(feature = "speedy", derive(Writable, Readable))]
 pub enum CardSetErrorGen<Crd: CardSymbol>{
     CardNotInHand(Crd),
@@ -13,6 +13,10 @@ pub enum CardSetErrorGen<Crd: CardSymbol>{
     HandNotInitialised,
     DifferentLengths(usize, usize),
     ParseError,
+    ExpectedEqualCardSets{
+        expected: Vec<Crd>,
+        found: Vec<Crd>
+    }
 
 }
 
