@@ -1,10 +1,10 @@
 [package]
 name = "karty_proc_macro"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 repository = "https://github.com/moroviintaas/karty_proc_macro"
 license-file = "LICENSE"
-keywords = ["game", "card", "52", "deck"]
+keywords = ["game", "card", "deck"]
 categories = ["games"]
 description = "Procedural macros for crate `karty`"
 
@@ -12,7 +12,7 @@ description = "Procedural macros for crate `karty`"
 proc_macro = true
 
 [dependencies]
-proc-macro2 = "1.0.76"
-syn = "2.0.48"
+proc-macro2 = "1.0.79"
+syn = "2.0.57"
 quote = "1.0.35"
 rand = "0.8.5"

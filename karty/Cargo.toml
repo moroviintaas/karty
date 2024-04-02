@@ -1,6 +1,6 @@
 [package]
 name = "karty"
-version = "0.1.1"
+version = "0.2.0"
 edition = "2021"
 repository = "https://github.com/moroviintaas/karty"
 license-file = "LICENSE"
@@ -19,7 +19,7 @@ serde = {version = "1.0.197", optional = true, features= ["derive"]}
 speedy = {version = "0.8.6", optional =true}
 #speedy = {git = "https://github.com/koute/speedy", optional =true}
 #bincode = {version = "1.3.3", optional = true}
-serde_json = {version = "1.0.114", optional = true}
+serde_json = {version = "1.0.115", optional = true}
 comparator = "0.3.0"
 postcard = {version = "1.0.8", optional = true}
 ron = {version = "0.8.1", optional = true}
