@@ -1,6 +1,6 @@
 [package]
 name = "karty"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 repository = "https://github.com/moroviintaas/karty"
 license-file = "LICENSE"
@@ -29,7 +29,7 @@ approx = "0.5.1"
 serde-big-array = "0.5.1"
 thiserror = "1.0.58"
 
-karty_proc_macro = { version = "0.1.0" }
+karty_proc_macro = { version = "0.2.1" }
 
 [features]
 parse= ["dep:nom"]
