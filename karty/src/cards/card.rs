@@ -255,7 +255,7 @@ pub struct CardComparatorGen<F: FigureTrait, S: SuitTrait, CF: Comparator<F> + D
 impl<F: FigureTrait, S: SuitTrait, CS: Comparator<S> + Default, CF: Comparator<F> + Default> Default
 for CardComparatorGen<F, S, CF, CS>{
     fn default() -> Self {
-        Self{suit_comparator: CS::default(), figure_comparator: CF::default(), _phantom: PhantomData::default()}
+        Self{suit_comparator: CS::default(), figure_comparator: CF::default(), _phantom: Default::default()}
     }
 }
 

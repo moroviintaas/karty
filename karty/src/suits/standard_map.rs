@@ -242,7 +242,7 @@ impl<T: IntoIterator> IntoIterator for SuitMap<T>{
         Self::IntoIter::new(self.clubs.into_iter()
             .chain(self.diamonds.into_iter()
                 .chain(self.hearts.into_iter()
-                    .chain(self.spades.into_iter()))))
+                    .chain(self.spades))))
 
     }
 }
