@@ -4,7 +4,7 @@ use std::fmt::{Display, Formatter};
 
 use crate::{error::CardSetErrorGen};
 use crate::cards::{Card};
-use crate::hand::HandTrait;
+use crate::set::CardSet;
 #[cfg(feature="speedy")]
 use crate::speedy::{Readable, Writable};
 use crate::symbol::CardSymbol;
@@ -12,12 +12,12 @@ use crate::symbol::CardSymbol;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[cfg_attr(feature = "speedy", derive(Writable, Readable))]
-pub struct CardGenHashSet<Crd: CardSymbol + Display>{
+pub struct CardSetGeneric<Crd: CardSymbol>{
     cards: HashSet<Crd>,
     //_phantom: PhantomData<>
 }
 
-impl <Crd: CardSymbol + Display> IntoIterator for CardGenHashSet<Crd>{
+impl <Crd: CardSymbol> IntoIterator for CardSetGeneric<Crd>{
     type Item = Crd;
 
     type IntoIter = std::collections::hash_set::IntoIter<Crd>;
@@ -27,7 +27,7 @@ impl <Crd: CardSymbol + Display> IntoIterator for CardGenHashSet<Crd>{
     }
 }
 
-impl<Crd: CardSymbol + Display> HandTrait for CardGenHashSet<Crd>{
+impl<Crd: CardSymbol> CardSet for CardSetGeneric<Crd>{
     type CardType = Crd;
 
     fn insert_card(&mut self, card: Crd) -> Result<(), crate::error::CardSetErrorGen<Crd>> {
@@ -42,7 +42,7 @@ impl<Crd: CardSymbol + Display> HandTrait for CardGenHashSet<Crd>{
     fn remove_card(&mut self, card: &Crd) -> Result<(), crate::error::CardSetErrorGen<Crd>> {
         match self.cards.remove(card){
             true => Ok(()),
-            false => Err(CardSetErrorGen::CardNotInHand(card.to_owned()))
+            false => Err(CardSetErrorGen::CardNotInSet(card.to_owned()))
         }
     }
 
@@ -66,14 +66,14 @@ impl<Crd: CardSymbol + Display> HandTrait for CardGenHashSet<Crd>{
     }
 }
 
-pub type HandSetStd = CardGenHashSet<Card>;
+pub type HandSetStd = CardSetGeneric<Card>;
 
 
-impl<Crd: CardSymbol + Display> CardGenHashSet<Crd>{
+impl<Crd: CardSymbol + Display> CardSetGeneric<Crd>{
     
 
 }
-impl<Crd: CardSymbol + Display> Display for CardGenHashSet<Crd>{
+impl<Crd: CardSymbol + Display> Display for CardSetGeneric<Crd>{
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         //let v: Vec<CardStd> = self.cards.iter().collect();
         write!(f,  "[")?;

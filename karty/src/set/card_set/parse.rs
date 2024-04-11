@@ -6,16 +6,16 @@ use nom::sequence::tuple;
 use crate::cards::{Card, Card2SymTrait};
 use crate::error::CardSetError;
 use crate::figures::{parse_figure};
-use crate::hand::{CardSet, HandTrait};
+use crate::set::{CardSetStd, CardSet};
 use crate::suits::Suit::{Clubs, Diamonds, Hearts, Spades};
 
-pub(crate) fn parse_card_set(s: &str) -> IResult<&str, CardSet>{
+pub(crate) fn parse_card_set(s: &str) -> IResult<&str, CardSetStd>{
 
     tuple((
         fold_many0(
             parse_figure,
-            CardSet::empty,
-            |mut set: CardSet, fig|{
+            CardSetStd::empty,
+            |mut set: CardSetStd, fig|{
                 set.insert_card_noerr(Card::from_figure_and_suit(fig, Spades));
                 set
 
@@ -24,8 +24,8 @@ pub(crate) fn parse_card_set(s: &str) -> IResult<&str, CardSet>{
         tag("."),
         fold_many0(
             parse_figure,
-            CardSet::empty,
-            |mut set: CardSet, fig|{
+            CardSetStd::empty,
+            |mut set: CardSetStd, fig|{
                 set.insert_card_noerr(Card::from_figure_and_suit(fig, Hearts));
                 set
 
@@ -34,8 +34,8 @@ pub(crate) fn parse_card_set(s: &str) -> IResult<&str, CardSet>{
         tag("."),
         fold_many0(
             parse_figure,
-            CardSet::empty,
-            |mut set: CardSet, fig|{
+            CardSetStd::empty,
+            |mut set: CardSetStd, fig|{
                 set.insert_card_noerr(Card::from_figure_and_suit(fig, Diamonds));
                 set
 
@@ -44,8 +44,8 @@ pub(crate) fn parse_card_set(s: &str) -> IResult<&str, CardSet>{
         tag("."),
         fold_many0(
             parse_figure,
-            CardSet::empty,
-            |mut set: CardSet, fig|{
+            CardSetStd::empty,
+            |mut set: CardSetStd, fig|{
                 set.insert_card_noerr(Card::from_figure_and_suit(fig, Clubs));
                 set
 
@@ -59,7 +59,7 @@ pub(crate) fn parse_card_set(s: &str) -> IResult<&str, CardSet>{
 
 }
 
-impl FromStr for CardSet{
+impl FromStr for CardSetStd {
     type Err = CardSetError;
 
 
@@ -78,7 +78,7 @@ mod tests{
     use crate::card_set;
     use crate::cards::{*};
     use crate::figures::{ parse_figure};
-    use crate::hand::{CardSet, HandTrait};
+    use crate::set::{CardSetStd, CardSet};
     use crate::suits::Suit::Spades;
 
 
@@ -87,8 +87,8 @@ mod tests{
         assert_eq!(
             fold_many0(
                 parse_figure,
-                CardSet::empty,
-                |mut set: CardSet, fig| {
+                CardSetStd::empty,
+                |mut set: CardSetStd, fig| {
                 set.insert_card(Card::from_figure_and_suit(fig, Spades)).unwrap();
                 set
             }
@@ -100,10 +100,10 @@ mod tests{
 
     #[test]
     fn card_set_from_str_correct(){
-        let card_set = CardSet::from_str("AT86.KJT93.4T.2A").unwrap();
+        let card_set = CardSetStd::from_str("AT86.KJT93.4T.2A").unwrap();
         let card_vec: Vec<Card> = card_set.into_iter().collect();
         assert_eq!(card_vec, [TWO_CLUBS, ACE_CLUBS, FOUR_DIAMONDS, TEN_DIAMONDS, THREE_HEARTS, NINE_HEARTS, TEN_HEARTS, JACK_HEARTS, KING_HEARTS, SIX_SPADES, EIGHT_SPADES, TEN_SPADES, ACE_SPADES]);
-        let card_set = CardSet::from_str("AT86...2A").unwrap();
+        let card_set = CardSetStd::from_str("AT86...2A").unwrap();
         let card_vec: Vec<Card> = card_set.into_iter().collect();
         assert_eq!(card_vec, [TWO_CLUBS, ACE_CLUBS, SIX_SPADES, EIGHT_SPADES, TEN_SPADES, ACE_SPADES]);
     }

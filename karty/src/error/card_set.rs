@@ -6,8 +6,8 @@ use crate::symbol::CardSymbol;
 #[derive(Debug, Clone, PartialEq, thiserror::Error)]
 #[cfg_attr(feature = "speedy", derive(Writable, Readable))]
 pub enum CardSetErrorGen<Crd: CardSymbol>{
-    #[error("Card {0:?} was not in hand")]
-    CardNotInHand(Crd),
+    #[error("Card {0:?} was not in set")]
+    CardNotInSet(Crd),
     #[error("Hand is empty")]
     EmptyHand,
     #[error("Hand is full")]

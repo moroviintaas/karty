@@ -21,7 +21,7 @@ pub mod symbol;
 #[cfg(feature = "random")]
 pub mod random;
 /// Card aggregation (set of cards)
-pub mod hand;
+pub mod set;
 /// Crate errors
 pub mod error;
 

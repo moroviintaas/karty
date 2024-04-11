@@ -1,10 +1,10 @@
 
-use std::fmt::{Debug, Display};
+use std::fmt::{Debug};
 use crate::error::CardSetErrorGen;
 use crate::suits::{SuitTrait};
 use crate::symbol::CardSymbol;
 
-pub trait HandTrait: Debug + Clone + Eq + IntoIterator<Item=Self::CardType> + Display + IntoIterator{
+pub trait CardSet: Debug + Clone + Eq + IntoIterator<Item=Self::CardType> + Debug +  IntoIterator{
     type CardType : CardSymbol;
     fn insert_card(&mut self, card: Self::CardType) -> Result<(), CardSetErrorGen<Self::CardType>>;
     fn remove_card(&mut self, card: &Self::CardType) -> Result<(), CardSetErrorGen<Self::CardType>>;
@@ -22,7 +22,7 @@ pub trait HandTrait: Debug + Clone + Eq + IntoIterator<Item=Self::CardType> + Di
 
     /// Inserts cards from vector. All inserts are tried, if at least one produces `Err(e)`, an `Err(e)` is returned (first encountered).
     /// ```
-    /// use karty::hand::{HandTrait, CardSet};
+    /// use karty::set::{CardSet, CardSetStd};
     /// use karty::card_set;
     /// use karty::cards::*;
     /// let mut hand = card_set![ACE_SPADES, KING_HEARTS, FOUR_CLUBS, TWO_HEARTS];
@@ -47,10 +47,10 @@ pub trait HandTrait: Debug + Clone + Eq + IntoIterator<Item=Self::CardType> + Di
     }
 
     /// ```
-    /// use karty::hand::{HandTrait, CardSet};
+    /// use karty::set::{CardSet, CardSetStd};
     /// use karty::card_set;
     /// use karty::cards::*;
-    /// let mut hand = CardSet::from_iterator(vec![KING_SPADES, QUEEN_DIAMONDS, FOUR_SPADES, THREE_CLUBS].into_iter());
+    /// let mut hand = CardSetStd::from_iterator(vec![KING_SPADES, QUEEN_DIAMONDS, FOUR_SPADES, THREE_CLUBS].into_iter());
     /// assert_eq!(hand.len(), 4);
     /// assert!(hand.contains(&QUEEN_DIAMONDS));
     /// assert!(!hand.contains(&NINE_CLUBS));
@@ -69,8 +69,8 @@ pub trait HandTrait: Debug + Clone + Eq + IntoIterator<Item=Self::CardType> + Di
 }
 
 
-pub trait HandSuitedTrait: HandTrait{
-    type SuitIterator: Iterator<Item = <Self as HandTrait>::CardType>;
+pub trait HandSuitedTrait: CardSet {
+    type SuitIterator: Iterator<Item = <Self as CardSet>::CardType>;
     type St: SuitTrait;
     
     fn contains_in_suit(&self, suit: &Self::St) -> bool;
