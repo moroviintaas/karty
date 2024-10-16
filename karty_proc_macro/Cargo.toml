@@ -9,7 +9,7 @@ categories = ["games"]
 description = "Procedural macros for crate `karty`"
 
 [lib]
-proc_macro = true
+proc-macro = true
 
 [dependencies]
 proc-macro2 = "1.0.79"

@@ -1,4 +1,4 @@
-#![cfg_attr(docsrs, feature(doc_cfg))]
+//#![cfg_attr(docsrs, feature(doc_cfg))]
 use rand::{Rng};
 use rand::distributions::{Distribution, Standard};
 use crate::symbol::CardSymbol;
@@ -7,7 +7,7 @@ use crate::figures::FigureTrait;
 use crate::suits::SuitTrait;
 
 
-#[cfg_attr(doc_cfg, doc(cfg(all(feature = "random"))))]
+//#[cfg_attr(doc_cfg, doc(cfg(all(feature = "random"))))]
 pub trait RandomSymbol<R: Rng>{
     fn random(rng: &mut R) -> Self;
 
