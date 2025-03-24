@@ -1,6 +1,6 @@
 [package]
 name = "karty"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 repository = "https://github.com/moroviintaas/karty"
 license-file = "LICENSE"
@@ -10,24 +10,24 @@ description = "Implementation playing cards"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-nom= {version= "7.1.3", optional = true}
+nom= {version= "8.0.0", optional = true}
 array2d = {version = "0.3.2", optional = true}
 rand = {version = "0.8.5", optional = true}
 
 num-integer = "0.1.46"
-serde = {version = "1.0.197", optional = true, features= ["derive"]}
-speedy = {version = "0.8.6", optional =true}
+serde = {version = "1.0.218", optional = true, features= ["derive"]}
+speedy = {version = "0.8.7", optional =true}
 #speedy = {git = "https://github.com/koute/speedy", optional =true}
 #bincode = {version = "1.3.3", optional = true}
-serde_json = {version = "1.0.115", optional = true}
+serde_json = {version = "1.0.139", optional = true}
 comparator = "0.3.0"
 postcard = {version = "1.0.8", optional = true}
 ron = {version = "0.8.1", optional = true}
-itertools = "0.12.1"
+itertools = "0.14.0"
 smallvec = "1.13.2"
 approx = "0.5.1"
 serde-big-array = "0.5.1"
-thiserror = "1.0.58"
+thiserror = "2.0.11"
 
 karty_proc_macro = { version = "0.2.1" }
 

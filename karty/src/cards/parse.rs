@@ -1,7 +1,7 @@
 use std::str::FromStr;
 use nom::branch::alt;
 use nom::character::complete::space0;
-use nom::IResult;
+use nom::{IResult, Parser};
 use nom::sequence::{separated_pair};
 use crate::cards::Card2SGen;
 use crate::error::{CardError};
@@ -12,7 +12,7 @@ use crate::suits::Suit;
 
 
 fn parse_card_fs(s: &str) -> IResult<&str, Card2SGen<Figure, Suit>>{
-    match separated_pair(parse_figure, space0, parse_suit)(s){
+    match separated_pair(parse_figure, space0, parse_suit).parse(s){
         Ok((i, (fig, suit))) => Ok((i, Card2SGen::new(fig, suit))),
         Err(e) => Err(e)
     }
@@ -20,7 +20,7 @@ fn parse_card_fs(s: &str) -> IResult<&str, Card2SGen<Figure, Suit>>{
 }
 
 pub fn parse_card_sf(s: &str) -> IResult<&str, Card2SGen<Figure, Suit>> {
-    match separated_pair(parse_suit, space0, parse_figure)(s) {
+    match separated_pair(parse_suit, space0, parse_figure).parse(s) {
         Ok((i, (suit, figure))) => Ok((i, Card2SGen::new(figure, suit))),
         Err(e) => Err(e)
     }
@@ -39,7 +39,7 @@ pub fn parse_card_sf(s: &str) -> IResult<&str, Card2SGen<Figure, Suit>> {
 /// assert_eq!(parse_card("A10  sdiax"), Err(nom::Err::Error(nom::error::Error::new("A10  sdiax", ErrorKind::Tag))));
 /// ```
 pub fn parse_card(s: &str) -> IResult<&str, Card2SGen<Figure, Suit>> {
-    alt((parse_card_fs, parse_card_sf))(s)
+    alt((parse_card_fs, parse_card_sf)).parse(s)
 }
 /* In case ever needed to publish
 /// Parses card from &str (delimited way)

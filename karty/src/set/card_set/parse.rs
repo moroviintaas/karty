@@ -1,8 +1,7 @@
 use std::str::FromStr;
 use nom::bytes::complete::tag;
-use nom::IResult;
+use nom::{IResult, Parser};
 use nom::multi::fold_many0;
-use nom::sequence::tuple;
 use crate::cards::{Card, Card2SymTrait};
 use crate::error::CardSetError;
 use crate::figures::{parse_figure};
@@ -11,7 +10,7 @@ use crate::suits::Suit::{Clubs, Diamonds, Hearts, Spades};
 
 pub(crate) fn parse_card_set(s: &str) -> IResult<&str, CardSetStd>{
 
-    tuple((
+    (
         fold_many0(
             parse_figure,
             CardSetStd::empty,
@@ -53,7 +52,7 @@ pub(crate) fn parse_card_set(s: &str) -> IResult<&str, CardSetStd>{
         ),
 
 
-    ))(s)
+    ).parse(s)
         .map(| (rem,(s, _, h, _, d, _, c))|
             (rem, (s.union(&h).union(&d).union(&c))))
 
@@ -80,6 +79,7 @@ mod tests{
     use crate::figures::{ parse_figure};
     use crate::set::{CardSetStd, CardSet};
     use crate::suits::Suit::Spades;
+    use nom::Parser;
 
 
     #[test]
@@ -94,7 +94,7 @@ mod tests{
             }
 
 
-        )("AJ86."), Ok((".", card_set!(ACE_SPADES, JACK_SPADES, EIGHT_SPADES, SIX_SPADES))))
+        ).parse("AJ86."), Ok((".", card_set!(ACE_SPADES, JACK_SPADES, EIGHT_SPADES, SIX_SPADES))))
 
     }
 

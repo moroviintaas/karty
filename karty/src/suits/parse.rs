@@ -11,27 +11,27 @@
 use std::str::FromStr;
 use nom::branch::alt;
 use nom::bytes::complete::tag_no_case;
-use nom::IResult;
+use nom::{IResult, Parser};
 use crate::suits::standard::Suit;
 
 fn parse_spades(s: &str) -> IResult<&str, Suit>{
     alt((tag_no_case("spades"), tag_no_case("s"),
-         tag_no_case("♠"), tag_no_case("♤")))(s)
+         tag_no_case("♠"), tag_no_case("♤"))).parse(s)
         .map(|(i,_) | (i, Suit::Spades))
 }
 fn parse_hearts(s: &str) -> IResult<&str, Suit>{
     alt((tag_no_case("hearts"), tag_no_case("h"),
-         tag_no_case("♥"), tag_no_case("♡")))(s)
+         tag_no_case("♥"), tag_no_case("♡"))).parse(s)
         .map(|(i,_) | (i, Suit::Hearts))
 }
 fn parse_diamonds(s: &str) -> IResult<&str, Suit>{
     alt((tag_no_case("diamonds"), tag_no_case("diax"), tag_no_case("d"),
-         tag_no_case("♦"), tag_no_case("♢")))(s)
+         tag_no_case("♦"), tag_no_case("♢"))).parse(s)
         .map(|(i,_) | (i, Suit::Diamonds))
 }
 fn parse_clubs(s: &str) -> IResult<&str, Suit>{
     alt((tag_no_case("clubs"), tag_no_case("c"),
-         tag_no_case("♣"), tag_no_case("♧")))(s)
+         tag_no_case("♣"), tag_no_case("♧"))).parse(s)
         .map(|(i,_) | (i, Suit::Clubs))
 }
 
@@ -63,7 +63,7 @@ fn parse_clubs(s: &str) -> IResult<&str, Suit>{
 
 
 pub fn parse_suit(s: &str) -> IResult<&str, Suit>{
-    alt((parse_spades, parse_hearts, parse_diamonds, parse_clubs))(s)
+    alt((parse_spades, parse_hearts, parse_diamonds, parse_clubs)).parse(s)
 }
 /// Parses [`SuitStd`][crate::suits::Suit] from `&str`. Consumes initial sequences of:
 /// ## names (case insensitive):

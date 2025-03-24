@@ -1,7 +1,7 @@
 use nom::branch::alt;
 use nom::bytes::complete::{tag, tag_no_case};
 use nom::error::ErrorKind;
-use nom::IResult;
+use nom::{IResult, Parser};
 use crate::figures::F10;
 
 use crate::figures::standard::{Figure, MAX_NUMBER_FIGURE, MIN_NUMBER_FIGURE, NumberFigure};
@@ -18,23 +18,23 @@ use crate::figures::standard::{Figure, MAX_NUMBER_FIGURE, MIN_NUMBER_FIGURE, Num
 
  */
 fn parse_ace(s: &str) -> IResult<&str, Figure>{
-    alt((tag_no_case("ace"), tag_no_case("a")))(s)
+    alt((tag_no_case("ace"), tag_no_case("a"))).parse(s)
         .map(|(i, _)| (i, Figure::Ace))
 }
 fn parse_king(s: &str) -> IResult<&str, Figure>{
-    alt((tag_no_case("king"), tag_no_case("k")))(s)
+    alt((tag_no_case("king"), tag_no_case("k"))).parse(s)
         .map(|(i, _)| (i, Figure::King))
 }
 fn parse_queen(s: &str) -> IResult<&str, Figure>{
-    alt((tag_no_case("queen"), tag_no_case("q")))(s)
+    alt((tag_no_case("queen"), tag_no_case("q"))).parse(s)
         .map(|(i, _)| (i, Figure::Queen))
 }
 fn parse_jack(s: &str) -> IResult<&str, Figure>{
-    alt((tag_no_case("jack"), tag_no_case("j")))(s)
+    alt((tag_no_case("jack"), tag_no_case("j"))).parse(s)
         .map(|(i, _)| (i, Figure::Jack))
 }
 fn parse_ten(s: &str) -> IResult<&str, Figure>{
-    alt((tag_no_case("ten"), tag_no_case("t")))(s)
+    alt((tag_no_case("ten"), tag_no_case("t"))).parse(s)
         .map(|(i, _)| (i, F10))
 }
 
@@ -83,7 +83,7 @@ fn parse_numbered_figure(s: &str) -> IResult<&str, Figure>{
         tag("2"),
         //satisfy(|c| c>= '2' && c <='9')
         //one_of::<_, _, (&str, ErrorKind)>("2345678")
-        ))(s)
+        )).parse(s)
             .and_then(|(rem, t)| {
                 match t.parse::<u8>(){
                      Ok(n @MIN_NUMBER_FIGURE..=MAX_NUMBER_FIGURE )=> Ok((rem, Figure::Numbered(NumberFigure::new(n)))),
@@ -107,7 +107,7 @@ fn parse_numbered_figure(s: &str) -> IResult<&str, Figure>{
 
 
 pub fn parse_high_figure(s: &str) -> IResult<&str, Figure>{
-    alt((parse_ten, parse_numbered_figure, parse_ace, parse_king, parse_queen, parse_jack))(s)
+    alt((parse_ten, parse_numbered_figure, parse_ace, parse_king, parse_queen, parse_jack)).parse(s)
 }
 /// Parses a figure
 /// ```
@@ -120,7 +120,7 @@ pub fn parse_high_figure(s: &str) -> IResult<&str, Figure>{
 /// assert_eq!(parse_figure("deadfish"), Err(nom::Err::Error(nom::error::Error::new("deadfish", ErrorKind::Tag))));
 /// ```
 pub fn parse_figure(s: &str) -> IResult<&str, Figure>{
-    alt((parse_high_figure, parse_numbered_figure))(s)
+    alt((parse_high_figure, parse_numbered_figure)).parse(s)
 }
 
 #[cfg(test)]
@@ -128,6 +128,7 @@ mod tests{
     use nom::error::ErrorKind;
     use nom::multi::fold_many0;
     use crate::figures::{*, Figure, NumberFigure, parse};
+    use nom::Parser;
 
     #[test]
     fn parse_4_figures(){
@@ -140,7 +141,7 @@ mod tests{
             }
 
 
-        )("AT86.");
+        ).parse("AT86.");
         assert_eq!(p_result, Ok((".", (vec![Ace, F10, F8, F6]))));
 
 

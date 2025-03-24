@@ -1,6 +1,6 @@
 [package]
 name = "karty_proc_macro"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 repository = "https://github.com/moroviintaas/karty_proc_macro"
 license-file = "LICENSE"
@@ -12,7 +12,7 @@ description = "Procedural macros for crate `karty`"
 proc-macro = true
 
 [dependencies]
-proc-macro2 = "1.0.79"
-syn = "2.0.58"
-quote = "1.0.35"
+proc-macro2 = "1.0.93"
+syn = "2.0.98"
+quote = "1.0.38"
 rand = "0.8.5"
