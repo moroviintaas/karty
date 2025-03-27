@@ -154,7 +154,7 @@ mod serde{
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error> where D: Deserializer<'de> {
             struct CardSetVisitor;
 
-            impl<'de> Visitor<'de> for CardSetVisitor{
+            impl Visitor<'_> for CardSetVisitor{
                 type Value = CardSetStd;
 
                 fn expecting(&self, formatter: &mut Formatter) -> std::fmt::Result {

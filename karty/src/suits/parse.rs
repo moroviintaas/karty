@@ -60,8 +60,6 @@ fn parse_clubs(s: &str) -> IResult<&str, Suit>{
 /// assert_eq!(parse_suit("eadfish"), Err(nom::Err::Error(Error::new("eadfish", ErrorKind::Tag))));
 /// assert_eq!(parse_suit("♦K"), Ok(("K", Suit::Diamonds)));
 /// ```
-
-
 pub fn parse_suit(s: &str) -> IResult<&str, Suit>{
     alt((parse_spades, parse_hearts, parse_diamonds, parse_clubs)).parse(s)
 }

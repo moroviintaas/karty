@@ -109,9 +109,8 @@ impl<E: CardSymbol + Hash + Clone + Eq, R: Rng> RandomSamplingRegister<E, R> for
     }
 
     fn pop_sample(&mut self, rng: &mut R) -> Option<E> {
-        self.register.pop_sample(rng).map(|e| {
+        self.register.pop_sample(rng).inspect(|e| {
             self.complementary_register.register(e.to_owned());
-            e
         })
     }
 }
@@ -122,9 +121,8 @@ impl <E: CardSymbol + Hash + Clone + Eq, R: Rng> RandomSamplingRegisterCompl<E, 
     }
 
     fn pop_sample_unr(&mut self, rng: &mut R) -> Option<E> {
-        self.complementary_register.pop_sample(rng).map(|e| {
+        self.complementary_register.pop_sample(rng).inspect(|e| {
             self.register.register(e.to_owned());
-            e
         })
     }
 }

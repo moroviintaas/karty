@@ -23,7 +23,7 @@ Card2SGenSubset<IFigure, ISuit>  {
     pub fn new(figures: IFigure, suits: ISuit) -> Self
     where <IFigure as IntoIterator>::IntoIter: Clone{
         let it = suits.into_iter();
-        Self{product: it.cartesian_product(figures.into_iter())}
+        Self{product: it.cartesian_product(figures)}
         //Self{product: Product::cartesian_product(suits.into_iter(), figures.into_iter())}
     }
 

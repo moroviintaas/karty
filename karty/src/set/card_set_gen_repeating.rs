@@ -59,7 +59,7 @@ impl<Crd: CardSymbol> CardSet for CardSetGenericRepeating<Crd>{
 
     fn remove_card(&mut self, card: &Self::CardType) -> Result<(), CardSetErrorGen<Self::CardType>> {
 
-        if let Some(count) = self.cards.get_mut(&card){
+        if let Some(count) = self.cards.get_mut(card){
             match count{
                 0 => Err(CardSetErrorGen::CardNotInSet(card.clone())),
                 1 => {
