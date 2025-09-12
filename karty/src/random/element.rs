@@ -1,6 +1,6 @@
 //#![cfg_attr(docsrs, feature(doc_cfg))]
 use rand::{Rng};
-use rand::distributions::{Distribution, Standard};
+use rand::distr::{Distribution, StandardUniform};
 use crate::symbol::CardSymbol;
 use crate::cards::Card2SGen;
 use crate::figures::FigureTrait;
@@ -14,9 +14,9 @@ pub trait RandomSymbol<R: Rng>{
 }
 
 impl<E: CardSymbol, R: Rng> RandomSymbol<R> for E
-where Standard: Distribution<E>{
+where StandardUniform: Distribution<E>{
     fn random(rng: &mut R) -> Self {
-        rng.sample(Standard)
+        rng.sample(StandardUniform)
     }
 }
 

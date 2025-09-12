@@ -10,7 +10,7 @@ pub fn implement_distribution_of_dimension(item: TokenStream) -> TokenStream{
     //let vis = ast.vis;
     let ident = ast.ident;
     let expanded = quote! {
-        impl Distribution<#ident> for Standard{
+        impl Distribution<#ident> for rand::distr::StandardUniform{
             fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> #ident{
                 #ident::from_usize_index(rng.gen_range(0..#ident::SYMBOL_SPACE)).unwrap()
             }

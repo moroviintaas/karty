@@ -17,8 +17,6 @@ use crate::suits::SuitTrait;
 #[cfg(feature = "random")]
 use rand::prelude::Distribution;
 #[cfg(feature = "random")]
-use rand::distributions::Standard;
-#[cfg(feature = "random")]
 use rand::Rng;
 #[cfg(feature = "random")]
 use karty_proc_macro::*;

@@ -54,12 +54,12 @@ impl<E: Hash + Clone + Eq> Register<E> for GenericSamplingRegister<E> {
 
 impl<E: Hash + Clone + Eq, R: Rng> RandomSamplingRegister<E, R> for GenericSamplingRegister<E>{
     fn peek_sample(&self, rng: &mut R) -> Option<&E> {
-        let index = rng.gen_range(0..self.vector.len());
+        let index = rng.random_range(0..self.vector.len());
         self.vector.get(index)
     }
 
     fn pop_sample(&mut self, rng: &mut R) -> Option<E> {
-        let index = rng.gen_range(0..self.vector.len());
+        let index = rng.random_range(0..self.vector.len());
         let result = self.vector.swap_remove(index);
         self.register_map.remove(&result);
         Some(result)

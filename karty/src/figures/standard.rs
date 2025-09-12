@@ -12,8 +12,6 @@ use karty_proc_macro::RandomSymbol;
 #[cfg(feature = "random")]
 use rand::prelude::Distribution;
 #[cfg(feature = "random")]
-use rand::distributions::Standard;
-#[cfg(feature = "random")]
 use rand::Rng;
 
 ///Maximal symbol on standard deck figure `=10`
