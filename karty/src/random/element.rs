@@ -29,7 +29,6 @@ impl<R: Rng, F: FigureTrait + RandomSymbol<R>, S: SuitTrait + RandomSymbol<R>> R
 
 #[cfg(test)]
 mod test{
-    use rand::thread_rng;
     use crate::symbol::CardSymbol;
     use crate::figures::Figure;
     use crate::random::RandomSymbol;
@@ -38,7 +37,7 @@ mod test{
     #[test]
     fn test_random_std_suit(){
         for _ in 0..=20 {
-            let suit = Suit::random(&mut thread_rng());
+            let suit = Suit::random(&mut rand::rng());
             assert!(suit.usize_index() < 5);
         }
     }
@@ -46,7 +45,7 @@ mod test{
     #[test]
     fn test_random_std_figure(){
         for _ in 0..=20{
-            let figure = Figure::random(&mut thread_rng());
+            let figure = Figure::random(&mut rand::rng());
             assert!(figure.usize_index() < 13);
         }
 

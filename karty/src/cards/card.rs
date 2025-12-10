@@ -314,6 +314,14 @@ CardComparatorGen<F, S, CF, CS>{
 impl<F: FigureTrait+ Copy, S: SuitTrait + Copy> CardSymbol for Card2SGen<F, S> {
     const SYMBOL_SPACE: usize = F::SYMBOL_SPACE * S::SYMBOL_SPACE;
 
+    /// ```
+    /// use karty::cards::*;
+    /// use karty::symbol::CardSymbol;
+    /// assert_eq!(TWO_CLUBS.usize_index(), 0);
+    /// assert_eq!(THREE_CLUBS.usize_index(), 1);
+    /// assert_eq!(TWO_DIAMONDS.usize_index(), 13);
+    /// assert_eq!(ACE_HEARTS.usize_index(), 38);
+    /// ```
     fn usize_index(&self) -> usize {
         (self.suit().usize_index() * F::SYMBOL_SPACE) + self.figure.usize_index()
     }

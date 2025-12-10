@@ -130,14 +130,13 @@ impl <E: CardSymbol + Hash + Clone + Eq, R: Rng> RandomSamplingRegisterCompl<E, 
 #[cfg(test)]
 mod tests{
     use std::collections::HashSet;
-    use rand::thread_rng;
     use crate::cards::{ACE_SPADES, KING_SPADES, QUEEN_HEARTS};
     use crate::register::{GenericSamplingRegister, GenericSamplingRegisterCompl, RandomSamplingRegister, RandomSamplingRegisterCompl, Register};
 
     #[test]
     fn test_generic_sample_register(){
         let mut reg = GenericSamplingRegister::new();
-        let mut thrng = thread_rng();
+        let mut thrng = rand::rng();
         reg.register(ACE_SPADES);
         reg.register(QUEEN_HEARTS);
         assert!(reg.is_registered(&ACE_SPADES));
@@ -156,7 +155,7 @@ mod tests{
     #[test]
     fn test_generic_sample_register_compl(){
         let mut reg = GenericSamplingRegisterCompl::new();
-        let mut thrng = thread_rng();
+        let mut thrng = rand::rng();
         reg.register(ACE_SPADES);
         reg.register(QUEEN_HEARTS);
         assert!(reg.is_registered(&ACE_SPADES));
