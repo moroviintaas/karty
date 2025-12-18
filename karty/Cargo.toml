@@ -27,7 +27,7 @@ itertools = "0.14.0"
 smallvec = "1.13.2"
 approx = "0.5.1"
 serde-big-array = "0.5.1"
-thiserror = "2.0.11"
+thiserror = "2.0.12"
 
 karty_proc_macro = { version = "0.3.0" }
 
