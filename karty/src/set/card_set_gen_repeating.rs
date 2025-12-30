@@ -6,6 +6,7 @@ use crate::error::CardSetErrorGen;
 use crate::set::CardSet;
 use crate::symbol::CardSymbol;
 
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[cfg_attr(feature = "speedy", derive(speedy::Writable, speedy::Readable))]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
